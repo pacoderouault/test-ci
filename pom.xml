@@ -68,7 +68,7 @@
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <version>${gluonfx.maven.plugin.version}</version>
                 <configuration>
-                    <target>${client.target}</target>
+                    <target>${gluonfx.target}</target>
                     <mainClass>${main.class}</mainClass>
                     <releaseConfiguration>
                         <bundleVersion>${env.GITHUB_RUN_NUMBER}</bundleVersion>
@@ -92,7 +92,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <client.target>host</client.target>
+                <gluonfx.target>host</gluonfx.target>
             </properties>
         </profile>
     </profiles>
