@@ -20,9 +20,8 @@ jobs:
 
       - name: Setup GraalVM environment
         uses: gluonhq/setup-graalvm@master
-          # set GITHUB_TOKEN to avoid exceeding GitHub's API rate limit
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Make staging directory
         run: mkdir staging
