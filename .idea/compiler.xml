@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="NGSDiagLim" target="16" />
+      <module name="NGSDiagLim" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
