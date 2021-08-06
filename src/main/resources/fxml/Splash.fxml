@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ngsdiaglim.controllers.SplashController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Pane prefHeight="50.0" prefWidth="200.0" styleClass="splash-bg" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        <Label layoutX="221.0" layoutY="262.0" styleClass="subtitle" text="%app.msg.loading" />
+        <ProgressBar layoutX="200.0" layoutY="234.0" maxHeight="5.0" minHeight="5.0" prefHeight="5.0" prefWidth="200.0" styleClass="progressbar" />
+        <Label layoutX="226.0" layoutY="103.0" prefHeight="58.0" prefWidth="149.0" text="%app.name">
+            <styleClass>
+                <String fx:value="title" />
+                <String fx:value="font-medium" />
+            </styleClass>
+        </Label>
+    </children>
+</AnchorPane>

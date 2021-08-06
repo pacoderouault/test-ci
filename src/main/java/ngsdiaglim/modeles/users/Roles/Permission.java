@@ -1,21 +1,47 @@
 package ngsdiaglim.modeles.users.Roles;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Permission {
 
-    private long id;
-    private String permissionName;
+    private final PermissionsEnum permissionEnum;
+    private final Set<Permission> children = new HashSet<>();
 
-    public Permission(long id, String permissionName) {
-        this.id = id;
-        this.permissionName = permissionName;
+
+    public Permission(PermissionsEnum permissionEnum) {
+        this.permissionEnum = permissionEnum;
     }
 
-    public long getId() { return id; }
+    public Permission(String permissionName) throws IllegalArgumentException {
+        permissionEnum = PermissionsEnum.valueOf(permissionName);
+    }
 
-    public String getPermissionName() { return permissionName; }
+    public PermissionsEnum getPermissionEnum() { return permissionEnum; }
 
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
+    public String getPermissionName() { return permissionEnum.getPermissionName(); }
+
+    public Set<Permission> getChildren() { return children; }
+
+    public void addPermission(Permission permission) {
+        children.add(permission);
+    }
+
+    public void addPermissions(List<Permission> permissions) {
+        children.addAll(permissions);
+    }
+
+    public void removePermission(Permission permission) {
+        children.remove(permission);
+    }
+
+    public void removePermissions(List<Permission> permissions) {
+        permissions.forEach(children::remove);
+    }
+
+    public String toString() {
+        return getPermissionName();
     }
 
     @Override
@@ -25,11 +51,11 @@ public class Permission {
 
         Permission that = (Permission) o;
 
-        return id == that.id;
+        return permissionEnum == that.permissionEnum;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return permissionEnum.hashCode();
     }
 }

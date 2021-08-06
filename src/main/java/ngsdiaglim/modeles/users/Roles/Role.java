@@ -4,14 +4,16 @@ import java.util.Set;
 
 public class Role {
 
-    private long id;
+    private final long id;
     private String roleName;
     private Set<Permission> permissions;
+    private final boolean isEditable;
 
-    public Role(long id, String roleName, Set<Permission> permissions) {
+    public Role(long id, String roleName, Set<Permission> permissions, boolean isEditable) {
         this.id = id;
         this.roleName = roleName;
         this.permissions = permissions;
+        this.isEditable = isEditable;
     }
 
     public long getId() { return id; }
@@ -28,8 +30,15 @@ public class Role {
         this.permissions = permissions;
     }
 
-    public boolean hashPermission(Permission permission) {
+    public boolean hasPermission(Permission permission) {
         return permissions.contains(permission);
+    }
+
+    public boolean isEditable() {return isEditable;}
+
+    @Override
+    public String toString() {
+        return roleName;
     }
 
     @Override

@@ -7,6 +7,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/data" />
+      <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -19,9 +22,46 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:linux:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:linux:16" level="project" />
+    <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:11.1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.dlsc.gemsfx:gemsfx:1.29.1" level="project" />
+    <orderEntry type="library" name="Maven: com.dlsc.unitfx:unitfx:1.0.7" level="project" />
+    <orderEntry type="library" name="Maven: tech.units:indriya:2.0-EDR" level="project" />
+    <orderEntry type="library" name="Maven: javax.measure:unit-api:2.0-EDR" level="project" />
+    <orderEntry type="library" name="Maven: tech.uom.lib:uom-lib-common:2.0-EDR" level="project" />
+    <orderEntry type="library" name="Maven: com.dlsc.pickerfx:pickerfx:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-validator:commons-validator:1.6" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:1.8.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.6.1" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.12.0" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:14.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:linux:14.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-core:12.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-materialdesign-pack:12.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jfxtras:jmetro:11.6.14" level="project" />
+    <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-javafx:12.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-material2-pack:12.2.0" level="project" />
+    <orderEntry type="library" name="Maven: fr.brouillard.oss:cssfx:11.4.0" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.4.200" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.14.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.1" level="project" />
-    <orderEntry type="library" name="Maven: com.dlsc.workbenchfx:workbenchfx-core:11.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.samtools:htsjdk:2.24.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-jexl:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.7.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-compress:1.19" level="project" />
+    <orderEntry type="library" name="Maven: org.tukaani:xz:1.8" level="project" />
+    <orderEntry type="library" name="Maven: gov.nih.nlm.ncbi:ngs-java:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.sharegov:mjson:1.4.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.4.2" level="project" />
   </component>
 </module>

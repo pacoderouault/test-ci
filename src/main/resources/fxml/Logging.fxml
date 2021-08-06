@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ngsdiaglim.controllers.LoggingController">
+   <children>
+      <StackPane fx:id="dialogPaneContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="800.0" prefWidth="1200.0">
+               <children>
+                  <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="250.0" styleClass="login-background">
+                           <children>
+                              <Label id="title-app-label" text="NGSDiagLim" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                           <children>
+                              <VBox alignment="TOP_RIGHT" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                       <children>
+                                          <Label text="%logging.lb.login" />
+                                          <TextField fx:id="loginTf" onAction="#connect" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" spacing="5.0">
+                                       <children>
+                                          <Label text="%logging.lb.password" />
+                                          <PasswordField fx:id="passwordField" onAction="#connect" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#connect" text="%logging.btn.connection" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets top="30.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

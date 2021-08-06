@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root styleClass="module-background" type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox styleClass="module-box">
+               <children>
+                  <HBox alignment="CENTER_LEFT" styleClass="module-box-header">
+                     <children>
+                        <Label text="%usersmanage.lb.module.users.title" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#AddNewUser" styleClass="button-small" text="%usersmanage.lb.module.users.btn.adduser" />
+                     </children>
+                  </HBox>
+                  <AnchorPane styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="userTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="nameCol" prefWidth="150.0" text="%usersmanage.lb.module.users.table.namecol" />
+                            <TableColumn fx:id="creationDateCol" prefWidth="150.0" text="%usersmanage.lb.module.users.table.datecol" />
+                              <TableColumn fx:id="groupsCol" prefWidth="250.0" text="%usersmanage.lb.module.users.table.groupcol" />
+                              <TableColumn fx:id="activeCol" prefWidth="75.0" text="%usersmanage.lb.module.users.table.activecol" />
+                              <TableColumn fx:id="actionsCol" prefWidth="150.0" text="%usersmanage.lb.module.users.table.actionscol" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
+               </children>
+            </VBox>
+            <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT" styleClass="module-box-header">
+                     <children>
+                        <Label text="%usersmanage.module.groups.title" />
+                     </children>
+                  </HBox>
+                  <AnchorPane styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label styleClass="font-medium" text="%usersmanage.module.groups.lb.grouplist" />
+                                          <Region HBox.hgrow="ALWAYS" />
+                                          <Button defaultButton="true" mnemonicParsing="false" onAction="#addNewGroup" styleClass="button-small" text="%usersmanage.module.groups.btn.addgroup" />
+                                       </children>
+                                    </HBox>
+                                    <TableView fx:id="rolesTable" VBox.vgrow="ALWAYS">
+                                      <columns>
+                                        <TableColumn fx:id="roleNameCol" prefWidth="150.0" text="%usermanage.roles.rolenameCol" />
+                                        <TableColumn fx:id="roleActionsCol" prefWidth="75.0" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                              <VBox HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="25.0">
+                                       <children>
+                                          <Label styleClass="font-medium" text="%usersmanage.module.groups.lb.permissionslist" />
+                                       </children>
+                                    </HBox>
+                                    <TreeView fx:id="permissionsTreeView" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children></HBox>
+   </children>
+</fx:root>
