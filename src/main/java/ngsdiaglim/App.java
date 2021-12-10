@@ -75,27 +75,27 @@ public class App extends Application {
         }
 
 
-        try {
-
-            setLoggedUser(DAOController.get().getUsersDAO().getUser("admin"));
-
-            File localRunDir = new File("/mnt/Data/CHU_services/biochimie_genetique_moleculaire/CMT/Runs_MiSeq/propres/allRuns");
-            File dir = new File("/mnt/Data/tmp/BGMEXPORT/");
-            File runDir = new File(dir, "runs");
-
-            CreateDefaultParams.createDefaultMiseq();
-            CreateDefaultParams.createDefaultProton();
-
-            ImportUsers.importUsers(new File(dir, "users.txt"));
-
-            ImportsRuns runImporter = new ImportsRuns(runDir, localRunDir);
-            runImporter.importRuns();
-
-//            File variantsDir = new File(dir, "variants");
-//            ImportVariants.importVariants(variantsDir);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            setLoggedUser(DAOController.get().getUsersDAO().getUser("admin"));
+//
+//            File localRunDir = new File("/mnt/Data/CHU_services/biochimie_genetique_moleculaire/CMT/Runs_MiSeq/propres/allRuns");
+//            File dir = new File("/mnt/Data/tmp/BGMEXPORT/");
+//            File runDir = new File(dir, "runs");
+//
+//            CreateDefaultParams.createDefaultMiseq();
+//            CreateDefaultParams.createDefaultProton();
+//
+//            ImportUsers.importUsers(new File(dir, "users.txt"));
+//
+//            ImportsRuns runImporter = new ImportsRuns(runDir, localRunDir);
+//            runImporter.importRuns();
+//
+////            File variantsDir = new File(dir, "variants");
+////            ImportVariants.importVariants(variantsDir);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
