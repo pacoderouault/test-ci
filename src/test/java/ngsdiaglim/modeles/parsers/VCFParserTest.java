@@ -2,6 +2,7 @@ package ngsdiaglim.modeles.parsers;
 
 import ngsdiaglim.BaseSetup;
 import ngsdiaglim.database.DAOController;
+import ngsdiaglim.database.dao.*;
 import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.exceptions.MalformedGeneTranscriptFile;
@@ -32,7 +33,11 @@ class VCFParserTest extends BaseSetup {
 
     private static AnalysisParameters params;
     private static final File resourcesDirectory = new File("src/test/resources");
-
+    private static final PanelDAO panelDAO = new PanelDAO();
+    private static final PanelRegionDAO panelRegionDAO = new PanelRegionDAO();
+    private static final GeneSetDAO geneSetDAO = new GeneSetDAO();
+    private static final GeneDAO geneDAO = new GeneDAO();
+    private static final TranscriptsDAO transcriptsDAO = new TranscriptsDAO();
     @BeforeAll
     static void setupParams() {
 
@@ -40,32 +45,32 @@ class VCFParserTest extends BaseSetup {
         File geneSetFile = Paths.get(resourcesDirectory.getPath(), "data/liste_transcripts_avec_alternatifs.tsv").toFile();
         try {
             List<PanelRegion> regions = PanelParser.parsePanel(panelFile);
-            long panelId = DAOController.get().getPanelDAO().addPanel("panel", panelFile.getPath());
+            long panelId = panelDAO.addPanel("panel", panelFile.getPath());
             for (PanelRegion region : regions) {
-                DAOController.get().getPanelRegionDAO().addRegion(region, panelId);
+                panelRegionDAO.addRegion(region, panelId);
             }
 
-            Panel panel = DAOController.get().getPanelDAO().getPanel(panelId);
+            Panel panel = panelDAO.getPanel(panelId);
 
             HashSet<Gene> genes = GeneSetParser.parseGeneSet(geneSetFile);
-            long geneSetId = DAOController.get().getGeneSetDAO().addGeneSet("GeneSet");
+            long geneSetId = geneSetDAO.addGeneSet("GeneSet");
             for (Gene gene : genes) {
-                long geneId = DAOController.get().getGeneDAO().addGene(gene, geneSetId);
+                long geneId = geneDAO.addGene(gene, geneSetId);
                 gene.setId(geneId);
                 for (Transcript transcript : gene.getTranscripts().values()) {
-                    long transcriptId = DAOController.get().getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
+                    long transcriptId = transcriptsDAO.addTranscript(transcript.getName(), gene.getId());
                     transcript.setId(transcriptId);
                 }
                 // if only one transcript for the gene, set it as "preferred transcript"
                 if (gene.getTranscripts().size() == 1) {
                     Optional<Transcript> opt = gene.getTranscripts().values().stream().findAny();
                     if(opt.isPresent()) {
-                        DAOController.get().getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
+                        geneDAO.setPreferredTranscript(gene.getId(), opt.get().getId());
                     }
                 }
             }
 
-            GeneSet geneSet = DAOController.get().getGeneSetDAO().getGeneSet(geneSetId);
+            GeneSet geneSet = geneSetDAO.getGeneSet(geneSetId);
 
 
             params = new AnalysisParameters(

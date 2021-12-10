@@ -19,9 +19,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HotspotsParserTest extends BaseSetup {
+
     private static final HotspotsSetDAO hotspotsSetDAO = DAOController.get().getHotspotsSetDAO();
     private static final File resourcesDirectory = new File("src/test/resources");
-
+    private static final HotspotDAO hotspotDAO = new HotspotDAO();
     @Test
     void parseHotspotFile() {
         File hotspotsFile = Paths.get(resourcesDirectory.getPath(), "data/hotspots.tsv").toFile();
@@ -29,7 +30,7 @@ class HotspotsParserTest extends BaseSetup {
             List<Hotspot> hotspots = HotspotsParser.parseHotspotFile(hotspotsFile);
             long id = hotspotsSetDAO.addHotspotsSet("hotspots");
             for (Hotspot hotspot : hotspots) {
-                DAOController.get().getHotspotDAO().addHotspot(id, hotspot);
+                hotspotDAO.addHotspot(id, hotspot);
             }
             HotspotsSet hotspotSet = hotspotsSetDAO.getHotspotsSet(id);
             assertEquals(1742, hotspotSet.getHotspots().size());

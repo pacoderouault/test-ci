@@ -2,10 +2,8 @@ package ngsdiaglim;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
-import ngsdiaglim.comparators.RegionComparator;
 import ngsdiaglim.controllers.dialogs.AddRunDialog;
-import ngsdiaglim.database.DAOController;
+import ngsdiaglim.database.dao.*;
 import ngsdiaglim.enumerations.AnalysisStatus;
 import ngsdiaglim.enumerations.CoverageQuality;
 import ngsdiaglim.enumerations.Genome;
@@ -17,7 +15,6 @@ import ngsdiaglim.exceptions.NotBiallelicVariant;
 import ngsdiaglim.modeles.analyse.*;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
 import ngsdiaglim.modeles.biofeatures.Gene;
-import ngsdiaglim.modeles.biofeatures.Region;
 import ngsdiaglim.modeles.biofeatures.Transcript;
 import ngsdiaglim.modeles.parsers.GeneSetParser;
 import ngsdiaglim.modeles.parsers.PanelParser;
@@ -25,10 +22,8 @@ import ngsdiaglim.modeles.parsers.VCFParser;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.utils.VariantUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,11 +31,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GlobalAnalysisTest extends BaseSetup {
+
+    private static final UsersDAO userDAO = new UsersDAO();
+    private static final PanelDAO panelDAO = new PanelDAO();
+    private static final PanelRegionDAO panelRegionDAO = new PanelRegionDAO();
+    private static final GeneSetDAO geneSetDAO = new GeneSetDAO();
+    private static final GeneDAO geneDAO = new GeneDAO();
+    private static final TranscriptsDAO transcriptsDAO = new TranscriptsDAO();
+    private static final AnalysisParametersDAO analysisParametersDAO = new AnalysisParametersDAO();
+    private static final RunsDAO runsDAO = new RunsDAO();
+    private static final AnalysisDAO analysisDAO = new AnalysisDAO();
 
     @TempDir
     File tempDir;
@@ -52,7 +60,7 @@ public class GlobalAnalysisTest extends BaseSetup {
         // start App
         new App();
         try {
-            User user = DAOController.get().getUsersDAO().checkUserConnection("admin", "admin");
+            User user = userDAO.checkUserConnection("admin", "admin");
             App.get().setLoggedUser(user);
         } catch (SQLException e) {
             fail(e);
@@ -63,9 +71,9 @@ public class GlobalAnalysisTest extends BaseSetup {
         long panelId = -1;
         try {
             List<PanelRegion> regions = PanelParser.parsePanel(panelFile);
-            panelId = DAOController.get().getPanelDAO().addPanel("GlobalPanel", panelFile.getPath());
+            panelId = panelDAO.addPanel("GlobalPanel", panelFile.getPath());
             for (PanelRegion region : regions) {
-                DAOController.get().getPanelRegionDAO().addRegion(region, panelId);
+                panelRegionDAO.addRegion(region, panelId);
             }
         } catch (IOException | MalformedPanelFile | SQLException e) {
             fail(e);
@@ -77,19 +85,19 @@ public class GlobalAnalysisTest extends BaseSetup {
         long geneSetId = -1;
         try {
             HashSet<Gene> genes = GeneSetParser.parseGeneSet(transcriptsFile);
-            geneSetId = DAOController.get().getGeneSetDAO().addGeneSet("globalTranscripts");
+            geneSetId = geneSetDAO.addGeneSet("globalTranscripts");
             for (Gene gene : genes) {
-                long geneId = DAOController.get().getGeneDAO().addGene(gene, geneSetId);
+                long geneId = geneDAO.addGene(gene, geneSetId);
                 gene.setId(geneId);
                 for (Transcript transcript : gene.getTranscripts().values()) {
-                    long transcriptId = DAOController.get().getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
+                    long transcriptId = transcriptsDAO.addTranscript(transcript.getName(), gene.getId());
                     transcript.setId(transcriptId);
                 }
                 // if only one transcript for the gene, set it as "preferred transcript"
                 if (gene.getTranscripts().size() == 1) {
                     Optional<Transcript> opt = gene.getTranscripts().values().stream().findAny();
                     if(opt.isPresent()) {
-                        DAOController.get().getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
+                        geneDAO.setPreferredTranscript(gene.getId(), opt.get().getId());
                     }
                 }
             }
@@ -101,7 +109,7 @@ public class GlobalAnalysisTest extends BaseSetup {
         // create Analysis Parameters
         long paramsId = - 1;
         try {
-            paramsId = DAOController.get().getAnalysisParametersDAO().addAnalysisParameters(
+            paramsId = analysisParametersDAO.addAnalysisParameters(
                     "ParamsTest",
                     Genome.GRCh37,
                     30,
@@ -118,7 +126,7 @@ public class GlobalAnalysisTest extends BaseSetup {
         assertNotEquals(-1, paramsId);
         AnalysisParameters analysisParameters = null;
         try {
-            analysisParameters = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(paramsId);
+            analysisParameters = analysisParametersDAO.getAnalysisParameters(paramsId);
         } catch (SQLException e) {
             fail(e);
         }
@@ -140,7 +148,7 @@ public class GlobalAnalysisTest extends BaseSetup {
         assertNotEquals(-1, runId);
         Run run = null;
         try {
-            run = DAOController.get().getRunsDAO().getRun(runId);
+            run = runsDAO.getRun(runId);
         } catch (SQLException e) {
             fail(e);
         }
@@ -173,7 +181,7 @@ public class GlobalAnalysisTest extends BaseSetup {
 
 
         try {
-            ObservableList<Analysis> analyses = DAOController.get().getAnalysisDAO().getAnalysis(run);
+            ObservableList<Analysis> analyses = analysisDAO.getAnalysis(run);
             assertEquals(1, analyses.size());
 
             Analysis analysis = analyses.get(0);

@@ -3,6 +3,7 @@ package ngsdiaglim.modeles.parsers;
 import ngsdiaglim.BaseSetup;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.PanelDAO;
+import ngsdiaglim.database.dao.PanelRegionDAO;
 import ngsdiaglim.enumerations.CoverageQuality;
 import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.TargetEnrichment;
@@ -29,7 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class BamParserTest extends BaseSetup {
 
     private static final File resourcesDirectory = new File("src/test/resources");
-    private static final PanelDAO panelDAO = DAOController.get().getPanelDAO();
+    private static final PanelDAO panelDAO = new PanelDAO();
+    private static final PanelRegionDAO panelRegionDAO = new PanelRegionDAO();
     private static AnalysisParameters params;
 
     @TempDir
@@ -42,7 +44,7 @@ class BamParserTest extends BaseSetup {
             List<PanelRegion> regions = PanelParser.parsePanel(panelFile);
             long panelId = panelDAO.addPanel("panelTest", panelFile.getPath());
             for (PanelRegion region : regions) {
-                DAOController.get().getPanelRegionDAO().addRegion(region, panelId);
+                panelRegionDAO.addRegion(region, panelId);
             }
             Panel panel = panelDAO.getPanel(panelId);
 //            long id, Genome genome, String analysisName, int minDepth, int warningDepth,
@@ -62,13 +64,11 @@ class BamParserTest extends BaseSetup {
         BamParser bamParser = new BamParser(params, bamFile);
 
         File outFile = new File(tempDir, "coverage.bed.gz");
-        System.out.println(outFile);
         try {
             bamParser.parseFile(outFile);
             assertTrue(outFile.exists());
             List<CoverageRegion> regions = CoverageFileParser.parseCoverageFile(outFile, params);
             assertEquals(1, regions.size());
-            System.out.println(regions.get(0));
             CoverageRegion r = new CoverageRegion("chr17", 40688285, 40688678, null, CoverageQuality.NO_COVERED);
             assertEquals(r, regions.get(0));
             assertEquals(CoverageQuality.NO_COVERED, regions.get(0).getCoverageQuality());

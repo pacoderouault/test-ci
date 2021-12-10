@@ -4,6 +4,7 @@ import ngsdiaglim.BaseSetup;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.GeneDAO;
 import ngsdiaglim.database.dao.GeneSetDAO;
+import ngsdiaglim.database.dao.TranscriptsDAO;
 import ngsdiaglim.exceptions.MalformedGeneTranscriptFile;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GeneSet;
@@ -22,8 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeneSetParserTest extends BaseSetup {
 
-    private static final GeneSetDAO geneSetDAO = DAOController.get().getGeneSetDAO();
-    private static final GeneDAO geneDAO = DAOController.get().getGeneDAO();
+    private static final GeneSetDAO geneSetDAO = new GeneSetDAO();
+    private static final GeneDAO geneDAO = new GeneDAO();
+    private static final TranscriptsDAO transcriptsDAO = new TranscriptsDAO();
 
     @TempDir
     File tempDir;
@@ -64,19 +66,19 @@ class GeneSetParserTest extends BaseSetup {
         File geneSetFile = Paths.get(resourcesDirectory.getPath(), "data/liste_transcripts_avec_alternatifs.tsv").toFile();
         try {
             HashSet<Gene> genes = GeneSetParser.parseGeneSet(geneSetFile);
-            long geneSetId = DAOController.get().getGeneSetDAO().addGeneSet("GeneSet2");
+            long geneSetId = geneSetDAO.addGeneSet("GeneSet2");
             for (Gene gene : genes) {
-                long geneId = DAOController.get().getGeneDAO().addGene(gene, geneSetId);
+                long geneId = geneDAO.addGene(gene, geneSetId);
                 gene.setId(geneId);
                 for (Transcript transcript : gene.getTranscripts().values()) {
-                    long transcriptId = DAOController.get().getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
+                    long transcriptId = transcriptsDAO.addTranscript(transcript.getName(), gene.getId());
                     transcript.setId(transcriptId);
                 }
                 // if only one transcript for the gene, set it as "preferred transcript"
                 if (gene.getTranscripts().size() == 1) {
                     Optional<Transcript> opt = gene.getTranscripts().values().stream().findAny();
                     if(opt.isPresent()) {
-                        DAOController.get().getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
+                        geneDAO.setPreferredTranscript(gene.getId(), opt.get().getId());
                     }
                 }
             }
