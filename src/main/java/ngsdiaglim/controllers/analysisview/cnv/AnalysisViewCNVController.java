@@ -163,7 +163,7 @@ public class AnalysisViewCNVController extends VBox {
                 cnvNormalizedViewController = new CNVNormalizedViewController(this, covcopCNVData.get());
                 normalizedDataTb.setDisable(false);
                 mapsTb.setDisable(false);
-                showNormalizationMapsView();
+                mapsTb.setSelected(true);
             }
         });
         wid.exec("normalizeData", inputParams -> {

@@ -447,7 +447,6 @@ public class PredictionsDetailDialog extends DialogPane.Dialog<Annotation> {
             }
             if (tc.getSiphyPred() != null) {
                 siphyScoreTf.setText(getScoreAndPred(tc.getSiphyPred()));
-                System.out.println(tc.getSiphyPred().getScore().floatValue());
                 siphyGauge.setScore(tc.getSiphyPred().getScore().floatValue());
             }
             if (tc.getFathmmPred() != null) {
@@ -541,11 +540,6 @@ public class PredictionsDetailDialog extends DialogPane.Dialog<Annotation> {
 
     private void clearFields() {
         textfields.forEach(t -> t.setText(null));
-        for (PredictionGauge3 predictionGauge : predictionGauges) {
-            if (predictionGauge == null) {
-                System.out.println(predictionGauge);
-            }
-        }
         predictionGauges.stream().filter(Objects::nonNull).forEach(g -> g.setScore(null));
     }
 

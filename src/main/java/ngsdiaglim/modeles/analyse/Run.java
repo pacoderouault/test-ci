@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class Run {
 
-    private Logger logger = LogManager.getLogger(Run.class);
+    private static final Logger logger = LogManager.getLogger(Run.class);
     private long id;
     private final String path;
     private final SimpleStringProperty name = new SimpleStringProperty();

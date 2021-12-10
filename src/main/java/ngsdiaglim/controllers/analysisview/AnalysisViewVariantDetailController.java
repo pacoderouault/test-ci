@@ -797,7 +797,6 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
 
     private void fillPubmedIds() {
-        System.out.println(annotation.get().getTranscriptConsequence().getPubmedIds());
         pubmedIdsContainer.getChildren().clear();
         if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getPubmedIds() != null) {
             for (String pubmedId : annotation.get().getTranscriptConsequence().getPubmedIds()) {

@@ -48,8 +48,6 @@ public class MathUtils {
             }
         }
         if (valuesNb > 0) {
-            System.out.println("sum : " + sum);
-            System.out.println("valuesNb : " + valuesNb);
             return sum / (valuesNb * 1.0);
         }
         return 0;

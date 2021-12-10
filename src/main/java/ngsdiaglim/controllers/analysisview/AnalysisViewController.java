@@ -1,4 +1,4 @@
-package ngsdiaglim.controllers.analysisview;//        System.out.println(themeName);
+package ngsdiaglim.controllers.analysisview;
 
 
 import javafx.application.Platform;
@@ -156,7 +156,6 @@ public class AnalysisViewController extends Module {
                 Message.showDialog(dialog);
                 Button b = dialog.getButton(ButtonType.OK);
                 b.setOnAction(event -> {
-                    System.out.println("test");
                     if (dialog.isValid() && dialog.getValue() != null) {
                         try {
                             DAOController.get().getAnalysisDAO().updateAnalysisStatus(analysis.get().getId(), dialog.getValue());

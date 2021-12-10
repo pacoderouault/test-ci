@@ -18,8 +18,6 @@ public class FastaSequenceGetter {
     private IndexedFastaSequenceFile fastaSequence;
 
     public FastaSequenceGetter(File fastaFile) throws Exception {
-        System.out.println(fastaFile);
-        System.out.println(fastaFile.exists());
         this.fastaFile = fastaFile;
         if (fastaFile.exists()) {
             try {
@@ -28,8 +26,6 @@ public class FastaSequenceGetter {
             }
             catch (SAMException ignored) {}
             fastaSequence = new IndexedFastaSequenceFile(fastaFile);
-        } else {
-//            throw new IOException(AppSettings.DefaultAppSettings.REFERENCE_HG19.name() + "doesn't exists");
         }
     }
 

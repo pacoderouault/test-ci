@@ -38,7 +38,6 @@ public class CovCopCNVData {
 
     private void setVisibleSamples() {
         visibleSamples.setAll(samples.values().stream().filter(CNVSample::isVisible).collect(Collectors.toList()));
-        System.out.println(visibleSamples.size());
     }
 
     public ObservableList<CNVSample> getVisibleSamples() {

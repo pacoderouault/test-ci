@@ -35,11 +35,9 @@ public class CaptureDepthParser {
 
     public CovCopCNVData parseDepthFiles() throws SQLException, IOException {
         // Select the analysis that sharing the design
-        System.out.println("analysis in run nb : " + analysis.getRun().getAnalyses().size());
         List<Analysis> analysisSharingDesign = analysis.getRun().getAnalyses().stream()
                 .filter(a -> a.getAnalysisParameters().getPanel().equals(panel))
                 .collect(Collectors.toList());
-        System.out.println("analysisSharingDesign : " + analysisSharingDesign.size());
         LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
         HashMap<String, CovCopRegion> regions = new HashMap<>();
 

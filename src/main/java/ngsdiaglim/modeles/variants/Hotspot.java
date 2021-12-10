@@ -130,7 +130,6 @@ public class Hotspot {
     }
 
     public boolean isHotspot(Variant variant) {
-        System.out.println(this);
         if (type.get().equals(HotspotType.REGION)) {
             return isOverlapping(variant.getContig(), variant.getStart(), variant.getEnd());
         }

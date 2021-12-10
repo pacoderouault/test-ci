@@ -38,9 +38,6 @@ public class TableColumnHeader2 extends TableColumnHeader {
      */
     public TableColumnHeader2(TableColumnBase tc) {
         super(tc);
-        setOnMousePressed(e -> {
-            System.out.println("test");
-        });
     }
 
 

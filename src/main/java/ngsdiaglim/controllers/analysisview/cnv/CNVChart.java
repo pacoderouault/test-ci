@@ -564,7 +564,6 @@ public class CNVChart extends XYChart {
 
 
     public void test() {
-        System.out.println("test");
         DefaultRenderColorScheme.fillStylesProperty().clear();
         DefaultRenderColorScheme.fillStylesProperty().add(Color.ORANGE);
         DefaultRenderColorScheme.fillStylesProperty().add(Color.PURPLE);

@@ -28,7 +28,6 @@ public class DisplayHTMLDialog extends DialogPane.Dialog<File> {
 //        System.out.println(url);
 //        if (url != null) {
         browser.setPrefSize(800, 400);
-        System.out.println(getValue().toURI().getPath());
 //            webEngine.load(getValue().toURI().getPath());
         browser.getEngine().load(" <html lang=\"en\">\n" +
                     "<head><title>Hello World</title></head>\n" +
