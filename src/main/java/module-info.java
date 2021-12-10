@@ -65,6 +65,7 @@ module NGSDiagLim {
     exports ngsdiaglim.cnv.caller;
 
     opens ngsdiaglim to javafx.fxml;
+    opens ngsdiaglim.database to javafx.fxml;
     opens ngsdiaglim.controllers to javafx.fxml;
     opens ngsdiaglim.controllers.dialogs to javafx.fxml;
     opens ngsdiaglim.controllers.cells to javafx.fxml;
