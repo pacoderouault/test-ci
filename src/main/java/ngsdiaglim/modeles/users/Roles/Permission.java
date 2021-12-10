@@ -24,8 +24,8 @@ public class Permission {
 
     public Set<Permission> getChildren() { return children; }
 
-    public void addPermission(Permission permission) {
-        children.add(permission);
+    public boolean addPermission(Permission permission) {
+        return children.add(permission);
     }
 
     public void addPermissions(List<Permission> permissions) {

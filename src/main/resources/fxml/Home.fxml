@@ -15,48 +15,51 @@
          <children>
             <HBox spacing="20.0" VBox.vgrow="ALWAYS">
                <children>
-                  <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
+                  <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
                      <children>
                         <HBox styleClass="module-box-header">
                            <children>
                               <Label text="%home.module.runslist.title" />
                               <Region HBox.hgrow="ALWAYS" />
-                              <Button fx:id="addRunBtn" mnemonicParsing="false" onAction="#addRunHandler" text="%home.module.runslist.btn.addrun" />
+                              <Button fx:id="addRunBtn" defaultButton="true" mnemonicParsing="false" onAction="#addRunHandler" text="%home.module.runslist.btn.addrun" />
                            </children>
                         </HBox>
                         <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
                            <children>
                               <TableView fx:id="runsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn fx:id="runNameCol" prefWidth="170.0" text="%home.module.runslist.table.runNameCol" />
+                                  <TableColumn fx:id="runNameCol" minWidth="150.0" prefWidth="-1.0" text="%home.module.runslist.table.runNameCol" />
                                   <TableColumn fx:id="runDateCol" prefWidth="150.0" text="%home.module.runslist.table.runDateCol" />
                                     <TableColumn fx:id="runStateCol" prefWidth="150.0" text="%home.module.runslist.table.runStateCol" />
-                                    <TableColumn fx:id="runActionsCol" prefWidth="250.0" sortable="false" />
+                                    <TableColumn fx:id="runActionsCol" prefWidth="70.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children>
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
+                  <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
                      <children>
                         <HBox styleClass="module-box-header">
                            <children>
                               <Label text="%home.module.analyseslist.title" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Button fx:id="addAnalysesBtn" defaultButton="true" mnemonicParsing="false" onAction="#addAnalysesHandler" text="%home.module.runslist.table.actions.btn.addAnalyses" />
                            </children>
                         </HBox>
-                        <AnchorPane styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                        <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
                            <children>
-                              <TableView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="analysesTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn prefWidth="75.0" text="%home.module.analyseslist.table.namecol" />
-                                  <TableColumn prefWidth="75.0" text="%home.module.analyseslist.table.dateCol" />
-                                    <TableColumn prefWidth="75.0" text="%home.module.analyseslist.table.stateCol" />
-                                    <TableColumn prefWidth="75.0" sortable="false" />
+                                  <TableColumn fx:id="analysisNameCol" minWidth="200.0" prefWidth="-1.0" text="%home.module.analyseslist.table.namecol" />
+                                    <TableColumn fx:id="analysisSampleNameCol" prefWidth="200.0" text="%home.module.analyseslist.table.sampleNamecol" />
+                                  <TableColumn fx:id="analysisParametersCol" prefWidth="170.0" text="%home.module.analyseslist.table.parametersCol" />
+                                    <TableColumn fx:id="analysisStateCol" prefWidth="140.0" text="%home.module.analyseslist.table.stateCol" />
+                                    <TableColumn fx:id="analysisActionsCol" prefWidth="100.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children>
-                        </AnchorPane>
+                        </VBox>
                      </children>
                   </VBox>
                </children>
@@ -68,7 +71,7 @@
                         <Label text="%home.module.statistics.title" />
                      </children>
                   </HBox>
-                  <AnchorPane styleClass="module-box-container" VBox.vgrow="ALWAYS" />
+                  <HBox fx:id="statisticsContainer" alignment="CENTER_LEFT" spacing="10.0" styleClass="module-box-container" VBox.vgrow="NEVER" />
                </children>
             </VBox>
          </children>

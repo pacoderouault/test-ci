@@ -15,6 +15,7 @@ public class ImportAnalysisNameTableCell extends TextFieldTableCell<AnalysisInpu
 
     @Override
     public void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
         if (item == null || empty) {
             setText(null);
             setGraphic(null);

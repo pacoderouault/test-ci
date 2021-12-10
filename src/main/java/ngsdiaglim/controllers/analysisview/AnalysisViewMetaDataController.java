@@ -1,0 +1,238 @@
+package ngsdiaglim.controllers.analysisview;
+
+import htsjdk.samtools.util.CloseableIterator;
+import htsjdk.variant.variantcontext.VariantContext;
+import htsjdk.variant.vcf.VCFEncoder;
+import htsjdk.variant.vcf.VCFFileReader;
+import htsjdk.variant.vcf.VCFReader;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import ngsdiaglim.App;
+import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.exceptions.MalformedSearchQuery;
+import ngsdiaglim.modeles.analyse.Analysis;
+import ngsdiaglim.modeles.variants.Variant;
+import ngsdiaglim.utils.DateFormatterUtils;
+import ngsdiaglim.utils.NumberUtils;
+import ngsdiaglim.utils.VCFUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.CustomTextField;
+
+import java.io.IOException;
+import java.util.StringJoiner;
+
+public class AnalysisViewMetaDataController  extends VBox {
+
+    private Logger logger = LogManager.getLogger(AnalysisViewMetaDataController.class);
+    @FXML private TextField analysisNameTf;
+    @FXML private TextField analysisSampleNameTf;
+    @FXML private TextField analysisDateTf;
+    @FXML private TextField analysisUserTf;
+    @FXML private TextField analysisRunTf;
+    @FXML private TextField analysisPathTf;
+    @FXML private TextField analysisVCFTf;
+    @FXML private TextField analysisBAMTf;
+    @FXML private TextField analysisDepthTf;
+    @FXML private TextField paramsNameTf;
+    @FXML private TextField paramsGenomeTf;
+    @FXML private TextField paramsPanelTf;
+    @FXML private TextField paramsHotspotsTf;
+    @FXML private TextField paramsGenesTf;
+    @FXML private TextField paramsMinDepthTf;
+    @FXML private TextField paramsWarningDepthTf;
+    @FXML private TextField paramsMinVafTf;
+    @FXML private TextField paramsLibraryTf;
+    @FXML private CustomTextField searchInVCFTf;
+    @FXML private TextArea vcfHeaderTa;
+
+    private final Analysis analysis;
+
+    private VCFFileReader reader;
+    private String vcfHeader;
+    private VCFEncoder encoder;
+
+    public AnalysisViewMetaDataController(Analysis analysis) {
+        this.analysis = analysis;
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewMetaData.fxml"), App.getBundle());
+            fxml.setRoot(this);
+            fxml.setController(this);
+            fxml.load();
+        } catch (IOException e) {
+            logger.error(e);
+            Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
+        }
+        initView();
+    }
+
+    private void initView() {
+        analysisNameTf.setText(analysis.getName());
+        analysisSampleNameTf.setText(analysis.getSampleName());
+        analysisDateTf.setText(DateFormatterUtils.formatLocalDateTime(analysis.getCreationDate(), "dd/MM/yyyy à HH:ss"));
+        analysisUserTf.setText(analysis.getCreationUser());
+        analysisRunTf.setText(analysis.getRun().getName());
+        analysisPathTf.setText(analysis.getDirectoryPath());
+        analysisVCFTf.setText(analysis.getVcfFile().getAbsolutePath());
+        analysisBAMTf.setText(analysis.getBamFile() == null ? "na" : analysis.getBamFile().getAbsolutePath());
+        analysisDepthTf.setText(analysis.getDepthFile() == null ? "na" : analysis.getDepthFile().getAbsolutePath());
+        paramsNameTf.setText(analysis.getAnalysisParameters().getAnalysisName());
+        paramsGenomeTf.setText(analysis.getAnalysisParameters().getGenome().getName());
+        paramsPanelTf.setText(analysis.getAnalysisParameters().getPanel().getName());
+        paramsGenesTf.setText(analysis.getAnalysisParameters().getGeneSet().getName());
+        paramsHotspotsTf.setText(analysis.getAnalysisParameters().getHotspotsSet() == null ? "" : analysis.getAnalysisParameters().getHotspotsSet().getName());
+        paramsMinDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinDepth()));
+        paramsWarningDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getWarningDepth()));
+        paramsMinVafTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinVAF()));
+        paramsLibraryTf.setText(analysis.getAnalysisParameters().getTargetEnrichment().name());
+
+        if (analysis.getVcfFile().exists()) {
+            try {
+                reader = VCFUtils.getVCFReader(analysis.getVcfFile());
+                vcfHeader = VCFUtils.getVcfHeader(reader);
+                encoder = new VCFEncoder(reader.getHeader(), true, true);
+                vcfHeaderTa.setText(vcfHeader);
+            } catch (IOException e) {
+                logger.error(e);
+                vcfHeaderTa.setText(null);
+                Message.error(e.getMessage(), e);
+            }
+        }
+    }
+
+
+    @FXML
+    private void searchInVCF() {
+        if (StringUtils.isBlank(searchInVCFTf.getText())) {
+            vcfHeaderTa.setText(vcfHeader);
+        } else {
+            try {
+                StringJoiner searchRslt = new StringJoiner("\n");
+                SearchQuery searchQuery = parseQuery(searchInVCFTf.getText());
+                CloseableIterator<VariantContext> it = reader.query(searchQuery.getContig(), searchQuery.getStart(), searchQuery.getEnd());
+                if (it.hasNext()) {
+                    while (it.hasNext()) {
+                        VariantContext ctx = it.next();
+                        if (searchQuery.getRef() != null) {
+                            if (ctx.getReference().basesMatch(searchQuery.getRef())) {
+                                if (searchQuery.getRef() != null) {
+                                    if (searchQuery.getAlt() != null) {
+                                        if (ctx.getAlternateAllele(0).basesMatch(searchQuery.getAlt())) {
+                                            searchRslt.add(encoder.encode(ctx));
+                                        }
+                                    } else {
+                                        searchRslt.add(encoder.encode(ctx));
+                                    }
+                                } else {
+                                    searchRslt.add(encoder.encode(ctx));
+                                }
+                            }
+                        } else {
+                            searchRslt.add(encoder.encode(ctx));
+                        }
+                    }
+                } else {
+                    searchRslt.add("No variant found.");
+                }
+                vcfHeaderTa.setText(searchRslt.toString());
+
+            } catch (MalformedSearchQuery e) {
+                logger.error(e);
+                Message.error(e.getMessage(), e);
+            }
+        }
+    }
+
+
+    private SearchQuery parseQuery(String query) throws MalformedSearchQuery {
+        if (StringUtils.isBlank(query)) {
+            throw new MalformedSearchQuery("Query is blank");
+        } else {
+            String[] searchTks = query.split("-");
+            if (searchTks.length < 2 || searchTks.length > 4) {
+                throw new MalformedSearchQuery("Malformed query : " + query);
+            } else {
+                if (!NumberUtils.isInt(searchTks[1])) {
+                    throw new MalformedSearchQuery("Invalid Position in query : " + query);
+                } else {
+                    String contig = searchTks[0];
+                    int start = Integer.parseInt(searchTks[1]);
+                    SearchQuery searchQuery = new SearchQuery(contig, start);
+                    if (searchTks.length > 2) {
+                        if (NumberUtils.isInt(searchTks[2])) {
+                            searchQuery.setEnd(Integer.parseInt(searchTks[2]));
+                        } else {
+                            searchQuery.setEnd(start);
+                            searchQuery.setRef(searchTks[2]);
+                        }
+                    } else {
+                        searchQuery.setEnd(start);
+                    }
+                    if (searchTks.length > 3) {
+                        searchQuery.setAlt(searchTks[3]);
+                    }
+                    return searchQuery;
+                }
+            }
+        }
+    }
+
+    private static class SearchQuery {
+        private String contig;
+        private int start;
+        private int end;
+        private String ref;
+        private String alt;
+
+        public SearchQuery(String contig, int start) {
+            this.contig = contig;
+            this.start = start;
+        }
+
+        public String getContig() {return contig;}
+
+        public void setContig(String contig) {
+            this.contig = contig;
+        }
+
+        public int getStart() {return start;}
+
+        public void setStart(int start) {
+            this.start = start;
+        }
+
+        public int getEnd() {return end;}
+
+        public void setEnd(int end) {
+            this.end = end;
+        }
+
+        public String getRef() {return ref;}
+
+        public void setRef(String ref) {
+            this.ref = ref;
+        }
+
+        public String getAlt() {return alt;}
+
+        public void setAlt(String alt) {
+            this.alt = alt;
+        }
+
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .append("contig", contig)
+                    .append("start", start)
+                    .append("end", end)
+                    .append("ref", ref)
+                    .append("alt", alt)
+                    .toString();
+        }
+    }
+}

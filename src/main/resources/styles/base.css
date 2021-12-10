@@ -1,65 +1,56 @@
 
 @font-face {
-    font-family: 'Roboto Bold';
-    src: url('../fonts/Roboto-Bold.ttf');
+    font-family: 'Ubuntu Bold';
+    src: url('../fonts/Ubuntu-Bold.ttf');
 }
 
 @font-face {
-    font-family: 'Roboto Light';
-    src: url('../fonts/Roboto-Light.ttf');
+    font-family: 'Ubuntu Light';
+    src: url('../fonts/Ubuntu-Light.ttf');
 }
 
 @font-face {
-    font-family: 'Roboto Medium';
-    src: url('../fonts/Roboto-Medium.ttf');
+    font-family: 'Ubuntu Medium';
+    src: url('../fonts/Ubuntu-Medium.ttf');
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/Roboto-Regular.ttf');
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
 }
 
 @font-face {
-    font-family: 'Roboto Mono';
-    src: url('../fonts/RobotoMono-Regular.ttf');
+    font-family: 'Ubuntu Mono';
+    src: url('../fonts/UbuntuMono-Regular.ttf');
 }
 
-@font-face {
-    font-family: 'Roboto Mono Medium';
-    src: url('../fonts/RobotoMono-Medium.ttf');
-}
-
-@font-face {
-    font-family: 'Roboto Mono SemiBold';
-    src: url('../fonts/RobotoMono-SemiBold.ttf');
-}
 
 .font-light {
-    -fx-font-family: 'Roboto Light' !important;
+    -fx-font-family: 'Ubuntu Light' !important;
 }
 
 .font-regular {
-    -fx-font-family: 'Roboto' !important;
+    -fx-font-family: 'Ubuntu' !important;
 }
 
 .font-medium {
-    -fx-font-family: 'Roboto Medium' !important;
+    -fx-font-family: 'Ubuntu Medium' !important;
 }
 
 .font-bold {
-    -fx-font-family: 'Roboto Bold' !important;
+    -fx-font-family: 'Ubuntu Bold' !important;
 }
 
 .font-mono {
-    -fx-font-family: 'Roboto Mono';
+    -fx-font-family: 'Ubuntu Mono';
 }
 
 .font-mono-medium {
-    -fx-font-family: 'Roboto Mono Medium' !important;
+    -fx-font-family: 'Ubuntu Mono Medium' !important;
 }
 
 .font-mono-semibold {
-    -fx-font-family: 'Roboto Mono SemiBold' !important;
+    -fx-font-family: 'Ubuntu Mono SemiBold' !important;
 }
 
 
@@ -153,12 +144,12 @@ totally specific, always using direct child, and cover all cases, which would be
 /*====================== Label ===========================*/
 .label {
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
 }
 
 /*====================== Text ===========================*/
 Text {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-fill: text_color;
 }
 
@@ -168,12 +159,12 @@ Text {
 
 .label.header, .label.header .text {
     -fx-font-size: 3.5em;
-    -fx-font-family: "Roboto Light";
+    -fx-font-family: "Ubuntu Light";
 }
 
 .label.item-title, .label.item-title .text {
     -fx-font-size: 1em;
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
 }
 
 /*******************************************************************************
@@ -195,7 +186,7 @@ Text {
     -fx-background-insets: 0;
     -fx-background-color: button_background_color;
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em; /* 12 */
     -fx-text-fill: text_color;
 }
@@ -248,6 +239,8 @@ Button {
 .button:default:pressed {
     -fx-background-color: derive(accent_color, -40%);
 }
+
+
 
 /**************************** Toggle Button ***********************************/
 .toggle-button {
@@ -555,7 +548,7 @@ Button {
 
     -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em;  /*4 8 4 8 */
 
-    -fx-font-family: "Roboto Light";
+    -fx-font-family: "Ubuntu Light";
     -fx-text-fill: text_color;
     -fx-font-size: 1.166667em; /* 14 */
 
@@ -777,7 +770,7 @@ Button {
 /**************************** Scroll Pane *************************************/
 
 .scroll-pane {
-    -fx-background-color: transparent, transparent;
+    -fx-background-color: transparent, transparent, transparent;
 }
 
 .scroll-pane .corner {
@@ -787,7 +780,7 @@ Button {
 }
 
 .scroll-pane > .viewport {
-    -fx-background-color: scroll_pane_background_color;
+    -fx-background-color: transparent;
 }
 
 /* Corner of "ScrollPane" when in a VirtualFlow (it's not exactly a ScrollPane but has the same appearance) */
@@ -809,7 +802,7 @@ Button {
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em; /* 2 2px 2 2px*/
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em; /* 12 */
 }
 
@@ -867,7 +860,7 @@ Button {
 }
 
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em;
     -fx-padding: 0.333333em 0 0.333333em 0.416667em; /* 4 0 4 5 */
 
@@ -987,8 +980,9 @@ Button {
    TextField which will cause an IllegalArgumentException when creating the impl.jfxtras.styles.jmetro.TextFieldSkin object and passing it,
    for instance, the WebColorField */
 TextField {
-    /*-fx-skin: "ngsdiaglim.skins.TextFieldSkin";/*
+    /*-fx-skin: "ngsdiaglim.skins.TextFieldSkin";*/
     -right-button-visible: true;
+    -fx-font-family: 'Ubuntu';
 }
 
 .text-field > .right-button > .right-button-graphic {
@@ -1105,6 +1099,7 @@ TextField {
 }
 
 /* Indeterminate */
+/*
 .progress-bar:indeterminate > .track {
     -fx-background-color: transparent;
 }
@@ -1114,7 +1109,7 @@ TextField {
     -fx-padding: 0.166667em;
 
     -fx-background-color: dot_color;
-}
+}*/
 
 /*******************************************************************************
  *                                                                             *
@@ -1367,7 +1362,7 @@ TextField {
     -fx-background-color: cell_background_color;
     -fx-background-insets: 0;
 
-    -fx-font-family: "Roboto Light";
+    -fx-font-family: "Ubuntu Light";
     -fx-font-size: 1.083333em;
 }
 
@@ -1430,7 +1425,7 @@ TextField {
 .date-picker-popup > * > .day-name-cell,
 .date-picker-popup > * > .week-number-cell {
     -fx-font-size: 0.75em;
-    -fx-font-family: "Roboto Light";
+    -fx-font-family: "Ubuntu Light";
     -fx-text-fill: text_color;
 
     -fx-background-color: transparent;
@@ -1481,7 +1476,7 @@ TextField {
     -fx-background-radius: 0, 0, 0, 0;
     -fx-padding: 0.166667em 0.166667em 0.166667em 0.166667em; /* 2 2 2 2*/
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em; /* 12 */
 }
 
@@ -1543,7 +1538,7 @@ TextField {
 
 .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-padding: 0.666667em 1em 0.666667em 1em; /* 8 12 8 12 */
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-text-fill: text_color;
 }
 
@@ -1615,7 +1610,7 @@ TextField {
 
 .table-view .column-header .label{
     -fx-text-fill: text_color;
-    -fx-font-family: "Roboto Medium";
+    -fx-font-family: "Ubuntu Medium";
     -fx-font-size: 1em;  /* 12 */
     -fx-alignment: center-left;
 }
@@ -1666,7 +1661,7 @@ TextField {
 /********************************** Table View "body"  *************************************/
 
 .table-cell {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em;  /* 12 */
     -fx-alignment: center-left;
 
@@ -1836,7 +1831,7 @@ TextField {
 
 /********** Label **********/
 .tree-view .tree-cell .label{
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-padding: 0 0.25em 0 0; /* 0 3 0 0 */
 }
 
@@ -1928,7 +1923,7 @@ TextField {
  ******************************************************************************/
 
 .tree-table-view {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-background-color: table_border_color;
     -fx-border-color: table_border_color;
     -fx-table-cell-border-color: transparent;
@@ -2078,7 +2073,7 @@ TextField {
 
 .tree-table-view > .column-header-background > .nested-column-header > .table-column > .label,
 .tree-table-view > .column-header-background > .nested-column-header > .nested-column-header > .table-column > .label {
-    -fx-font-family: "Roboto Medium";
+    -fx-font-family: "Ubuntu Medium";
     -fx-text-fill: table_text_color;
     -fx-padding: 0.666667em; /* 8 */
     -fx-alignment: center-left;
@@ -2137,7 +2132,7 @@ TextField {
 .tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
     -fx-text-fill: tab_text_color;
     -fx-font-size: 1em; /* 12 */
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu Medium";
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:hover > .tab-container > .tab-label {
@@ -2156,7 +2151,7 @@ TextField {
     -fx-background-color:
             tab_pane_bottom_border_color,
             transparent,
-            tab_pane_background_color;
+            tab_pane_background_color !important;
     -fx-background-insets: 1 1 0 1, 0 0 1 0, 1;
 }
 
@@ -2228,7 +2223,7 @@ TextField {
 .menu-bar {
     -fx-background-color: background_color;
     -fx-background-insets: 0 0 0 0;
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
 }
 
 .menu-bar > .container {
@@ -2261,7 +2256,6 @@ TextField {
 .menu-bar > .container > .menu-button:focused,
 .menu-bar > .container > .menu-button:showing {
     -fx-background-color: menu_button_hover_color;
-
 }
 
 .menu-bar > .container > .menu-button > .label,
@@ -2287,7 +2281,7 @@ TextField {
 .menu-item .label {
     -fx-padding: 0em 1.333333em 0em 0em; /* 0 16 0 0 */
     -fx-text-fill: text_color;
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em; /* 12 */
 }
 
@@ -2364,7 +2358,7 @@ TextField {
 .titled-pane > .title > .text {
     -fx-fill: text_color;
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1em; /* 12 */
 }
 
@@ -2467,7 +2461,7 @@ TextField {
 }
 .progress-indicator > .determinate-indicator > .percentage {
     -fx-fill: text_color;
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
 }
 .progress-indicator:indeterminate > .spinner {
     /** Applying to undo styling from .spinner, reported in RT-37965 */
@@ -2554,7 +2548,7 @@ TextField {
 }
 
 .menu-button > .label {
-    -fx-font-family: "Roboto Light";
+    -fx-font-family: "Ubuntu Light";
     -fx-font-size: 1em; /* 12 */
 
     -fx-text-fill: menu_button_text_color;
@@ -2595,7 +2589,7 @@ TextField {
     -fx-background-insets: 0;
     -fx-background-radius: 0;
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
 }
 
 .split-menu-button > .label {
@@ -2705,7 +2699,7 @@ TextField {
     -fx-background-insets: 0;
     -fx-background-color: button_background_color;
 
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-text-fill: text_color;
 }
 
@@ -2758,12 +2752,12 @@ TextField {
 }
 
 .dialog-pane:header .header-panel .label {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1.666667em; /* 20 */
 }
 
 .dialog-pane > .content.label {
-    -fx-font-family: "Roboto";
+    -fx-font-family: "Ubuntu";
     -fx-font-size: 1.166667em; /* 14 */
 }
 
@@ -3163,3 +3157,32 @@ TextField {
     -fx-padding: 8px;
     -fx-border-color: null;
 }
+
+.allCells {
+ 	-fx-font-size: 12px;
+ 	-fx-font-family: "Ubuntu Medium";
+ }
+
+ .delCell {
+ 	-fx-font-size: 12px;
+ 	-fx-background-color: #f99e1cff;
+ 	-fx-text-fill: white;
+ }
+
+ .delCellLight {
+ 	-fx-font-size: 12px;
+ 	-fx-background-color: #f99e1c8a;
+ 	-fx-text-fill: white;
+ }
+
+ .dupCell {
+ 	-fx-font-size: 12px;
+ 	-fx-background-color: #e24545ff;
+ 	-fx-text-fill: white;
+ }
+
+ .dupCellLight {
+ 	-fx-font-size: 12px;
+ 	-fx-background-color: #e245458a;
+ 	-fx-text-fill: white;
+ }

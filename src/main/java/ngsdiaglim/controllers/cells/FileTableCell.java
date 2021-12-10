@@ -24,7 +24,7 @@ public class FileTableCell<T> extends TableCell<T, File> {
 
     @Override
     protected void updateItem(File item, boolean empty) {
-
+        super.updateItem(item, empty);
         if (item == null || empty) {
             setText(null);
             setGraphic(null);

@@ -12,6 +12,8 @@ public class ImportAnalysisStateTableCell extends TableCell<AnalysisInputData, A
 
     @Override
     protected void updateItem(AnalysisInputData.AnalysisInputState item, boolean empty) {
+        super.updateItem(item, empty);
+
         setText(null);
         setGraphic(null);
         getStyleClass().remove("error-tablerow");

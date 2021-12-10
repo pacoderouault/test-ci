@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox spacing="5.0" styleClass="commentary-box" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="commentary-box-header">
+         <children>
+            <Label fx:id="usernameLb" styleClass="font-medium" text="Label" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="dateLb" styleClass="font-light" text="Label" />
+            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#editComment" styleClass="button-action-cell">
+               <graphic>
+                  <FontIcon iconLiteral="mdal-edit" />
+               </graphic>
+            </Button>
+            <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#deleteComment" styleClass="button-action-cell">
+               <graphic>
+                  <FontIcon iconLiteral="mdal-delete_forever" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <Label fx:id="commentLb" text="Label" wrapText="true" />
+   </children>
+</VBox>

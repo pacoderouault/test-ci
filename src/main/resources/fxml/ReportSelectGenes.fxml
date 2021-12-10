@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.ListSelectionView?>
+
+<fx:root prefWidth="800.0" styleClass="module-box" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox styleClass="module-box-header">
+         <children>
+            <Label text="%analysisviewreports.selectgenes.title" />
+         </children>
+      </HBox>
+      <VBox spacing="5.0" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+         <children>
+            <HBox spacing="30.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Label text="%analysisviewreports.selectgenes.lb.panels" />
+                        <ComboBox fx:id="panelCb" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Label text="%analysisviewreports.selectgenes.lb.gene" />
+                        <TextField fx:id="geneFilterTf" />
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <ListSelectionView fx:id="genesListView" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+   </children>
+</fx:root>

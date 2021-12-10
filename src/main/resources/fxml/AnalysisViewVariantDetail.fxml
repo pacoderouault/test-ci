@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.ToggleSwitch?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root fitToWidth="true" pannable="true" styleClass="variantDetail" type="ScrollPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <HBox fx:id="test" spacing="5.0">
+         <children>
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox spacing="20.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.cytoband" />
+                              <TextField fx:id="cytobandTf" editable="false" styleClass="textfield-label" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gene" />
+                              <TextField fx:id="geneTf" editable="false" styleClass="textfield-label" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.transcript" />
+                              <CustomTextField fx:id="transcriptTf" editable="false">
+                                 <styleClass>
+                                    <String fx:value="textfield-label" />
+                                    <String fx:value="font-regular" />
+                                 </styleClass>
+                              </CustomTextField>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.genomevar" />
+                              <TextField fx:id="positionTf" editable="false" styleClass="textfield-label" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.hgvsc" />
+                              <TextField fx:id="hgvscTf" editable="false" styleClass="textfield-label" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.hgvsp" />
+                              <TextField fx:id="hgvspTf" editable="false" styleClass="textfield-label" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.flankingsequences" />
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <TextField fx:id="leftSeqTf" editable="false" prefWidth="40.0" styleClass="textfield-label" />
+                                    <VBox>
+                                       <children>
+                                          <TextField fx:id="alt1SeqTf" editable="false" prefWidth="10.0" styleClass="textfield-label" />
+                                          <TextField fx:id="alt2SeqTf" editable="false" prefWidth="10.0" styleClass="textfield-label" />
+                                       </children>
+                                    </VBox>
+                                    <TextField fx:id="rightSeqTf" editable="false" prefWidth="40.0" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.consequence" />
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="consequencesTf" editable="false" styleClass="textfield-label" />
+                                    <Button fx:id="showEnsemblConsequencesBtn" mnemonicParsing="false" onAction="#showEnsemblConsequencesDialog" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-help_outline" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="module-box" />
+                        <String fx:value="module-box-container" />
+                     </styleClass>
+                  </HBox>
+                  <HBox spacing="5.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox minWidth="280.0" prefWidth="280.0" HBox.hgrow="NEVER">
+                           <styleClass>
+                              <String fx:value="module-box" />
+                              <String fx:value="module-box-container" />
+                           </styleClass>
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <VBox spacing="3.0">
+                                       <children>
+                                          <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.metrics" />
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.depth" />
+                                                <TextField fx:id="depthTf" editable="false" styleClass="textfield-label" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                             <children>
+                                                <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.alleledepth" />
+                                                <TextField fx:id="alleleDepthTf" editable="false" styleClass="textfield-label" />
+                                                <Button mnemonicParsing="false" onAction="#showVafScatterPlot">
+                                                   <styleClass>
+                                                      <String fx:value="button-action-cell" />
+                                                      <String fx:value="button-small" />
+                                                   </styleClass>
+                                                   <graphic>
+                                                      <FontIcon iconLiteral="mdmz-scatter_plot" />
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                          <AnchorPane fx:id="alleleDepthChartAp" prefHeight="40.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.clinvar">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label fx:id="clinvarLb" text="Label" wrapText="true" />
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.externalVariations">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <FlowPane fx:id="externalVariationsContainer" hgap="5.0" vgap="5.0" />
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.pubmeds">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <FlowPane fx:id="pubmedIdsContainer" hgap="5.0" vgap="5.0" />
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="280.0" minWidth="280.0" prefWidth="280.0" HBox.hgrow="NEVER">
+                           <styleClass>
+                              <String fx:value="module-box" />
+                              <String fx:value="module-box-container" />
+                           </styleClass>
+                           <children>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.predictions" />
+                                    <Button mnemonicParsing="false" onAction="#showPredictionsDetalDialog" styleClass="button-action-cell" text="%analysisview.variantdetail.btn.predictionsdetail" />
+                                 </children>
+                              </HBox>
+                              <AnchorPane fx:id="predictionChartAp" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="280.0" minWidth="280.0" prefWidth="280.0" spacing="3.0" HBox.hgrow="NEVER">
+                           <styleClass>
+                              <String fx:value="module-box" />
+                              <String fx:value="module-box-container" />
+                           </styleClass>
+                           <children>
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.frequencies" />
+                              <HBox alignment="CENTER_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.indatabase" />
+                                    <TextField fx:id="databaseFqTf" editable="false" styleClass="textfield-label" />
+                                    <Button fx:id="showSameVariantsBtn" mnemonicParsing="false" onAction="#showSharingVariantDialog">
+                                       <styleClass>
+                                          <String fx:value="button-small" />
+                                          <String fx:value="button-action-cell" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdmz-supervisor_account" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.inrun" />
+                                    <TextField fx:id="runFqTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomadMax" />
+                                    <TextField fx:id="gnomadMaxTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.gnomadDetail">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.afr" />
+                                    <TextField fx:id="gnomadAfricanTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.asj" />
+                                    <TextField fx:id="gnomadJewishTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.eas" />
+                                    <TextField fx:id="gnomadEastAsianTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.sas" />
+                                    <TextField fx:id="gnomadSouthAsianTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.nfe" />
+                                    <TextField fx:id="gnomadEuropenan_nonFTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.fin" />
+                                    <TextField fx:id="gnomadEuropean_FTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.amr" />
+                                    <TextField fx:id="gnomadLatinoTf" editable="false" styleClass="textfield-label" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="NEVER">
+                           <styleClass>
+                              <String fx:value="module-box" />
+                              <String fx:value="module-box-container" />
+                           </styleClass>
+                           <children>
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.hotspot" />
+                              <TextField fx:id="hotspotTf" editable="false" styleClass="textfield-label" />
+                              <TextField fx:id="hotspotPositionTf" editable="false" styleClass="textfield-label" />
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.pathogenicity">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="pathogenicityTf" editable="false" styleClass="textfield-label" />
+                                    <Button fx:id="editPathogenicityBtn" mnemonicParsing="false" onAction="#editPathogenicity" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-edit" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="falsePositiveTf" editable="false" styleClass="textfield-label" text="%analysisview.variantdetail.lb.falsepositive" />
+                                    <Button fx:id="editFalsePositiveBtn" mnemonicParsing="false" onAction="#editFalsePositive" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-edit" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.sangerstate">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="sangerStateTf" editable="false" styleClass="textfield-label" />
+                                    <Button fx:id="editSangerStateBtn" mnemonicParsing="false" onAction="#editSangerState" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-edit" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <ToggleSwitch fx:id="addToReportTs" text="%analysisview.variantdetail.lb.addToReport">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </ToggleSwitch>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="module-box" />
+                              <String fx:value="module-box-container" />
+                           </styleClass>
+                           <children>
+                              <StackPane alignment="TOP_LEFT" minWidth="430.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <TabPane fx:id="commentariesTabpane" nodeOrientation="RIGHT_TO_LEFT" tabClosingPolicy="UNAVAILABLE">
+                                       <tabs>
+                                          <Tab closable="false" text="%analysisview.variantdetail.lb.specific">
+                                             <content>
+                                                <VBox nodeOrientation="LEFT_TO_RIGHT">
+                                                   <children>
+                                                      <ListView fx:id="annotationCommentaryLv" prefHeight="200.0" VBox.vgrow="ALWAYS" />
+                                                      <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                                                         <children>
+                                                            <Button fx:id="addAnnotationCommentaryBtn" mnemonicParsing="false" onAction="#addAnnotationCommentary" text="%analysisview.variantdetail.btn.addcomment" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets top="5.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </Tab>
+                                          <Tab fx:id="variantCommentTab" closable="false" text="%analysisview.variantdetail.lb.variant">
+                                             <content>
+                                                <VBox nodeOrientation="LEFT_TO_RIGHT">
+                                                   <children>
+                                                      <ListView fx:id="variantCommentaryLv" prefHeight="200.0" VBox.vgrow="ALWAYS" />
+                                                      <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                                                         <children>
+                                                            <Button fx:id="addVariantCommentaryBtn" mnemonicParsing="false" onAction="#addVariantCommentary" text="%analysisview.variantdetail.btn.addcomment" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets top="5.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </Tab>
+                                       </tabs>
+                                    </TabPane>
+                                    <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.comment" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox minWidth="125.0" spacing="3.0" HBox.hgrow="SOMETIMES">
+               <styleClass>
+                  <String fx:value="module-box" />
+                  <String fx:value="module-box-container" />
+               </styleClass>
+               <children>
+                  <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.outlinks" />
+                  <Button fx:id="igvLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.igv">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="gnomadLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.gnomad">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="clinvarLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.clinvar">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="dbsnpLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.dbSNP">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="ensemblLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.ensembl">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="cosmicLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.cosmic">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="cosmicGeneViewerLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.cosmicgeneview">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="varsomeLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.varsome">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="lovdLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.lovd">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="oncoKbLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.oncokb">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="intogenLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.intogen">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="alamutLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.alamut">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </content>
+</fx:root>

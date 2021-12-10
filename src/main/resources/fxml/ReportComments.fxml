@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<fx:root spacing="30.0" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="30.0">
+         <children>
+            <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
+               <children>
+                  <HBox styleClass="module-box-header">
+                     <children>
+                        <Label text="%analysisviewreports.reportcomments.lb.Comments" />
+                     </children>
+                  </HBox>
+                  <Accordion styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <panes>
+                      <TitledPane animated="false" text="%analysisviewreports.reportcomments.lb.genesComments">
+                        <content>
+                              <VBox alignment="TOP_RIGHT" spacing="5.0">
+                                 <children>
+                                    <Button defaultButton="true" mnemonicParsing="false" onAction="#addGeneComment" text="%analysisviewreports.reportcomments.btn.addgeneComment" />
+                                    <TableView fx:id="reportGeneCommentaryTable">
+                                      <columns>
+                                        <TableColumn fx:id="reportGeneCommentaryGeneCol" prefWidth="200.0" text="%analysisviewreports.reportcomments.col.genetable.gene" />
+                                        <TableColumn fx:id="reportGeneCommentaryTitleCol" prefWidth="400.0" text="%analysisviewreports.reportcomments.col.genetable.title" />
+                                          <TableColumn fx:id="reportGeneCommentaryActionsCol" prefWidth="150.0" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="%analysisviewreports.reportcomments.lb.mutationComments">
+                           <content>
+                              <VBox alignment="TOP_RIGHT" spacing="5.0">
+                                 <children>
+                                    <Button defaultButton="true" mnemonicParsing="false" onAction="#addMutationComment" text="%analysisviewreports.reportcomments.btn.addgeneComment" />
+                                    <TableView fx:id="reportMutCommentaryTable">
+                                       <columns>
+                                          <TableColumn fx:id="reportMutCommentaryMutCol" prefWidth="200.0" text="%analysisviewreports.reportcomments.col.muttable.gene" />
+                                          <TableColumn fx:id="reportMutCommentaryTitleCol" prefWidth="400.0" text="%analysisviewreports.reportcomments.col.muttable.title" />
+                                          <TableColumn fx:id="reportMutCommentaryActionsCol" prefWidth="150.0" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="%analysisviewreports.reportcomments.lb.otherComments">
+                           <content>
+                              <VBox alignment="TOP_RIGHT" spacing="5.0">
+                                 <children>
+                                    <Button defaultButton="true" mnemonicParsing="false" onAction="#addOtherComment" text="%analysisviewreports.reportcomments.btn.addgeneComment" />
+                                    <TableView fx:id="reportOtherCommentaryTable">
+                                       <columns>
+                                          <TableColumn fx:id="reportOtherCommentaryTitleCol" prefWidth="600.0" text="%analysisviewreports.reportcomments.col.othertable.title" />
+                                          <TableColumn fx:id="reportOtherCommentaryActionsCol" prefWidth="150.0" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                      </TitledPane>
+                    </panes>
+                  </Accordion>
+               </children>
+            </VBox>
+            <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
+               <children>
+                  <HBox styleClass="module-box-header">
+                     <children>
+                        <Label text="%analysisviewreports.reportcomments.lb.selectedComments" />
+                     </children>
+                  </HBox>
+                  <HBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="selectedCommentaryTable" HBox.hgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="selectedCommentaryTitleCol" prefWidth="400.0" text="%analysisviewreports.reportcomments.col.selectedtable.title" />
+                            <TableColumn fx:id="selectedCommentaryActionsCol" prefWidth="200.0" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <VBox styleClass="module-box">
+         <children>
+            <HBox styleClass="module-box-header">
+               <children>
+                  <Label text="%analysisviewreports.reportcomments.lb.preview">
+                     <styleClass>
+                        <String fx:value="font-medium" />
+                        <String fx:value="font-big-size" />
+                     </styleClass>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox styleClass="module-box-container">
+               <children>
+                  <TextArea fx:id="previewTa" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <styleClass>
+      <String fx:value="module-box" />
+      <String fx:value="module-box-container" />
+   </styleClass>
+</fx:root>

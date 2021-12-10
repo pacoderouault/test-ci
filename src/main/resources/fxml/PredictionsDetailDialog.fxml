@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<VBox fx:id="dialogContainer" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="5.0">
+         <children>
+            <Label text="%predictionsdetaildialog.lb.variant">
+               <styleClass>
+                  <String fx:value="font-medium" />
+                  <String fx:value="font-big-size" />
+               </styleClass>
+            </Label>
+            <TextField fx:id="variantTf" styleClass="textfield-label" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <GridPane hgap="5.0" vgap="5.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="%predictionsdetaildialog.lb.tools">
+               <styleClass>
+                  <String fx:value="font-medium" />
+                  <String fx:value="font-big-size" />
+               </styleClass>
+            </Label>
+            <Label text="%predictionsdetaildialog.lb.scores" GridPane.columnIndex="1">
+               <styleClass>
+                  <String fx:value="font-medium" />
+                  <String fx:value="font-big-size" />
+               </styleClass>
+            </Label>
+            <Label contentDisplay="RIGHT" text="SIFT" GridPane.rowIndex="1">
+               <graphic>
+                  <FontIcon fx:id="siftHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="siftScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label contentDisplay="RIGHT" text="Polyphen2 HVAR" GridPane.rowIndex="2">
+               <graphic>
+                  <FontIcon fx:id="polyphen2HvarHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="polyphen2HvarScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label contentDisplay="RIGHT" text="Polyphen2 HDIV" GridPane.rowIndex="3">
+               <graphic>
+                  <FontIcon fx:id="polyphen2HdivHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="polyphen2HdivScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label contentDisplay="RIGHT" text="CADD raw" GridPane.rowIndex="4">
+               <graphic>
+                  <FontIcon fx:id="caddRawHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="caddRawScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label contentDisplay="RIGHT" text="CADD phred" GridPane.rowIndex="5">
+               <graphic>
+                  <FontIcon fx:id="caddPhredHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="caddPhredScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label contentDisplay="RIGHT" text="REVEL" GridPane.rowIndex="6">
+               <graphic>
+                  <FontIcon fx:id="revelHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="revelScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label contentDisplay="RIGHT" text="MVP" GridPane.rowIndex="7">
+               <graphic>
+                  <FontIcon fx:id="mvpHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="mvpScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Label contentDisplay="RIGHT" text="GERP++" GridPane.rowIndex="8">
+               <graphic>
+                  <FontIcon fx:id="gerpHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <TextField fx:id="gerpScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label contentDisplay="RIGHT" text="SpliceAI" GridPane.rowIndex="9">
+               <graphic>
+                  <FontIcon fx:id="splieAIHelp" iconLiteral="mdal-help_outline" />
+               </graphic>
+            </Label>
+            <Label contentDisplay="RIGHT" text="Donor Loss" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <Label contentDisplay="RIGHT" text="Donnor Gain" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <Label contentDisplay="RIGHT" text="Acceptor Gain" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <Label contentDisplay="RIGHT" text="Acceptor Loss" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <TextField fx:id="spliceAIDGPosTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+            <TextField fx:id="spliceAIDGScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="3" GridPane.rowIndex="10" />
+            <TextField fx:id="spliceAIDLPosTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+            <TextField fx:id="spliceAIDLScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="3" GridPane.rowIndex="11" />
+            <TextField fx:id="spliceAIAGPosTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="12" />
+            <TextField fx:id="spliceAIAGScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="3" GridPane.rowIndex="12" />
+            <TextField fx:id="spliceAIALPosTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="13" />
+            <TextField fx:id="spliceAIALScoreTf" editable="false" prefWidth="120.0" GridPane.columnIndex="3" GridPane.rowIndex="13" />
+            <Label styleClass="font-medium" text="%predictionsdetaildialog.lb.type" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <Label styleClass="font-medium" text="%predictionsdetaildialog.lb.position" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+            <Label styleClass="font-medium" text="%predictionsdetaildialog.lb.score" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+            <Label text="%predictionsdetaildialog.lb.predictions" GridPane.columnIndex="2">
+               <styleClass>
+                  <String fx:value="font-medium" />
+                  <String fx:value="font-big-size" />
+               </styleClass>
+            </Label>
+            <TextField fx:id="siftPredTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="polyphen2HvarPredTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="polyphen2HdivPredTf" editable="false" prefWidth="120.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+   </children>
+</VBox>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox fx:id="dialogContainer" fillWidth="false" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="5.0">
+            <children>
+                <Label text="%predictionsdetaildialog.lb.variant">
+                    <styleClass>
+                        <String fx:value="font-medium" />
+                        <String fx:value="font-big-size" />
+                    </styleClass>
+                </Label>
+                <TextField fx:id="variantTf" styleClass="textfield-label" HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
+        <HBox spacing="5.0">
+            <children>
+                <VBox styleClass="module-box">
+                    <children>
+                        <HBox styleClass="module-box-header">
+                            <children>
+                                <Label text="%predictionsdetaildialog.lb.cons">
+                                    <styleClass>
+                                        <String fx:value="font-medium" />
+                                        <String fx:value="font-big-size" />
+                                    </styleClass>
+                                </Label>
+                            </children>
+                        </HBox>
+                        <GridPane fx:id="conservationGridPane" hgap="5.0" styleClass="module-box-container" vgap="5.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                <ColumnConstraints minWidth="10.0" />
+                                <ColumnConstraints minWidth="10.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <Label contentDisplay="RIGHT" text="GERP++" GridPane.rowIndex="1">
+                                    <graphic>
+                                        <FontIcon fx:id="gerpHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="gerpScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                <Label contentDisplay="RIGHT" text="PhastCons100Way Vertebrate" GridPane.rowIndex="2">
+                                    <graphic>
+                                        <FontIcon fx:id="phastCons100WayHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="phastCons100WayScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                <Label contentDisplay="RIGHT" text="PhastCons30Way Mammalian" GridPane.rowIndex="3">
+                                    <graphic>
+                                        <FontIcon fx:id="phastCons30WayHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="phastCons30WayScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                <Label contentDisplay="RIGHT" text="PhyloP100Way Vertebrate" GridPane.rowIndex="4">
+                                    <graphic>
+                                        <FontIcon fx:id="phylop100WayHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <Label contentDisplay="RIGHT" text="PhyloP30Way Mammalianbel" GridPane.rowIndex="5">
+                                    <graphic>
+                                        <FontIcon fx:id="phylop30WayHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <Label contentDisplay="RIGHT" text="SiPhy" GridPane.rowIndex="6">
+                                    <graphic>
+                                        <FontIcon fx:id="siphyHelp" iconLiteral="mdal-help_outline" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="phylop100WayScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                <TextField fx:id="phylop30WayScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                <TextField fx:id="siphyScoreTf" editable="false" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                                <Label styleClass="font-medium" text="%predictionsdetaildialog.lb.tools" />
+                                <Label styleClass="font-medium" text="%predictionsdetaildialog.lb.scores" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+                            </children>
+                        </GridPane>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</VBox>

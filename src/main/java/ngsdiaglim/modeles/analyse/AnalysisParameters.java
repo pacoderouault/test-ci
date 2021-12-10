@@ -1,20 +1,27 @@
 package ngsdiaglim.modeles.analyse;
 
 import ngsdiaglim.enumerations.Genome;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import ngsdiaglim.enumerations.TargetEnrichment;
+import ngsdiaglim.modeles.biofeatures.GeneSet;
+import ngsdiaglim.modeles.variants.HotspotsSet;
 
 public class AnalysisParameters {
 
     private final long id;
-    private Genome genome;
-    private String analysisName;
-    private int warningDepth;
-    private int minDepth;
-    private float minVAF;
+    private final Genome genome;
+    private final String analysisName;
+    private final int warningDepth;
+    private final int minDepth;
+    private final float minVAF;
     private boolean isActive;
-    private Panel panel;
+    private final Panel panel;
+    private final GeneSet geneSet;
+    private final HotspotsSet hotspotsSet;
+    private final TargetEnrichment targetEnrichment;
 
-    public AnalysisParameters(long id, Genome genome, String analysisName, int warningDepth, int minDepth, float minVAF, boolean isActive, Panel panel) {
+    public AnalysisParameters(long id, Genome genome, String analysisName, int minDepth, int warningDepth,
+                              float minVAF, boolean isActive, Panel panel, GeneSet geneSet,
+                              HotspotsSet hotspotsSet, TargetEnrichment targetEnrichment) {
         this.id = id;
         this.genome = genome;
         this.analysisName = analysisName;
@@ -23,39 +30,22 @@ public class AnalysisParameters {
         this.minVAF = minVAF;
         this.isActive = isActive;
         this.panel = panel;
+        this.geneSet = geneSet;
+        this.hotspotsSet = hotspotsSet;
+        this.targetEnrichment = targetEnrichment;
     }
 
     public long getId() {return id;}
 
     public Genome getGenome() {return genome;}
 
-    public void setGenome(Genome genome) {
-        this.genome = genome;
-    }
-
     public String getAnalysisName() {return analysisName;}
-
-    public void setAnalysisName(String analysisName) {
-        this.analysisName = analysisName;
-    }
 
     public int getWarningDepth() {return warningDepth;}
 
-    public void setWarningDepth(int warningDepth) {
-        this.warningDepth = warningDepth;
-    }
-
     public int getMinDepth() {return minDepth;}
 
-    public void setMinDepth(int minDepth) {
-        this.minDepth = minDepth;
-    }
-
     public float getMinVAF() {return minVAF;}
-
-    public void setMinVAF(float minVAF) {
-        this.minVAF = minVAF;
-    }
 
     public boolean isActive() {return isActive;}
 
@@ -65,9 +55,11 @@ public class AnalysisParameters {
 
     public Panel getPanel() {return panel;}
 
-    public void setPanel(Panel panel) {
-        this.panel = panel;
-    }
+    public GeneSet getGeneSet() {return geneSet;}
+
+    public HotspotsSet getHotspotsSet() {return hotspotsSet;}
+
+    public TargetEnrichment getTargetEnrichment() {return targetEnrichment;}
 
     @Override
     public String toString() {

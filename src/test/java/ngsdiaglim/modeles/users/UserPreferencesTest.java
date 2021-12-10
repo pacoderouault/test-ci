@@ -3,6 +3,7 @@ package ngsdiaglim.modeles.users;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,10 +25,4 @@ class UserPreferencesTest {
 
     }
 
-    @Test
-    void getPreferencesAsString() {
-        String prefs2String = DefaultPreferencesEnum.FULL_SCREEN.name() + ":" + false + ";" + DefaultPreferencesEnum.INITIAL_DIR.name() + ":/path/to/dir";
-        UserPreferences prefs2 = new UserPreferences(prefs2String);
-        assertEquals(prefs2String, prefs2.getPreferencesAsString());
-    }
 }

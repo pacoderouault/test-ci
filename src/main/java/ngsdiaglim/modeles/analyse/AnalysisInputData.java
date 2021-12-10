@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class AnalysisInputData {
 
@@ -135,17 +136,25 @@ public class AnalysisInputData {
         this.state.set(state);
     }
 
+    private boolean invalidCharacterInAnalysisName() {
+        String[] invalidCharacters = new String[]{"/", "\\", ":", ">", "<", "\"", "|", "?", "*"};
+        return !Pattern.matches("[^\\.][\\dA-Za-z_\\-\\.]+[^\\.]", getAnalysisName());
+//        return ngsdiaglim.utils.StringUtils.stringContainsItemFromList(getAnalysisName(), invalidCharacters);
+    }
+
     public void computeState() {
         if (getAnalysisParameters() == null) state.setValue(AnalysisInputState.PARAMETERS_NULL);
         else if (getRun() == null) state.setValue(AnalysisInputState.RUN_NULL);
         else if (StringUtils.isBlank(getAnalysisName())) state.setValue(AnalysisInputState.NAME_NULL);
+        else if (invalidCharacterInAnalysisName()) state.setValue(AnalysisInputState.INVALID_CHARACTER);
+        else if (run.get().hasAnalysis(getAnalysisName())) state.setValue(AnalysisInputState.DUPLICATE_ANALYSIS);
         else if (StringUtils.isBlank(getSampleName())) state.setValue(AnalysisInputState.SAMPLENAME_NULL);
         else if (getVcfFile() == null || !getVcfFile().exists()) state.setValue(AnalysisInputState.VCF_NULL);
         else if (!VCFUtils.isVCFReadable(getVcfFile())) state.setValue(AnalysisInputState.VCF_INVALID);
         else if (getBamFile() != null && !BamUtils.isBamFile(getBamFile())) state.setValue(AnalysisInputState.BAM_INVALID);
         else {
             try {
-                if (getDepthFile() != null && !SamtoolsDepthParser.isDepthDile(getDepthFile())) state.setValue(AnalysisInputState.DEPTH_INVALID);
+                if (getDepthFile() != null && !SamtoolsDepthParser.isDepthFile(getDepthFile())) state.setValue(AnalysisInputState.DEPTH_INVALID);
                 else state.setValue(AnalysisInputState.VALID);
             } catch (IOException e) {
                 logger.error("Error when check samtools depth", e);
@@ -157,11 +166,13 @@ public class AnalysisInputData {
 
     public enum AnalysisInputState {
         RUN_NULL(App.getBundle().getString("importanalysesdialog.msg.state.runNull")),
+        DUPLICATE_ANALYSIS(App.getBundle().getString("importanalysesdialog.msg.state.duplicateAnalysisName")),
         VCF_NULL(App.getBundle().getString("importanalysesdialog.msg.state.vcfNull")),
         BAM_INVALID(App.getBundle().getString("importanalysesdialog.msg.state.bamInvalid")),
         VCF_INVALID(App.getBundle().getString("importanalysesdialog.msg.state.vcfInvalid")),
         DEPTH_INVALID(App.getBundle().getString("importanalysesdialog.msg.state.samdepthInvalid")),
         NAME_NULL(App.getBundle().getString("importanalysesdialog.msg.state.analysisnameNull")),
+        INVALID_CHARACTER(App.getBundle().getString("importanalysesdialog.msg.state.invalidCharacters")),
         SAMPLENAME_NULL(App.getBundle().getString("importanalysesdialog.msg.state.nameNull")),
         PARAMETERS_NULL(App.getBundle().getString("importanalysesdialog.msg.state.panelNull")),
         INVALID("NA"),

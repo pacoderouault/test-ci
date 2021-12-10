@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.ListSelectionView?>
+
+<fx:root prefWidth="800.0" spacing="10.0" styleClass="module-box" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox styleClass="module-box-header">
+         <children>
+            <Label text="%analysisviewreports.selectvariants.title" />
+         </children>
+      </HBox>
+      <VBox spacing="10.0" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+         <children>
+            <FlowPane hgap="10.0" vgap="10.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Label text="%analysisviewreports.selectvariants.lb.maxGnomad" />
+                        <TextField fx:id="gnomadFreqTf" prefWidth="50.0" text="0,01" />
+                     </children>
+                  </HBox>
+                  <CheckBox fx:id="exonicCb" mnemonicParsing="false" selected="true" text="%analysisviewreports.selectvariants.lb.exonic" />
+                  <CheckBox fx:id="intronicCb" mnemonicParsing="false" text="%analysisviewreports.selectvariants.lb.intronic" />
+                  <CheckBox fx:id="otherCb" mnemonicParsing="false" text="%analysisviewreports.selectvariants.lb.other" />
+               </children>
+            </FlowPane>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label text="%analysisviewreports.selectvariants.lb.gene" />
+                  <TextField fx:id="geneNameTf" />
+               </children>
+            </HBox>
+            <ListSelectionView fx:id="annotationListSelection" VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
+   </children>
+</fx:root>

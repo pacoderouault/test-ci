@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root spacing="5.0" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+      <children>
+      <SplitPane fx:id="splitPane" dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+         <items>
+            <VBox fx:id="tableContainer" spacing="5.0">
+               <children>
+                      <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+                          <HBox fx:id="tableMenuContainer" alignment="CENTER_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                  <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="SOMETIMES">
+                                      <children>
+                                          <Button fx:id="closeSearchBtn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#closeSearch" styleClass="button-action-cell">
+                                    <graphic>
+                                       <FontIcon iconLiteral="mdal-clear" />
+                                    </graphic>
+                                 </Button>
+                                          <CustomTextField fx:id="searchInTableTf" onAction="#searchInTable" prefWidth="500.0" promptText="search in table" HBox.hgrow="ALWAYS" />
+                                          <Button fx:id="prevSearchBtn" contentDisplay="GRAPHIC_ONLY" minWidth="-Infinity" mnemonicParsing="false" onAction="#prevSearchRslt" styleClass="button-action-cell">
+                                    <graphic>
+                                       <FontIcon iconLiteral="mdal-arrow_upward" />
+                                    </graphic>
+                                 </Button>
+                                          <Button fx:id="nextSearchBtn" contentDisplay="GRAPHIC_ONLY" minWidth="-Infinity" mnemonicParsing="false" onAction="#nextSearchRslt" styleClass="button-action-cell">
+                                    <graphic>
+                                       <FontIcon iconLiteral="mdal-arrow_downward" />
+                                    </graphic>
+                                 </Button>
+                                          <Label fx:id="searchResultLb" minWidth="-Infinity" HBox.hgrow="ALWAYS" />
+                                      </children>
+                                  </HBox>
+                                  <Region HBox.hgrow="ALWAYS" />
+                                  <Label minWidth="-Infinity" text="%analysisview.lb.userPanels" />
+                                  <ComboBox fx:id="panelsCb" minWidth="-Infinity" prefWidth="150.0" />
+                           <Button mnemonicParsing="false" onAction="#addPanelHandler" text="%analysisview.variants.btn.addGenesPanel" />
+                                  <Button alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#resetVariantSort" styleClass="button-link" text="%analysisview.variants.btn.resetSorting">
+                              <graphic>
+                                 <FontIcon iconLiteral="mdal-autorenew" iconSize="16" />
+                              </graphic>
+                           </Button>
+                           <Button alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#exportTableHandler" styleClass="button-link" text="%analysisview.exporttable.btn.export">
+                              <graphic>
+                                 <FontIcon iconLiteral="mdal-input" iconSize="16" />
+                              </graphic>
+                           </Button>
+                              </children>
+                          </HBox>
+                      </HBox>
+               </children>
+               <styleClass>
+                  <String fx:value="module-box" />
+                  <String fx:value="module-box-container" />
+               </styleClass>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+              <AnchorPane fx:id="variantDetailContainer" />
+         </items>
+      </SplitPane>
+      </children>
+  </fx:root>

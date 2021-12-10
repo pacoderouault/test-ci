@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="dialogContainer" spacing="5.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="5.0">
+         <children>
+            <Label text="%sharingvariantdialog.lb.variant" />
+            <Label fx:id="variantLb" text="Label" />
+         </children>
+      </HBox>
+      <TableView fx:id="variantsTable">
+        <columns>
+          <TableColumn fx:id="runCol" prefWidth="150.0" text="%sharingvariantdialog.col.run" />
+          <TableColumn fx:id="analysisCol" prefWidth="350.0" text="%sharingvariantdialog.col.analysis" />
+            <TableColumn fx:id="sampleCol" prefWidth="150.0" text="%sharingvariantdialog.col.sample" />
+            <TableColumn fx:id="dateCol" prefWidth="120.0" text="%sharingvariantdialog.col.date" />
+            <TableColumn fx:id="vafCol" prefWidth="100.0" text="%sharingvariantdialog.col.vaf" />
+            <TableColumn fx:id="depthCol" prefWidth="100.0" text="%sharingvariantdialog.col.depth" />
+            <TableColumn fx:id="actionsCol" prefWidth="170.0" />
+        </columns>
+      </TableView>
+   </children>
+</VBox>

@@ -1,5 +1,9 @@
 package ngsdiaglim.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class NumberUtils {
 
     /**
@@ -8,6 +12,7 @@ public class NumberUtils {
      * @return true if the line is valid.
      */
     public static boolean isInt(Object str) {
+        if (str == null) return false;
         try
         {
             Integer.parseInt(str.toString());
@@ -25,6 +30,7 @@ public class NumberUtils {
      * @return true if the line is valid.
      */
     public static boolean isDouble(String str) {
+        if (str == null) return false;
         try
         {
             Double.parseDouble(str);
@@ -42,6 +48,7 @@ public class NumberUtils {
      * @return true if the line is valid.
      */
     public static boolean isFloat(Object str) {
+        if (str == null) return false;
         try
         {
             Float.parseFloat(str.toString());
@@ -68,5 +75,14 @@ public class NumberUtils {
             return false;
         }
         return true;
+    }
+
+
+    public static double round(Number n, int decimalPlace) throws NullPointerException {
+        if (n == null) throw new NullPointerException("Number is null");
+
+        BigDecimal bd = BigDecimal.valueOf(n.doubleValue());
+        bd = bd.setScale(decimalPlace, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

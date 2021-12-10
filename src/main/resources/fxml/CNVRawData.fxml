@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<fx:root spacing="5.0" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <Label text="%cnv.rawdata.lb.pool" />
+            <ComboBox fx:id="poolCb" prefWidth="150.0" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeSearchBtn" mnemonicParsing="false" onAction="#closeSearch" styleClass="button-action-cell">
+               <graphic>
+                  <FontIcon iconLiteral="mdal-clear" />
+               </graphic>
+            </Button>
+            <CustomTextField fx:id="searchTf" onAction="#search" prefWidth="400.0" />
+            <Button fx:id="prevSearchResultBtn" mnemonicParsing="false" onAction="#prevSearchRslt" styleClass="button-action-cell">
+               <graphic>
+                  <FontIcon iconLiteral="mdal-arrow_upward" />
+               </graphic>
+            </Button>
+            <Button fx:id="nextSearchResultBtn" mnemonicParsing="false" onAction="#nextSearchRslt" styleClass="button-action-cell">
+               <graphic>
+                  <FontIcon iconLiteral="mdal-arrow_downward" />
+               </graphic>
+            </Button>
+            <Label fx:id="searchRsltLb" />
+         </children>
+      </HBox>
+      <TableView fx:id="rawdataTable" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="contigCol" prefWidth="75.0" text="%cnv.rawdata.col.contig" />
+          <TableColumn fx:id="startCol" prefWidth="100.0" text="%cnv.rawdata.col.start" />
+            <TableColumn fx:id="endCol" prefWidth="100.0" text="%cnv.rawdata.col.end" />
+            <TableColumn fx:id="geneCol" prefWidth="100.0" text="%cnv.rawdata.col.gene" />
+            <TableColumn fx:id="nameCol" prefWidth="100.0" text="%cnv.rawdata.col.name" />
+        </columns>
+      </TableView>
+   </children>
+   <styleClass>
+      <String fx:value="module-box" />
+      <String fx:value="module-box-container" />
+   </styleClass>
+</fx:root>

@@ -21,7 +21,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" styleClass="module-title-box">
                            <children>
-                              <Label fx:id="logoLb" styleClass="logo" />
+                              <Label fx:id="logoLb" onMouseClicked="#showHomeView" styleClass="logo" />
                               <Button graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showHomeView">
                                  <graphic>
                                     <FontIcon iconLiteral="mdal-home" />
@@ -32,15 +32,18 @@
                            </children>
                         </HBox>
                         <Region HBox.hgrow="ALWAYS" />
-                        <SplitMenuButton fx:id="adminMenu" mnemonicParsing="false" text="%menu.adminmenu">
+                        <Button mnemonicParsing="false" onAction="#showSearchAnalysesDialog" text="%menu.searchAnalyses" />
+                        <Button fx:id="genePanelsBtn" mnemonicParsing="false" onAction="#showManageGenePanelsView" text="%menu.genepanels" />
+                        <SplitMenuButton fx:id="adminMenu" mnemonicParsing="false" onAction="#showUsersManageView" text="%menu.adminmenu">
                           <items>
-                            <MenuItem mnemonicParsing="false" onAction="#showUsersManageView" text="%menu.adminmenu.manageusers" />
-                              <MenuItem mnemonicParsing="false" onAction="#showCreateAnalysisParametersView" text="%menu.adminmenu.createanalysis" />
+                            <MenuItem fx:id="userManagementMenuItem" mnemonicParsing="false" onAction="#showUsersManageView" text="%menu.adminmenu.manageusers" />
+                              <MenuItem fx:id="analysisParametersManagementMenuItem" mnemonicParsing="false" onAction="#showCreateAnalysisParametersView" text="%menu.adminmenu.createanalysis" />
+                              <MenuItem fx:id="cnvsManagementMenuItem" mnemonicParsing="false" onAction="#showCNVsParametersView" text="%menu.adminmenu.cnvparameters" />
                           </items>
                         </SplitMenuButton>
-                        <SplitMenuButton fx:id="userMenu" mnemonicParsing="false" styleClass="transparent" text="SplitMenuButton">
+                        <SplitMenuButton fx:id="userMenu" mnemonicParsing="false" onAction="#showAccountView" styleClass="transparent" text="SplitMenuButton">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="%menu.usermenu.account" />
+                            <MenuItem mnemonicParsing="false" onAction="#showAccountView" text="%menu.usermenu.account" />
                             <MenuItem mnemonicParsing="false" onAction="#disconnect" text="%menu.usermenu.disconnect" />
                           </items>
                         </SplitMenuButton>

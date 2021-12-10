@@ -1,15 +1,18 @@
 package ngsdiaglim.modules;
 
 import javafx.scene.layout.AnchorPane;
-import ngsdiaglim.controllers.CreateAnalysisParametersController;
-import ngsdiaglim.controllers.HomeController;
-import ngsdiaglim.controllers.UsersManageController;
+import ngsdiaglim.controllers.*;
+import ngsdiaglim.controllers.analysisview.AnalysisViewController;
 
 public class ModuleManager {
 
     private static HomeController homeController;
     private static UsersManageController usersManageController;
     private static CreateAnalysisParametersController createAnalysisParameters;
+    private static AnalysisViewController analysisViewController;
+    private static GenePanelsManageController genePanelsManageController;
+    private static AccountController accountController;
+    private static ManageCNVsController manageCNVsController;
 
     public static void config(AnchorPane box, AnchorPane content) {
         box.getChildren().clear();
@@ -30,6 +33,13 @@ public class ModuleManager {
         config(box, usersManageController);
     }
 
+    public static GenePanelsManageController getGenePanelsManageController() {return genePanelsManageController;}
+
+    public static void setGenePanelsManageController(AnchorPane box) {
+        genePanelsManageController = genePanelsManageController == null ? new GenePanelsManageController() : genePanelsManageController;
+        config(box, genePanelsManageController);
+    }
+
     public static HomeController getHomeController() {return homeController;}
 
     public static void setHomeController(AnchorPane box) {
@@ -42,5 +52,27 @@ public class ModuleManager {
     public static void setCreateAnalysisParameters(AnchorPane box) {
         createAnalysisParameters = createAnalysisParameters == null ? new CreateAnalysisParametersController() : createAnalysisParameters;
         config(box, createAnalysisParameters);
+    }
+
+    public static ManageCNVsController getManageCNVsController() {return manageCNVsController;}
+
+    public static void setManageCNVsController(AnchorPane box) {
+        manageCNVsController = manageCNVsController == null ? new ManageCNVsController() : manageCNVsController;
+        config(box, manageCNVsController);
+    }
+
+    public static AnalysisViewController getAnalysisViewController() {return analysisViewController;}
+
+    public static void setAnalysisViewController(AnchorPane box) {
+//        analysisViewController = analysisViewController == null ? new AnalysisViewController() : analysisViewController;
+        analysisViewController = new AnalysisViewController();
+        config(box, analysisViewController);
+    }
+
+    public static AccountController getAccountController() {return accountController;}
+
+    public static void setAccountController(AnchorPane box) {
+        accountController = accountController == null ? new AccountController() : accountController;
+        config(box, accountController);
     }
 }

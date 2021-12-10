@@ -72,7 +72,7 @@
                                           <Label styleClass="font-medium" text="%usersmanage.module.groups.lb.permissionslist" />
                                        </children>
                                     </HBox>
-                                    <TreeView fx:id="permissionsTreeView" />
+                                    <TreeView fx:id="permissionsTreeView" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                            </children>

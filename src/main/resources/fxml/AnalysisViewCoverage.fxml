@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root alignment="TOP_CENTER" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="5.0" styleClass="module-box">
+         <children>
+            <HBox styleClass="module-box-header">
+               <children>
+                  <Label text="%coverage.lb.tabletitle" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_CENTER" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="coverageTable">
+                    <columns>
+                        <TableColumn fx:id="qualityCol" prefWidth="175.0" />
+                      <TableColumn fx:id="contigCol" prefWidth="100.0" text="%coverage.col.contig" />
+                      <TableColumn fx:id="startCol" prefWidth="100.0" text="%coverage.col.start" />
+                        <TableColumn fx:id="endCol" prefWidth="100.0" text="%coverage.col.end" />
+                        <TableColumn fx:id="sizeCol" prefWidth="100.0" text="%coverage.col.length" />
+                        <TableColumn fx:id="depthCol" prefWidth="150.0" text="%coverage.col.cov" />
+                        <TableColumn fx:id="genesCol" prefWidth="150.0" text="%coverage.col.genes" />
+                        <TableColumn fx:id="actionsCol" prefWidth="75.0" />
+                    </columns>
+                  </TableView>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</fx:root>

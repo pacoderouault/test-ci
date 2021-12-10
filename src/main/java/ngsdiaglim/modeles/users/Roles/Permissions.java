@@ -29,11 +29,49 @@ public class Permissions {
         runsManagementPermission.addPermission(new Permission(PermissionsEnum.ADD_RUN));
         runsManagementPermission.addPermission(new Permission(PermissionsEnum.EDIT_RUN));
         runsManagementPermission.addPermission(new Permission(PermissionsEnum.REMOVE_RUN));
-        runsManagementPermission.addPermission(new Permission(PermissionsEnum.ADD_ANALYSE));
-        runsManagementPermission.addPermission(new Permission(PermissionsEnum.EDIT_ANALYSE));
-        runsManagementPermission.addPermission(new Permission(PermissionsEnum.REMOVE_ANALYSE));
         permissionsList.add(runsManagementPermission);
 
+        // Analysis Management
+        Permission analysesManagementPermission = new Permission(PermissionsEnum.ANALYSIS_MANAGEMENT);
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.ADD_ANALYSE));
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.EDIT_ANALYSE));
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.REMOVE_ANALYSE));
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.CHANGE_ANALYSIS_STATE));
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.ADD_ANALYSIS_COMMENT));
+        analysesManagementPermission.addPermission(new Permission(PermissionsEnum.IMPORT_ANALYSIS_IMAGES));
+        permissionsList.add(analysesManagementPermission);
+
+
+        // Manage analyis parameters
+        Permission analysisParametersPermission = new Permission(PermissionsEnum.MANAGE_ANALYSISPARAMETERS);
+        permissionsList.add(analysisParametersPermission);
+
+        // Manage Gene Panels
+        Permission genePanelsPermission = new Permission(PermissionsEnum.MANAGE_GENEPANELS);
+        genePanelsPermission.addPermission(new Permission(PermissionsEnum.ADD_EDIT_GENEPANEL));
+        genePanelsPermission.addPermission(new Permission(PermissionsEnum.REMOVE_GENEPANEL));
+        permissionsList.add(genePanelsPermission);
+
+        // Manage Variant pathogenicity
+        Permission variantPathogenicity = new Permission(PermissionsEnum.MANAGE_VARIANT_PATHOGENICITY);
+        variantPathogenicity.addPermission(new Permission(PermissionsEnum.EDIT_VARIANT_PATHOGENICITY));
+        variantPathogenicity.addPermission(new Permission(PermissionsEnum.VALIDATE_VARIANT_PATHOGENICITY));
+        variantPathogenicity.addPermission(new Permission(PermissionsEnum.VALIDATE_VARIANT_FALSE_POSITIVE));
+        permissionsList.add(variantPathogenicity);
+
+        // Manage Sanger Validation
+        Permission sangerCheck = new Permission(PermissionsEnum.ADD_SANGER_CHECK);
+        permissionsList.add(sangerCheck);
+
+        // Manage Sanger Validation
+        Permission cnvParameters = new Permission(PermissionsEnum.MANAGE_CNVS_PARAMETERS);
+        permissionsList.add(cnvParameters);
+
+        // Manage report
+        Permission createReportsParameters = new Permission(PermissionsEnum.CREATE_REPORT);
+        createReportsParameters.addPermission(new Permission(PermissionsEnum.CREATE_REPORT_COMMENT));
+        createReportsParameters.addPermission(new Permission(PermissionsEnum.EDIT_REPORT_COMMENT));
+        permissionsList.add(createReportsParameters);
     }
 
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root spacing="10.0" styleClass="module-box-container" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox spacing="5.0" styleClass="module-box">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="module-box-header">
+                    <children>
+                        <Label styleClass="font-medium" text="%createAnalasisParameters.module.genes.lb.geneSetList" />
+                        <Region HBox.hgrow="SOMETIMES" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addGeneSetHandler" text="%createAnalasisParameters.module.genes.btn.addGeneSet" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="genesSetTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="geneSetNameCol" prefWidth="170.0" text="%createAnalasisParameters.module.genes.geneSetCol.name" />
+                                <TableColumn fx:id="geneSetSizeCol" prefWidth="100.0" text="%createAnalasisParameters.module.genes.geneSetSizeCol.geneNb" />
+                                <TableColumn fx:id="geneSetActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.genes.geneSetCol.active" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+        <VBox spacing="5.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+            <children>
+                <HBox alignment="CENTER_LEFT" prefHeight="27.0" styleClass="module-box-header">
+                    <children>
+                        <Label styleClass="font-medium" text="%createAnalasisParameters.module.genes.lb.geneSetName" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="geneTranscriptTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="genesCol" prefWidth="120.0" text="%createAnalasisParameters.module.genes.geneCol.gene" />
+                                <TableColumn fx:id="transcriptsCol" prefWidth="400.0" text="%createAnalasisParameters.module.genes.geneCol.transcripts" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</fx:root>

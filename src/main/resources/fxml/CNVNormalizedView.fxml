@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root spacing="10.0" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" maxHeight="50.0" minHeight="50.0" spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <ToggleButton fx:id="autoCNVDetection" mnemonicParsing="false" styleClass="autoCNVBtn" />
+            <Separator orientation="VERTICAL" />
+            <HBox fx:id="deldupManualContainer" alignment="CENTER_LEFT" disable="true">
+               <children>
+                  <VBox alignment="BOTTOM_CENTER" maxWidth="320.0" minWidth="320.0" HBox.hgrow="NEVER">
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <TextField fx:id="delThresholdLb" maxHeight="20.0" maxWidth="40.0" minHeight="20.0" text="0.6">
+                                 <styleClass>
+                                    <String fx:value="textfield-label" />
+                                    <String fx:value="font-bold" />
+                                 </styleClass>
+                              </TextField>
+                              <TextField fx:id="dupThresholdLb" maxHeight="20.0" maxWidth="40.0" minHeight="20.0" text="1.4">
+                                 <styleClass>
+                                    <String fx:value="textfield-label" />
+                                    <String fx:value="font-bold" />
+                                 </styleClass>
+                              </TextField>
+                           </children>
+                        </AnchorPane>
+                        <HBox fx:id="rangeSliderContainer" alignment="CENTER_LEFT" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Label text="%cnvnormalizedview.lb.minimumamplicons" />
+            <Spinner fx:id="minimumConsecutivesAmpsSd" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#callCNVs" onDragDetected="#callCNVs" text="%cnvnormalizedview.btn.callcnvs" />
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="prevBlock" mnemonicParsing="false" onAction="#gotToPreviousCNV" text="%cnvnormalizedview.btn.prevcnvs">
+                     <graphic>
+                        <FontIcon iconLiteral="far-arrow-alt-circle-left" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="nextBlock" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#gotToNextCNV" text="%cnvnormalizedview.btn.nextcnvs">
+                     <graphic>
+                        <FontIcon iconLiteral="far-arrow-alt-circle-right" />
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <styleClass>
+            <String fx:value="module-box" />
+            <String fx:value="module-box-container" />
+         </styleClass>
+      </HBox>
+      <HBox fx:id="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0" VBox.vgrow="ALWAYS" />
+   </children>
+</fx:root>

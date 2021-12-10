@@ -1,23 +1,42 @@
 package ngsdiaglim.controllers;
 
 import com.dlsc.gemsfx.DialogPane;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.controllers.dialogs.SearchAnalysesDialog;
+import ngsdiaglim.database.DAOController;
+import ngsdiaglim.modeles.Cytobands;
+import ngsdiaglim.modeles.analyse.Analysis;
+import ngsdiaglim.modeles.analyse.AnalysisParameters;
+import ngsdiaglim.modeles.parsers.VCFParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modules.ModuleManager;
+import ngsdiaglim.utils.BundleFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 public class AppController {
+
+    private final static Logger logger = LogManager.getLogger(AppController.class);
 
     @FXML private StackPane stackpane;
     @FXML private Label logoLb;
     @FXML private SplitMenuButton userMenu;
     @FXML private SplitMenuButton adminMenu;
+    @FXML private MenuItem userManagementMenuItem;
+    @FXML private MenuItem analysisParametersManagementMenuItem;
+    @FXML private MenuItem cnvsManagementMenuItem;
+    @FXML private Button genePanelsBtn;
     @FXML private AnchorPane moduleContainer;
     @FXML private Label moduleName;
 
@@ -27,12 +46,17 @@ public class AppController {
 
     @FXML
     public void initialize() {
+
+        dialogPane.setAnimationDuration(Duration.ZERO);
         stackpane.getChildren().add(dialogPane);
         logoLb.setText(App.getBundle().getString("app.name"));
         userMenu.textProperty().bind(App.get().getLoggedUser().usernameProperty());
 
         if (App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES)
-                || App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
+                || App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)
+                || App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ANALYSISPARAMETERS)
+                || App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_CNVS_PARAMETERS)
+        ) {
             adminMenu.setVisible(true);
             adminMenu.setVisible(true);
         }
@@ -40,6 +64,12 @@ public class AppController {
             adminMenu.setVisible(false);
             adminMenu.setVisible(false);
         }
+
+        userManagementMenuItem.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES)
+                && !App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT));
+        analysisParametersManagementMenuItem.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ANALYSISPARAMETERS));
+        cnvsManagementMenuItem.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_CNVS_PARAMETERS));
+        genePanelsBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_GENEPANELS));
 
         moduleContainer.getChildren().addListener((ListChangeListener<Node>) c -> {
             initBreadcrumbs();
@@ -49,6 +79,12 @@ public class AppController {
     @FXML
     private void initBreadcrumbs() {
 
+    }
+
+    @FXML
+    private void showAccountView() {
+        ModuleManager.setAccountController(moduleContainer);
+        this.moduleName.setText(ModuleManager.getAccountController().getModuleTitle());
     }
 
     @FXML
@@ -72,5 +108,59 @@ public class AppController {
     public void showCreateAnalysisParametersView() {
         ModuleManager.setCreateAnalysisParameters(moduleContainer);
         this.moduleName.setText(ModuleManager.getCreateAnalysisParameters().getModuleTitle());
+    }
+
+    @FXML
+    public void showManageGenePanelsView() {
+        ModuleManager.setGenePanelsManageController(moduleContainer);
+        this.moduleName.setText(ModuleManager.getGenePanelsManageController().getModuleTitle());
+    }
+
+    @FXML
+    public void showCNVsParametersView() {
+        ModuleManager.setManageCNVsController(moduleContainer);
+        this.moduleName.setText(ModuleManager.getManageCNVsController().getModuleTitle());
+    }
+
+    public void showAnalysisView(Analysis analysis) {
+        ModuleManager.setAnalysisViewController(moduleContainer);
+        ModuleManager.getAnalysisViewController().setAnalysis(analysis);
+    }
+
+    @FXML
+    private void showSearchAnalysesDialog() {
+        SearchAnalysesDialog dialog = new SearchAnalysesDialog();
+        Message.showDialog(dialog);
+        dialog.getButton(ButtonType.OK).setOnAction(e -> Message.hideDialog(dialog));
+
+    }
+
+
+    public void openAnalysis(Analysis analysis) {
+        if (analysis != null) {
+            Object[] messageArguments = {analysis.getName()};
+            String message = BundleFormatter.format("home.module.analyseslist.msg.openingAnalysis", messageArguments);
+            WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), message);
+            wid.addTaskEndNotification(r -> {
+                if (r == 0) {
+                    App.get().getAppController().showAnalysisView(analysis);
+                }
+            });
+            wid.exec("LoadPanels", inputParam -> {
+                try {
+                    AnalysisParameters params = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
+                    analysis.setAnalysisParameters(params);
+                    VCFParser vcfParser = new VCFParser(analysis.getVcfFile(), analysis.getAnalysisParameters(), analysis.getRun());
+                    vcfParser.parseVCF(true);
+                    analysis.setAnnotations(vcfParser.getAnnotations());
+                    analysis.loadCoverage();
+                } catch (Exception e) {
+                    logger.error(e);
+                    Platform.runLater(() -> Message.error(e.getMessage(), e));
+                    return 1;
+                }
+                return 0;
+            });
+        }
     }
 }

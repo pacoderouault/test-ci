@@ -39,4 +39,8 @@ public class UserPreferences extends Properties {
         }
         return joiner.toString();
     }
+
+    public String getPreference(DefaultPreferencesEnum pref) {
+        return getProperty(pref.name(), null);
+    }
 }

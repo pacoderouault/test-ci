@@ -28,6 +28,7 @@ public class DatabaseConnection {
             cp = JdbcConnectionPool.create(datasource.getJDBC_CONNECTION() + datasource.getJDBC_PATH() + datasource.getJDBC_FEATURES(),
                     datasource.getUSER(),
                     datasource.getPASS());
+
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
             logger.fatal("Error when connecting to the database", e);

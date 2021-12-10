@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="BOTTOM_LEFT" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label style="-fx-font-size: 14 !important;" text="%analysisview.lb.analyse" />
+            <ComboBox fx:id="analysisCb" />
+            <Label style="-fx-font-size: 13 !important;" text="%analysisview.lb.analysisStatus" />
+            <Label fx:id="analysisStatusLb" contentDisplay="RIGHT" graphicTextGap="10.0" style="-fx-font-size: 13 !important;" text="Label">
+               <graphic>
+                  <FontIcon fx:id="editAnalysisStatusIcon" iconLiteral="mdal-edit" />
+               </graphic></Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="BASELINE_LEFT" spacing="5.0" styleClass="title-button-container">
+               <children>
+                  <ToggleButton fx:id="variantsViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.variantview">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="analysisViewsToggleGroup" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="coverageViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.coverage" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="cnvViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.cnv" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="additionalDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.additionalinfo" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="metaDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.analysisInfo" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="reportViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.report" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="runinfoViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.runinfo" toggleGroup="$analysisViewsToggleGroup" />
+               </children>
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
+            </HBox>
+         </children>
+         <styleClass>
+            <String fx:value="module-box" />
+            <String fx:value="module-box-header" />
+         </styleClass>
+      </HBox>
+      <AnchorPane fx:id="analysisModuleContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0" />
+   </children>
+</fx:root>

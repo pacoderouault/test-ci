@@ -4,15 +4,21 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
+import ngsdiaglim.database.DAOController;
+import ngsdiaglim.modeles.users.Roles.DefaultRolesEnum;
 import ngsdiaglim.modeles.users.Roles.Permission;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.Roles.Role;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 public class User {
 
+    private final Logger logger = LogManager.getLogger(User.class);
     private final long id;
     private final SimpleStringProperty username = new SimpleStringProperty();
     private ObservableSet<Role> roles;
@@ -61,6 +67,10 @@ public class User {
         return roles.contains(role);
     }
 
+    public boolean hasRole(DefaultRolesEnum role) {
+        return roles.stream().anyMatch(r -> r.getRoleName().equals(role.getRoleName()));
+    }
+
     public boolean isPermitted(Permission permission) {
         return roles.parallelStream().anyMatch(r -> r.hasPermission(permission));
     }
@@ -89,6 +99,10 @@ public class User {
         this.preferences = preferences;
     }
 
+    public void setPreference(DefaultPreferencesEnum pref, Object value) {
+        preferences.put(pref.name(), value.toString());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,5 +116,13 @@ public class User {
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    public void savePreferences() {
+        try {
+            DAOController.get().getUsersDAO().updatePreferences(this);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 }

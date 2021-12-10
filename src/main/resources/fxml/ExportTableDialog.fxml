@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="dialogContainer" prefWidth="1200.0" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox styleClass="module-box">
+         <children>
+            <HBox styleClass="module-box-header">
+               <children>
+                  <Label text="%exportvariants.lb.filters" />
+               </children>
+            </HBox>
+            <FlowPane styleClass="module-box-container" vgap="10.0">
+               <children>
+                  <CheckBox fx:id="filterFalsePositiveCb" mnemonicParsing="false" prefWidth="350.0" text="%exportvariants.lb.fp" />
+                  <CheckBox fx:id="filterSynonymousCb" mnemonicParsing="false" prefWidth="350.0" text="%exportvariants.lb.synonymous" />
+                  <CheckBox fx:id="filterNonCodingCb" mnemonicParsing="false" prefWidth="350.0" text="%exportvariants.lb.noncoding" />
+                  <HBox alignment="CENTER_LEFT" prefWidth="350.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="filterVAFCb" mnemonicParsing="false" text="%exportvariants.lb.vaf" />
+                        <TextField fx:id="filterVafTf" prefWidth="50.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="350.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="filterDepthCb" mnemonicParsing="false" text="%exportvariants.lb.depth" />
+                        <TextField fx:id="filterDepthTf" prefWidth="50.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="350.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="filterGnomadCb" mnemonicParsing="false" text="%exportvariants.lb.gnomadFreq" />
+                        <TextField fx:id="filterGnomadTf" prefWidth="50.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="350.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="filterOccurenceCb" mnemonicParsing="false" text="%exportvariants.lb.databaseFreq" />
+                        <TextField fx:id="filterOccurenceTf" prefWidth="50.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefWidth="350.0" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="filterPathogenicityCb" mnemonicParsing="false" text="%exportvariants.lb.pathogenicity" />
+                        <ComboBox fx:id="filterPathogenicityCbx" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="columnsDropMenuContainer" alignment="CENTER_LEFT" prefWidth="400.0" spacing="5.0" />
+               </children>
+            </FlowPane>
+         </children>
+      </VBox>
+      <VBox styleClass="module-box">
+         <children>
+            <HBox styleClass="module-box-header">
+               <children>
+                  <Label text="%exportvariants.preview" />
+               </children>
+            </HBox>
+            <HBox styleClass="module-box-container">
+               <children>
+                  <TableView fx:id="previewTable" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

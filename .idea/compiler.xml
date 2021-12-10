@@ -13,4 +13,9 @@
       <module name="NGSDiagLim" target="11" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="NGSDiagLim" options="--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=org.controlsfx.controls --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=org.controlsfx.controls --add-exports javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls" />
+    </option>
+  </component>
 </project>

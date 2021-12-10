@@ -25,6 +25,7 @@ hs_err_pid*
 # dev data for developpement
 dev_data/
 data/
+.data/
 
 #database
 database/

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root styleClass="module-box" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="5.0">
+         <children>
+            <Region HBox.hgrow="ALWAYS" />
+            <Pagination fx:id="pagination">
+               <HBox.margin>
+                  <Insets top="-6.0" />
+               </HBox.margin>
+            </Pagination>
+            <Label text="%cnvnormalizedview.lb.samplesByPage" />
+            <ComboBox fx:id="samplesByPageCountCb" />
+            <HBox fx:id="visibleSamplesDropMenuContainer" alignment="CENTER_LEFT" />
+            <Region HBox.hgrow="ALWAYS" />
+            <ToggleButton fx:id="loesBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.loess" />
+            <ToggleButton fx:id="geneAverageBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.geneAverage" />
+            <ToggleButton fx:id="cusumBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.cusum" />
+         </children>
+      </HBox>
+      <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="mapsContainer" />
+        </content>
+      </ScrollPane>
+   </children>
+</fx:root>

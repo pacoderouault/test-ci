@@ -1,6 +1,7 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
-public class ResetPasswordDialog  extends DialogPane.Dialog<String> {
+public class ResetPasswordDialog extends DialogPane.Dialog<String> {
 
     private final Logger logger = LogManager.getLogger(ResetPasswordDialog.class);
 
@@ -25,6 +26,7 @@ public class ResetPasswordDialog  extends DialogPane.Dialog<String> {
     private final Label errorLabel = new Label();
 
     public ResetPasswordDialog(User user) {
+
         super(App.get().getAppController().getDialogPane(), DialogPane.Type.INPUT);
         Object[] arguments = {user.getUsername()};
         setTitle(BundleFormatter.format("resetpassworddialog.title", arguments));
@@ -56,7 +58,7 @@ public class ResetPasswordDialog  extends DialogPane.Dialog<String> {
 
     }
 
-    private String checkErrorForm() throws SQLException {
+    private String checkErrorForm() {
         if (StringUtils.isBlank(passwordField.getText())) {
             return App.getBundle().getString("adduserdialog.msg.err.emptypassword");
         }
@@ -69,21 +71,17 @@ public class ResetPasswordDialog  extends DialogPane.Dialog<String> {
     private void changeFormEvent() {
         errorLabel.setText("");
         setValue(null);
-        try {
-            String error = checkErrorForm();
-            if (error != null) {
-                errorLabel.setText(error);
-                setValid(false);
-            }
-            else {
-                setValue(passwordField.getText());
-                setValid(true);
-            }
-        } catch (SQLException e) {
-            logger.error("Error when checking form", e);
-            errorLabel.setText(e.getMessage());
+
+        String error = checkErrorForm();
+        if (error != null) {
+            errorLabel.setText(error);
             setValid(false);
         }
+        else {
+            setValue(passwordField.getText());
+            setValid(true);
+        }
     }
+
 
 }

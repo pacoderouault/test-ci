@@ -4,6 +4,7 @@ import htsjdk.samtools.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 public class BamUtils {
@@ -38,4 +39,22 @@ public class BamUtils {
     }
 
 
+    /**
+     * Build a bam index (.bai) from a bam file
+     * @param bamFile
+     * @param reader
+     * @return The File of the index created
+     * @throws Exception
+     */
+    public static File buildBamIndex(File bamFile, SamReader reader) throws Exception {
+        File indexFile = new File(bamFile.getAbsoluteFile() + ".bai");
+        Files.createFile(indexFile.toPath());
+        try {
+            BAMIndexer.createIndex(reader, indexFile);
+        } catch (Exception e) {
+            Files.deleteIfExists(indexFile.toPath());
+            throw new InterruptedException("impossible to index the bam file");
+        }
+        return indexFile;
+    }
 }

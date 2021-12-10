@@ -28,7 +28,7 @@ public class ImportAnalysisAnalysisParametersTableCell extends TableCell<Analysi
 
     public ImportAnalysisAnalysisParametersTableCell() {
         try {
-            analysisParametersList = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters();
+            analysisParametersList = DAOController.get().getAnalysisParametersDAO().getActiveAnalysisParameters();
         } catch (SQLException e) {
             e.printStackTrace();
         }

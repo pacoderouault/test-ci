@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="dialogContainer" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane fx:id="grid" hgap="5.0" vgap="5.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="%addcnvcontrolgroup.lb.name" />
+            <TextField fx:id="nameTf" GridPane.columnIndex="1" />
+            <Label text="%addcnvcontrolgroup.lb.panel" GridPane.rowIndex="1" />
+            <ComboBox fx:id="panelsCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="%addcnvcontrolgroup.lb.algorithm" GridPane.rowIndex="2" />
+            <ComboBox fx:id="algorithmCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="matrixLb" text="%addcnvcontrolgroup.lb.matrixFile" GridPane.rowIndex="3" />
+            <Label fx:id="depthFilesLb" text="%addcnvcontrolgroup.lb.depthFiles" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets top="2.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="matrixTf" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="matrixButton" mnemonicParsing="false" onAction="#loadMatrixFile" text="%addcnvcontrolgroup.btn.loadMatrix" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Button fx:id="depthFilesBtn" mnemonicParsing="false" onAction="#loadDepthFiles" text="%addcnvcontrolgroup.btn.loadDepth" GridPane.columnIndex="2" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets top="2.0" />
+               </GridPane.margin>
+            </Button>
+            <TableView fx:id="depthFilesTable" GridPane.columnIndex="1" GridPane.rowIndex="4">
+              <columns>
+                <TableColumn fx:id="depthFileNameCol" prefWidth="600.0" text="%addcnvcontrolgroup.col.depthFileName" />
+                <TableColumn fx:id="depthFileActionCol" prefWidth="75.0" text="%addcnvcontrolgroup.col.depthFileActions" />
+              </columns>
+            </TableView>
+         </children>
+      </GridPane>
+      <Label fx:id="errorLabel" styleClass="error-label" />
+   </children>
+</VBox>

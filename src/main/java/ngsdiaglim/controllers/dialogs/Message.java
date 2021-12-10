@@ -18,8 +18,10 @@ public class Message {
     private static DialogPane initDialogPane() {
 //        DialogPane dialogPane = new DialogPane();
         DialogPane dialogPane = App.get().getAppController().getDialogPane();
-        dialogPane.setAnimationDuration(Duration.millis(100));
+        dialogPane.setAnimationDuration(Duration.ZERO);
+        dialogPane.setAnimateDialogs(false);
         dialogPane.setShowCloseButton(false);
+        dialogPane.setFadeInOut(false);
         return dialogPane;
     }
 

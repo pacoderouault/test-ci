@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root spacing="10.0" styleClass="module-box-container" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox spacing="5.0" styleClass="module-box">
+            <children>
+                <HBox styleClass="module-box-header">
+                    <children>
+                        <Label text="%createAnalasisParameters.module.hotspots.lb.hotspotsList" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addHotspotsSetHandler" text="%createAnalasisParameters.module.hotspots.btn.addhotspots" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="hotspotsSetTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="hotspotsSetNameCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.name" />
+                                <TableColumn fx:id="hotspotsSetCountCol" prefWidth="100.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.nb" />
+                                <TableColumn fx:id="hotspotsSetActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.active" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+        <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
+            <children>
+                <HBox styleClass="module-box-header">
+                    <children>
+                        <Label text="%createAnalasisParameters.module.hotspots.lb.variantsHotspots" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="hotspotsTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="hotspotsIdCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.id" />
+                                <TableColumn fx:id="hotspotsContigCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.contig" />
+                                <TableColumn fx:id="hotspotsStartCol" prefWidth="100.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.start" />
+                                <TableColumn fx:id="hotspotsEndCol" prefWidth="100.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.end" />
+                                <TableColumn fx:id="hotspotsRefCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.ref" />
+                                <TableColumn fx:id="hotspotsAltCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.alt" />
+                                <TableColumn fx:id="hotspotsGeneCol" prefWidth="100.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.Gene" />
+                                <TableColumn fx:id="hotspotsCodingMutCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.codingMut" />
+                                <TableColumn fx:id="hotspotsProteinMutCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.proteinMut" />
+                                <TableColumn fx:id="hotspotsTypeMutCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotCol.type" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</fx:root>

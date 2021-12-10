@@ -3,7 +3,7 @@
 .root {
     accent_color: #34a5daff;
     background_color: #f3f3f3;
-    scroll_pane_background_color: background_color;
+    scroll_pane_background_color: transparent;
     dialog_background_color: white;
     tab_pane_background_color: #f3f3f3;
 }
@@ -67,6 +67,24 @@ Text {
     text_color: #111;
 }
 
+
+/*====================== Label ===========================*/
+.label {
+
+
+}
+
+/*====================== Text ===========================*/
+Text {
+
+    -fx-fill: text_color;
+}
+
+/*=================== Other styles ======================*/
+.text {
+
+}
+
 /*******************************************************************************
  *                                                                             *
  * Button and ToggleButton                                                     *
@@ -97,6 +115,38 @@ Text {
     border_hover_selected_color: derive(accent_color, -40%);
 }
 
+
+.button-link, .button-link:disabled {
+    -fx-background-color: transparent;
+    -fx-border: 0;
+}
+
+.button-link .text {
+    -fx-font-family: 'Ubuntu';
+}
+
+.button-link .ikonli-font-icon {
+    -fx-font-size: 16px;
+}
+
+.button-link:hover {
+    -fx-underline: true;
+    -fx-border: 0;
+    border_hover_color: transparent;
+}
+
+.hidden-button, .hidden-button:hover, .hidden-button:selected, .hidden-button:focused {
+    -fx-background-color: transparent;
+    -fx-padding: 0px;
+    -fx-border-width: 0px;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0px;
+}
+
+.hidden-button:hover > .ikonli-font-icon {
+    -fx-icon-color: orange;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Check Box                                                                   *
@@ -104,17 +154,16 @@ Text {
  ******************************************************************************/
 .check-box {
     text_color: #111;
-
     box_background_color: white;
-
     box_border_color: #333333;
     box_border_hover_color: #333333;
-
     indeterminate_mark_color: #333333;
     indeterminate_box_pressed_color: white;
-
     focus_ring_color: #111;
+    -fx-font-family: "Ubuntu";
+    -fx-font-size: 13px;
 }
+
 
 /*******************************************************************************
  *                                                                             *
@@ -165,6 +214,7 @@ Text {
     tooltip_background_color: #f2f2f2;
     border_color: #cccccc;
     text_color: #111;
+    -fx-font-size: 12px;
 }
 
 /*******************************************************************************
@@ -203,7 +253,11 @@ Text {
 
 .scroll-pane {
     corner_background_color: #e9e9e9;
+    -fx-background-color: transparent, transparent, transparent;
+
 }
+
+
 
 .list-view > .virtual-flow > .corner,
 .tree-view > .virtual-flow > .corner,
@@ -236,6 +290,8 @@ Text {
     combo_box_editable_focused_button_hover_color: combo_box_editable_button_hover_color;
     combo_box_editable_focused_background_color: white;
     combo_box_editable_focused_arrow_color: arrow_color;
+
+    -fx-background-color: transparent, border_color, combo_box_background_color, combo_box_background_color;
 }
 
 .combo-box-popup {
@@ -604,6 +660,7 @@ Text {
 
 .progress-indicator {
     text_color: #111;
+    -fx-progress-color: accent_color;
 }
 
 /*******************************************************************************
@@ -693,6 +750,19 @@ Text {
     text_color: #111;
 }
 
+.content-pane .title {
+    -fx-font-family: 'Ubuntu Medium' !important;
+    -fx-font-size: 1.6em !important;
+}
+
+.content-pane.information .content{
+
+}
+
+.content-pane.information .icon {
+    -fx-image: none !important;
+}
+
 /*******************************************************************************
  *                                                                             *
  * ColorPicker                                                                 *
@@ -730,7 +800,7 @@ Text {
 }
 
 #title-app-label .text{
-    -fx-font-family: "Roboto Light" !important;
+    -fx-font-family: "Ubuntu Light" !important;
     -fx-font-size: 5em !important;
 }
 
@@ -740,8 +810,13 @@ Text {
 }
 
 #app-menu-bar .logo {
-    -fx-font-family: 'Roboto Mono' !important;
+    -fx-font-family: 'Ubuntu Mono' !important;
     -fx-font-size: 1.5em;
+     -fx-cursor: hand;
+}
+
+#app-menu-bar .logo:hover {
+    -fx-text-fill: accent_color;
 }
 
 #app-module-container {
@@ -760,7 +835,7 @@ Text {
     -fx-spacing: 5px;
 }
 .module-title-box .label {
-    -fx-font-family: 'Roboto Light';
+    -fx-font-family: 'Ubuntu Light';
     -fx-font-size: 1.2em;
 }
 
@@ -792,7 +867,7 @@ Text {
     -fx-background-color: #fff;
     -fx-padding: 5px;
     -fx-background-radius: 3 3 0 0;
-    -fx-font-family: 'Roboto Medium';
+    -fx-font-family: 'Ubuntu Medium';
     -fx-font-size: 1.2em;
 }
 
@@ -810,7 +885,7 @@ Text {
 
 .usertable-role-label .text {
     -fx-fill: white;
-    -fx-font-family: "Roboto Medium";
+    -fx-font-family: "Ubuntu Medium";
 }
 
 .box-action-cell {
@@ -831,23 +906,595 @@ Text {
 }
 
 .waitingdialog {
-    -fx-background-color: #11111155;
-}
-
-.waitingdialog-container {
-    -fx-background-color: white;
-    -fx-padding:10;
-    -fx-spacing: 50;
-    -fx-min-width: 200px;
-    -fx-min-height: 200px;
-    -fx-alignment: center;
-}
-
-.waitingdialog-container .label {
-    -fx-font-size: 1.2em;
-    -fx-font-family: 'Roboto';
+    -fx-font-size: 1em;
+    -fx-font-family: 'Ubuntu Medium' !important;
 }
 
 .error-tablerow {
     -fx-background-color: #ff9e9eff;
+}
+
+.runfile-node {
+    -fx-padding: 3px 5px;
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 20px;
+
+    -fx-font-family: 'Ubuntu';
+}
+
+.runfile-node HBox {
+    -fx-spacing: 3px;
+    -fx-background-color: transparent;
+}
+
+.runfile-node HBox .button {
+    -fx-padding: 0 1 0 1;
+    -fx-background-radius: 20px;
+}
+
+.runfile-node HBox .ikonli-font-icon, .box-action-cell .ikonli-font-icon{
+    -fx-icon-size: 16px;
+}
+
+.analysis-state-label {
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5 2 5;
+    -fx-font-family: 'Ubuntu Medium';
+}
+
+.analysis-state-label .text {
+    -fx-fill: white !important;
+}
+
+.analysis-state-label-complete {
+    -fx-background-color: green;
+}
+
+.analysis-state-label-inprogress {
+    -fx-background-color: orange;
+}
+
+.cell > .transcript-table-cell-warning > .text, .cell > .transcript-table-cell-warning > .ikonli-font-icon {
+    -fx-fill: orange !important;
+}
+
+.pop-up-filter {
+    -fx-background-color: red !important;
+    -fx-border-width: 1;
+    -fx-border-color: black;
+    -fx-pref-width: 300px;
+    -fx-spacing: 2;
+    -fx-padding: 2;
+}
+
+.pop-up-filter .container {
+    -fx-fill: red !important;
+}
+
+.dropdown-menu .context-menu {
+    -fx-background-color: white !important;
+}
+.dropdown-menu .menu-item {
+    -fx-padding: 0;
+}
+.dropdown-menu .list-cell {
+    -fx-padding: 0 5 0 5!important;
+    -fx-cell-size: 25px;
+}
+
+.hyperlink-label:hover .text{
+    -fx-underline: true ;
+}
+
+.list-selection-view .list-cell {
+    -fx-padding: 0 !important;
+    -fx-cell-size: 20px;
+}
+
+.row-header > .table-view2 {
+    -fx-background-color: null;
+    -fx-padding: 0;
+    -fx-insets: 0;
+}
+
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:vertical,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:horizontal {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:horizontal .track,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:vertical .track,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:horizontal .increment-button,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:horizontal .decrement-button,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:vertical .increment-button,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:vertical .decrement-button,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:horizontal .thumb,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar:vertical .thumb {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-border-radius: 0em;
+    -fx-padding: 0;
+}
+
+.row-header > .table-view2 > .virtual-flow > .scroll-bar .increment-arrow,
+.row-header > .table-view2 > .virtual-flow > .scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.variantDetail .smallLabel .text {
+    -fx-font-family: 'Ubuntu';
+    -fx-font-size: 10px;
+}
+
+.variantDetail .cat_title {
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-size: 12px;
+}
+
+.variantDetail TextField, .variantDetail TextArea,.variantDetail .toggle-switch .label{
+    -fx-font-family: 'Ubuntu';
+    -fx-font-size: 12px;
+}
+
+.textfield-label, .textfield-label:focused, .textfield-label:hover {
+    -fx-background-color: transparent;
+    -fx-border:0;
+    -fx-padding: 0;
+}
+
+.textarea-label {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.textarea-label .content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.textarea-label:focused .content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.textarea-label:focused {
+    -fx-highlight-fill: #7ecfff;
+}
+
+.textarea-label .content {
+    -fx-padding: 10px;
+    -fx-text-fill: gray;
+    -fx-highlight-fill: #7ecfff;
+}
+
+.toggle-switch .label {
+    -fx-font-family: 'Ubuntu';
+}
+
+.toggle-switch .thumb {
+    -fx-padding: 0.60em;
+}
+
+
+.toggle-switch .thumb-area {
+    -fx-padding: 0.15em 1em 0.75em 1.333333em; /* 7 16 7 16 */
+}
+
+.variantDetail .tab-pane {
+    -fx-tab-min-height: 2em; /* 34 */
+    -fx-tab-max-height: 2em; /* 34 */
+}
+
+.variantDetail .tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: transparent, transparent, tab_pane_background_color;
+    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
+    -fx-padding: 0.083333em 1em 0.0769em 1em; /* 1 18 0.99 18 */
+}
+
+.variantDetail .tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: transparent, tab_selected_border_color, tab_selected_background_color;
+    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
+}
+
+
+.variantDetail .tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color:
+            tab_pane_bottom_border_color,
+            transparent,
+            white !important;
+    -fx-background-insets: 1 1 0 1, 0 0 1 0, 1;
+}
+
+.transparent-list-cell  {
+    -fx-background-color: #f4f4f4 !important;
+    -fx-padding: 5 5 10 5 !important;
+    -fx-background-insets: 0 0 5 0;
+}
+
+.transparent-list-cell:selected {
+    -fx-padding: 5 5 10 5 !important;
+    -fx-background-color: #f4f4f4 !important;
+    -fx-background-insets: 0 0 5 0 !important;
+}
+.transparent-list-cell:selected .text {
+    -fx-fill: black;
+}
+
+.commentary-box {
+}
+
+.commentary-box-header {
+    -fx-font-size: 1em;
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: #34a5daff;
+    -fx-padding: 0 0 0 0;
+}
+
+.tabletheme1-patho {
+    -fx-background-color: #ff949dff !important;
+}
+.tabletheme1-patho .table-cell:hover{
+    -fx-background-color: #e7818aff !important;
+}
+
+.tabletheme1-likelypatho {
+    -fx-background-color: #f8ce9fff !important;
+}
+.tabletheme1-likelypatho .table-cell:hover{
+    -fx-background-color: #e0b88bff !important;
+}
+
+.tabletheme1-hotspot {
+    -fx-background-color: #ff5b5bff !important;
+}
+.tabletheme1-hotspot .table-cell:hover{
+    -fx-background-color: #ed4d4dff !important;
+}
+
+.tabletheme1-exonic {
+    -fx-background-color: #ddecffff !important;
+}
+.tabletheme1-exonic .table-cell:hover{
+    -fx-background-color: #bcd4f0ff !important;
+}
+
+.tabletheme1-intronic {
+    -fx-background-color: #fffce7ff !important;
+}
+.tabletheme1-intronic .table-cell:hover{
+    -fx-background-color: #f1ebc4ff !important;
+}
+
+.tabletheme1-other {
+    -fx-background-color: #ffe4f7ff !important;
+}
+.tabletheme1-other .table-cell:hover{
+    -fx-background-color: #efd1e6ff !important;
+}
+
+.tabletheme2-patho {
+    -fx-background-color: #ff9d8bff !important;
+}
+.tabletheme2-patho .table-cell:hover{
+    -fx-background-color: #e58a79ff !important;
+}
+
+.tabletheme2-likelypatho {
+    -fx-background-color: #ffc586ff !important;
+}
+.tabletheme2-likelypatho .table-cell:hover{
+    -fx-background-color: #edae6aff !important;
+}
+
+.tabletheme2-likelybenin {
+    -fx-background-color: #c1d585ff !important;
+}
+.tabletheme2-likelybenin .table-cell:hover{
+    -fx-background-color: #afc179ff !important;
+}
+
+.tabletheme2-benin {
+    -fx-background-color: #9dcd8dff !important;
+}
+.tabletheme2-benin .table-cell:hover{
+    -fx-background-color: #81b86fff !important;
+}
+
+.tabletheme2-falsepositive {
+    -fx-background-color: #e1e1e1ff !important;
+}
+.tabletheme2-falsepositive .table-cell:hover{
+    -fx-background-color: #d2d2d2ff !important;
+}
+
+.selected-transcript {
+    -fx-background-color: lightblue !important;
+}
+
+.false-positive-textfield, .false-positive-textfield:hover, .false-positive-textfield:focused, .false-positive-textfield:focused:hover {
+    -fx-text-fill: goldenrod;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 85%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.true-positive-textfield:disabled, .true-positive-textfield:hover, .true-positive-textfield:focused, .true-positive-textfield:focused:hover {
+    -fx-text-fill: lightgrey;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 70%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.pathogenic-textfield, .pathogenic-textfield:hover, .pathogenic-textfield:focused, .pathogenic-textfield:focused:hover {
+    -fx-text-fill: red;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 130%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.likely-pathogenic-textfield, .likely-pathogenic-textfield:hover, .likely-pathogenic-textfield:focused, .likely-pathogenic-textfield:focused:hover {
+    -fx-text-fill: goldenrod;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 85%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.uncertain-significance-textfield,.uncertain-significance-textfield:hover, .uncertain-significance-textfield:focused, .uncertain-significance-textfield:focused:hover {
+    -fx-text-fill: #000;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 150%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.likely-benin-textfield, .likely-benin-textfield:hover, .likely-benin-textfield:focused, .likely-benin-textfield:focused:hover {
+    -fx-text-fill: #869e3fff;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 90%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.benin-textfield, .benin-textfield:hover, .benin-textfield:focused, .benin-textfield:focused:hover {
+    -fx-text-fill: #62af49ff;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 90%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+.sanger-state-textfield, .sanger-state-textfield:hover, .sanger-state-textfield:focused, .sanger-state-textfield:focused:hover{
+    -fx-text-fill: #000;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-background-color: derive(-fx-text-fill, 150%);
+    -fx-background-radius: 10px;
+    -fx-padding: 2 5;
+}
+
+
+.cnv-sample-detail {
+    -fx-padding: 5px;
+    -fx-background-color: #f7fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius:  10;
+    -fx-background-radius: 10;
+}
+
+.violin-chart-y-tick {
+    -fx-font-family: 'Ubuntu';
+    -fx-font-size: 11px;
+}
+
+.violin-chart-x-tick {
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-size: 11px;
+}
+
+.autoCNVBtn {
+	-fx-background-image: url('../images/autoMode_off.png');
+	-fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-min-height: 40px;
+    -fx-min-width: 94px;
+    -fx-background-size: 94px 40px;
+}
+
+.autoCNVBtn:hover {
+	-fx-border-width: 1px;
+	-fx-border-color: lightgrey;
+	-fx-border-radius: 3px;
+
+}
+
+.autoCNVBtn:selected {
+	-fx-background-image: url('../images/autoMode_on.png');
+}
+
+.cnv-range-slider .low-thumb,
+.cnv-range-slider .high-thumb {
+
+    -fx-border-radius: 1.0em;
+    -fx-border-width: 1px;
+
+    -fx-effect: none;
+}
+
+.cnv-range-slider {
+    -fx-min-width:300px;
+    -fx-max-width:300px;
+}
+
+.cnv-range-slider .low-thumb {
+    -fx-background-color: #ffbe64ff;
+    -fx-border-color: #f99e1cff;
+}
+.cnv-range-slider .high-thumb {
+    -fx-background-color: #f08383ff;
+    -fx-border-color: #e24545ff;
+}
+
+.cnv-range-slider .low-thumb:focused,
+.cnv-range-slider .high-thumb:focused {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 1.0em; /* makes sure this remains circular */
+    -fx-border-width: 1;
+}
+
+.cnv-range-slider .range-bar {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f99e1cff, #e24545ff);
+}
+
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.x-range-indicator-label {
+    -fx-background-color: lightgrey !important;
+    -fx-border-width: 0.5px !important;
+    -fx-border-radius: 0px !important;
+    -fx-background-radius: 0 !important;
+    -fx-padding: 0 2 0 2 !important;
+}
+
+.x-range-indicator-label .text {
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-weight: normal;
+    -fx-fill: #000;
+}
+
+.chart-major-horizontal-lines {
+   -fx-fill: red !important;
+   -fx-stroke : red !important;
+   -fx-stroke-width: 2 !important;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+    -fx-margin: 50px !important;
+}
+
+.chart-title {
+}
+
+.chart-content {
+-fx-padding: -10 0 0 0 ;
+}
+
+.chart {
+}
+
+.deltest {
+    -fx-fill: #ffdcaaff;
+}
+.duptest {
+    -fx-fill: #e08e8eff;
+}
+
+.title-button-container {
+    -fx-vgrow-policy:always;
+}
+
+.toggletab {
+    -fx-font-size: 13px;
+    -fx-font-family: 'Ubuntu Medium', sans-serif;
+    -fx-background-insets: 0 1 0 0, 1 2 0 1, 2 3 1 2;
+    -fx-min-width: 110px;
+    -fx-background-color: tab_pane_background_color, tab_pane_background_color, tab_pane_background_color;
+}
+
+.toggletab .text {
+    -fx-fill: #767676;
+}
+
+.toggletab:hover, .toggletab:selected:hover {
+   -fx-border-color: transparent;
+   -fx-background-color: #ccc, tab_pane_background_color, tab_pane_background_color;
+}
+
+.toggletab:hover .text {
+    -fx-fill: accent_color;
+}
+
+.toggletab:selected {
+    -fx-background-color: #ccc, tab_pane_background_color, tab_pane_background_color;
+}
+
+.toggletab:selected .text {
+    -fx-fill: accent_color;
+}
+
+.analysis_status_inprogress {
+    -fx-background-color: #ffa047;
+    -fx-background-radius: 5;
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-padding: 2px 5px;
+}
+
+.analysis_status_inprogress .ikonli-font-icon:hover {
+    -fx-fill: white
+}
+
+.analysis_status_complete {
+    -fx-background-color: #67ac51;
+    -fx-background-radius: 5;
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-padding: 2px 5px;
+}
+
+.analysis_status_complete .ikonli-font-icon:hover {
+    -fx-fill:white
+}
+
+
+.predictiongauge-range-label {
+    -fx-font-size: 12px !important;
+    -fx-font-family: 'Ubuntu medium';
+    -fx-min-width: 35px;
+    -fx-max-width: 35px;
+}
+
+.predictiongauge-range-label-left{
+    -fx-alignment: center-right;
+}
+
+.predictiongauge-range-label-right{
+    -fx-alignment: center-left;
+}
+
+.predictiongauge-threshold-label {
+    -fx-font-size: 10px !important;
+    -fx-font-family: 'Ubuntu Bold';
+}
+
+.predictiongauge-marker-label {
+    -fx-font-size: 12px !important;
+    -fx-font-family: 'Ubuntu Bold';
+    -fx-background-color: accent_color;
+    -fx-padding: -1 2px;
+    -fx-background-radius: 3px;
+    -fx-text-fill: white;
+}
+
+.predictiongauge-marker-arrow {
+    -fx-fill: accent_color;
+}
+
+.predictiongauge-shape:disabled {
+    -fx-opacity: 0.2;
+}
+
+.prediction-gauge-region:disabled {
+    -fx-opacity: 0.6;
+    -fx-alignment: center;
+    -fx-min-height:40px;
 }

@@ -20,6 +20,7 @@ public class ImportAnalysisActionsTableCell extends TableCell<AnalysisInputData,
 
     @Override
     protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
         setText(null);
         if(empty) {
             setGraphic(null);

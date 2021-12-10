@@ -1,5 +1,7 @@
 package ngsdiaglim.modeles.analyse;
 
+import ngsdiaglim.comparators.NaturalSortComparator;
+import ngsdiaglim.exceptions.DuplicateSampleInRun;
 import ngsdiaglim.utils.BamUtils;
 import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.VCFUtils;
@@ -13,25 +15,34 @@ import java.util.*;
 
 public class AnalysesInputDirParser {
 
+
+
     private final File inputDir;
     private final Run run;
+    private final List<RunFile> runFiles = new ArrayList<>();
+    private final  HashMap<String, AnalysisInputData> analysesFiles = new HashMap<>();
+
 
     public AnalysesInputDirParser(Run run, File inputDir) {
         this.inputDir = inputDir;
         this.run = run;
     }
 
-    public HashMap<String, AnalysisInputData> parseInputDir() throws IOException {
-        return findInputFiles();
+    public List<RunFile> getRunFiles() {return runFiles;}
+
+    public HashMap<String, AnalysisInputData> getAnalysesFiles() {return analysesFiles;}
+
+    public void parseInputDir() throws IOException, DuplicateSampleInRun {
+        findInputFiles();
     }
 
-    private HashMap<String, AnalysisInputData>  findInputFiles() throws IOException {
-
-        final HashMap<String, AnalysisInputData> sampleFiles = new HashMap<>();
+    private void findInputFiles() throws IOException, DuplicateSampleInRun {
 
         List<File> vcfFiles = new ArrayList<>();
         List<File> bamFiles = new ArrayList<>();
         List<File> depthFiles = new ArrayList<>();
+        runFiles.clear();
+        analysesFiles.clear();
         Files.find(inputDir.toPath(), 10, (path, basicFileAttributes) -> path.toFile().isFile()).forEach(p -> {
             if (p.toString().toLowerCase().endsWith(".vcf") || p.toString().toLowerCase().endsWith(".vcf.gz")) {
                 vcfFiles.add(p.toFile());
@@ -42,21 +53,27 @@ public class AnalysesInputDirParser {
             else if (p.toString().toLowerCase().contains("_depth")) {
                 depthFiles.add(p.toFile());
             }
+            else if (p.toString().toLowerCase().endsWith(".pdf") || p.toString().toLowerCase().endsWith(".html")) {
+                runFiles.add(new RunFile(p.toFile(), run));
+            }
         });
 
         for (File vcfFile : vcfFiles) {
             String sampleName = VCFUtils.getSamplesName(vcfFile).get(0);
             if (sampleName != null && !StringUtils.isBlank(sampleName)) {
+                if (analysesFiles.containsKey(sampleName)) {
+                    throw new DuplicateSampleInRun("Duplicate sample : " + sampleName + " in the run");
+                }
                 String analysisName = vcfFile.getName().replaceAll("\\.vcf|\\.gz", "");
                 AnalysisInputData analysisInputData = new AnalysisInputData(run, analysisName, sampleName);
                 analysisInputData.setVcfFile(vcfFile);
                 analysisInputData.setBamFile(getBamFile(sampleName, bamFiles));
                 analysisInputData.setDepthFile(getDepthFile(sampleName, depthFiles));
-                sampleFiles.put(sampleName, analysisInputData);
+                analysesFiles.put(sampleName, analysisInputData);
             }
         }
 
-        return sampleFiles;
+
     }
 
 

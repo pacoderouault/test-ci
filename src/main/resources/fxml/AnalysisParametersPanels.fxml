@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<fx:root spacing="10.0" styleClass="module-box-container" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox spacing="5.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+            <children>
+                <HBox alignment="CENTER_LEFT" styleClass="module-box-header">
+                    <children>
+                        <Label styleClass="font-medium" text="%createAnalasisParameters.module.panels.lb.panelList" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addPanelHandler" text="%createAnalasisParameters.module.panels.btn.addPanel" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="panelsTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="panelsNameCol" prefWidth="170.0" text="%createAnalasisParameters.module.panels.panelcol.panelName" />
+                                <TableColumn fx:id="panelsSizeCol" prefWidth="100.0" text="%createAnalasisParameters.module.panels.panelcol.panelSize" />
+                                <TableColumn fx:id="panelsActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.panels.panelcol.panelActive" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+        <VBox spacing="5.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+            <children>
+                <HBox alignment="CENTER_LEFT" prefHeight="27.0" styleClass="module-box-header">
+                    <children>
+                        <Label styleClass="font-medium" text="%createAnalasisParameters.module.panels.lb.regionsList" />
+                    </children>
+                </HBox>
+                <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="regionsTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="regionsContigCol" prefWidth="120.0" text="%createAnalasisParameters.module.panels.regioncol.contig" />
+                                <TableColumn fx:id="regionsStartCol" prefWidth="100.0" text="%createAnalasisParameters.module.panels.regioncol.start" />
+                                <TableColumn fx:id="regionsEndCol" prefWidth="100.0" text="%createAnalasisParameters.module.panels.regioncol.end" />
+                                <TableColumn fx:id="regionsNameCol" prefWidth="150.0" text="%createAnalasisParameters.module.panels.regioncol.name" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</fx:root>

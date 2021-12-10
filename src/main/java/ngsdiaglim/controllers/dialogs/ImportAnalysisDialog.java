@@ -1,36 +1,53 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
+import htsjdk.tribble.TribbleException;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import ngsdiaglim.App;
+import ngsdiaglim.comparators.NaturalSortComparator;
+import ngsdiaglim.controllers.WorkIndicatorDialog;
 import ngsdiaglim.controllers.cells.*;
-import ngsdiaglim.modeles.analyse.AnalysesInputDirParser;
-import ngsdiaglim.modeles.analyse.AnalysisInputData;
-import ngsdiaglim.modeles.analyse.AnalysisParameters;
-import ngsdiaglim.modeles.analyse.Run;
+import ngsdiaglim.controllers.ui.RunFileNode;
+import ngsdiaglim.database.DAOController;
+import ngsdiaglim.exceptions.DuplicateSampleInRun;
+import ngsdiaglim.modeles.analyse.*;
 import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.VCFUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
 
-    private final Logger logger = LogManager.getLogger(ImportAnalysisDialog.class);
+    private final static Logger logger = LogManager.getLogger(ImportAnalysisDialog.class);
+    private static final NaturalSortComparator naturalSortComparator = new NaturalSortComparator();
 
     @FXML private VBox dialogContainer;
     @FXML private Label runNameLb;
     @FXML private Button importFromDirBtn;
     @FXML private Button importSingleAnalysisBtn;
+    @FXML private FlowPane runFilesFp;
     @FXML private TableView<AnalysisInputData> analysisTable;
     @FXML private TableColumn<AnalysisInputData, AnalysisInputData.AnalysisInputState> colAnalysisState;
     @FXML private TableColumn<AnalysisInputData, String> colAnalysisName;
@@ -58,33 +75,25 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
         }
 
         setTitle(App.getBundle().getString("importanalysesdialog.title"));
-
         setContent(dialogContainer);
-        initView();
+
+        try {
+            initView();
+        } catch (SQLException e) {
+            logger.error("Error when getting run files from db", e);
+            Message.error(e.getMessage(), e);
+        }
 
         setMaximize(true);
     }
 
-    private void initView() {
+    private void initView() throws SQLException {
 
         Object[] arguments = {run.getName()};
         runNameLb.setText(BundleFormatter.format("importanalysesdialog.lb.runName", arguments));
 
         initTable();
-
-        importFromDirBtn.setOnAction(e -> {
-            DirectoryChooser dc = FileChooserUtils.getDirectoryChooser();
-            File directory = dc.showDialog(App.getPrimaryStage());
-            if (directory != null) {
-                AnalysesInputDirParser analysesInputDirParser = new AnalysesInputDirParser(run, directory);
-                try {
-                    HashMap<String, AnalysisInputData> analysesInput = analysesInputDirParser.parseInputDir();
-                    analysisTable.getItems().addAll(analysesInput.values());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        fillRunFiles();
     }
 
     private void initTable() {
@@ -99,8 +108,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                 if (StringUtils.isBlank(t.getNewValue())) {
                     Message.error(App.getBundle().getString("importanalysesdialog.msg.err.emptyAnalysisName"));
                 } else {
-                    t.getRowValue().setAnalysisName(t.getNewValue());
+                    t.getRowValue().setAnalysisName(t.getNewValue().trim());
                 }
+                checkDuplicateAnalysisNames();
                 analysisTable.refresh();
             }
         });
@@ -137,6 +147,119 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                         .subtract(colAnalysisParameters.widthProperty())
                         .subtract(colActions.widthProperty())
                         .subtract(2));  // a border stroke?
+
+        analysisTable.getItems().addListener((ListChangeListener<AnalysisInputData>) c -> {
+            checkDuplicateAnalysisNames();
+        });
+    }
+
+
+    private void fillRunFiles() throws SQLException {
+        List<RunFile> runFiles = DAOController.get().getRunFilesDAO().getRunFiles(run);
+        for (RunFile runFile : runFiles) {
+            runFilesFp.getChildren().add(new RunFileNode(runFile));
+        }
+    }
+
+    @FXML
+    private void addRunFile() {
+        FileChooser fc = FileChooserUtils.getFileChooser();
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Reports Files", "*.pdf", "*.html"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
+        if (selectedFile != null) {
+            RunFile runFile = new RunFile(selectedFile, run);
+            runFilesFp.getChildren().add(new RunFileNode(runFile));
+        }
+    }
+
+
+    public List<RunFile> getRunsFiles() {
+        List<RunFile> runsFiles = new ArrayList<>();
+        for (Node node :  runFilesFp.getChildren()) {
+            if (node instanceof RunFileNode) {
+                runsFiles.add(((RunFileNode) node).getRunFile());
+            }
+        }
+        return runsFiles;
+    }
+
+
+    @FXML
+    private void importAnalysesFromDirectory() {
+        DirectoryChooser dc = FileChooserUtils.getDirectoryChooser();
+        File directory = dc.showDialog(App.getPrimaryStage());
+        if (directory != null) {
+            WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("importanalysesdialog.msg.parseDirectory"));
+            wid.exec("parseDir", inputParam -> {
+                AnalysesInputDirParser analysesInputDirParser = new AnalysesInputDirParser(run, directory);
+                try {
+                    analysesInputDirParser.parseInputDir();
+                    HashMap<String, AnalysisInputData> analysesInput = analysesInputDirParser.getAnalysesFiles();
+                    List<RunFile> runFiles = analysesInputDirParser.getRunFiles();
+//                    Platform.runLater(() -> analysisTable.getItems().addAll(
+//                            analysesInput.values().stream().sorted((o1, o2) -> naturalSortComparator.compare(o1.getSampleName(), o2.getSampleName()))
+//                    ));
+                    Platform.runLater(() -> {
+                       analysesInput.keySet().stream().sorted(naturalSortComparator).forEach(s -> {
+                           analysisTable.getItems().add(analysesInput.get(s));
+                       });
+                    });
+                    for (RunFile runFile : runFiles) {
+                        Platform.runLater(() -> runFilesFp.getChildren().add(new RunFileNode(runFile)));
+                    }
+                } catch (IOException | DuplicateSampleInRun ex) {
+                    logger.error(ex);
+                    Message.error(ex.getMessage(), ex);
+                    return 1;
+                }
+                return 0;
+            });
+
+        }
+    }
+
+
+    @FXML
+    private void importAnalysesFromFile() {
+        FileChooser fc = FileChooserUtils.getFileChooser();
+        fc.setTitle(App.getBundle().getString("importanalysesdialog.lb.importingVCFFile"));
+        File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
+        if (selectedFile != null) {
+            String sampleName = "";
+            String analysisName = selectedFile.getName().replaceAll("\\.vcf|\\.gz", "");
+            if (VCFUtils.isVCFReadable(selectedFile)) {
+                try {
+                    sampleName = VCFUtils.getSamplesName(selectedFile).get(0);
+                } catch (IOException e) {
+                    logger.error(e);
+                    Message.error(e.getMessage(), e);
+                }
+            }
+            AnalysisInputData aid = new AnalysisInputData(run, analysisName, sampleName);
+            aid.setVcfFile(selectedFile);
+
+            analysisTable.getItems().add(aid);
+        }
+    }
+
+
+    private void checkDuplicateAnalysisNames() {
+        for (AnalysisInputData aid : analysisTable.getItems()) {
+            long count = analysisTable.getItems().stream().filter(p -> p.getAnalysisName().equals(aid.getAnalysisName())).count();
+            if (count > 1) {
+                aid.setState(AnalysisInputData.AnalysisInputState.DUPLICATE_ANALYSIS);
+            }
+        }
+    }
+
+    public boolean hasAnalysesInError() {
+        return analysisTable.getItems().stream().anyMatch(a -> !a.getState().equals(AnalysisInputData.AnalysisInputState.VALID));
+    }
+
+    public ObservableList<AnalysisInputData> getAnalysisInputData() {
+        return analysisTable.getItems();
     }
 
 

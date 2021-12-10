@@ -3,11 +3,16 @@ package ngsdiaglim.controllers.dialogs;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.cells.RunFileListCell;
 import ngsdiaglim.modeles.analyse.Run;
+import ngsdiaglim.modeles.analyse.RunFile;
 import ngsdiaglim.utils.DateFormatterUtils;
+
+import java.io.File;
 
 public class RunInfoDialog extends DialogPane.Dialog<Run> {
 
@@ -20,6 +25,8 @@ public class RunInfoDialog extends DialogPane.Dialog<Run> {
     private final TextField runCreationDateTf = new TextField();
     private final Label runUserCreationLb = new Label(App.getBundle().getString("runinfodialog.lb.userCreationDate"));
     private final TextField runUserCreationTf = new TextField();
+    private final Label runUserLb = new Label(App.getBundle().getString("runinfodialog.lb.runFiles"));
+    private final ListView<RunFile> runFilesListView = new ListView<>();
 
     public RunInfoDialog(DialogPane pane) {
         super(pane, DialogPane.Type.INFORMATION);
@@ -29,6 +36,7 @@ public class RunInfoDialog extends DialogPane.Dialog<Run> {
         initView();
 
         valueProperty().addListener((obs, oldV, newV) -> {
+            getValue().loadRunFiles();
             fillFields();
         });
     }
@@ -53,6 +61,12 @@ public class RunInfoDialog extends DialogPane.Dialog<Run> {
         gridPane.add(runCreationDateTf, 1, rowIdx);
         gridPane.add(runUserCreationLb, 0, ++rowIdx);
         gridPane.add(runUserCreationTf, 1, rowIdx);
+        gridPane.add(runUserLb, 0, ++rowIdx);
+        gridPane.add(runFilesListView, 0, ++rowIdx);
+        GridPane.setColumnSpan(runFilesListView, 2);
+
+        runFilesListView.setCellFactory(data -> new RunFileListCell());
+        runFilesListView.setPrefWidth(400);
     }
 
     private void fillFields() {
@@ -60,5 +74,6 @@ public class RunInfoDialog extends DialogPane.Dialog<Run> {
         runDateTf.setText(DateFormatterUtils.formatLocalDate(getValue().getDate()));
         runCreationDateTf.setText(DateFormatterUtils.formatLocalDate(getValue().getCreationDate()));
         runUserCreationTf.setText(getValue().getCreationUser());
+        runFilesListView.setItems(getValue().getRunFiles());
     }
 }

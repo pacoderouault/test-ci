@@ -9,7 +9,13 @@ import java.util.Properties;
 public class AppSettings extends Properties {
 
     private static final Logger logger = LogManager.getLogger(AppSettings.class);
-    private final String PROPS_PATH = "application.properties";
+    private static final String PROPS_PATH = "application.properties";
+    public static final String TOOLS_DATA = ".data";
+    public static final String RUNS_PATH = "runs_data";
+    public static final String PANELS_PATH = "panels";
+    public static final String CNV_DIRNAME = "cnv";
+    public static final String CNV_CONTROLES_DIRNAME = "controls";
+//    public static final String REFERENCE_HG19_PATH = "/mnt/Data/Biological_Data/References/UCSC_hg19/fasta/split/hg19.fa";
 
     public AppSettings() throws IOException {
 
@@ -59,7 +65,11 @@ public class AppSettings extends Properties {
 
     public enum DefaultAppSettings {
 
-        MAXIMIZED("True");
+        MAXIMIZED("True"),
+        REFERENCE_HG19("/mnt/Data/Biological_Data/References/hg19.fasta"),
+        IGV_IP("127.0.0.1"),
+        IGV_PORT("60151"),
+        BGM_BLANK_REPORT("./.data/bgm_report_template.docx");
 
         private final String value;
 
