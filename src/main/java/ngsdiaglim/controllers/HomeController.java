@@ -164,7 +164,7 @@ public class HomeController extends Module {
                         Message.hideDialog(dialog);
                     } catch (SQLException | IOException ex) {
                         try {
-                            DAOController.get().getRunsDAO().deleteRun(runId);
+                            DAOController.getRunsDAO().deleteRun(runId);
                             try {
                                 runCreator.deleteRunDirectory();
                             } catch (IOException exception) {
@@ -234,14 +234,14 @@ public class HomeController extends Module {
 
 
     public void loadRuns() throws SQLException {
-        runsTable.getItems().setAll(DAOController.get().getRunsDAO().getRuns());
+        runsTable.getItems().setAll(DAOController.getRunsDAO().getRuns());
         fillStatistics();
     }
 
     public void fillAnalysesTable() throws SQLException {
         Run selectedRun = runsTable.getSelectionModel().getSelectedItem();
         if (selectedRun != null) {
-            analysesTable.setItems(DAOController.get().getAnalysisDAO().getAnalysis(selectedRun));
+            analysesTable.setItems(DAOController.getAnalysisDAO().getAnalysis(selectedRun));
         }
         else {
             analysesTable.getItems().clear();
@@ -255,7 +255,7 @@ public class HomeController extends Module {
         }
         Runnable task = () -> {
             try {
-                RunsStatisticsDAO.RunsStatistics runsStatistics = DAOController.get().getRunsStatisticsDAO().getRunsStatistics();
+                RunsStatisticsDAO.RunsStatistics runsStatistics = DAOController.getRunsStatisticsDAO().getRunsStatistics();
                 Platform.runLater(() -> {
                     statisticsContainer.getChildren().clear();
 

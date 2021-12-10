@@ -155,7 +155,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
 
 
     private void fillRunFiles() throws SQLException {
-        List<RunFile> runFiles = DAOController.get().getRunFilesDAO().getRunFiles(run);
+        List<RunFile> runFiles = DAOController.getRunFilesDAO().getRunFiles(run);
         for (RunFile runFile : runFiles) {
             runFilesFp.getChildren().add(new RunFileNode(runFile));
         }

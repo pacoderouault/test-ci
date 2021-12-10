@@ -160,16 +160,16 @@ public class AnalysisParametersPanelsController extends HBox {
                             File panelFile = Paths.get(panelDataPath.toString(), dialog.getValue().getName() + ".bed.gz").toFile();
                             PanelParser.writePanel(regions, panelFile);
 
-                            panelId = DAOController.get().getPanelDAO().addPanel(dialog.getValue().getName(), panelFile.getPath());
+                            panelId = DAOController.getPanelDAO().addPanel(dialog.getValue().getName(), panelFile.getPath());
                             for (PanelRegion region : regions) {
-                                DAOController.get().getPanelRegionDAO().addRegion(region, panelId);
+                                DAOController.getPanelRegionDAO().addRegion(region, panelId);
                             }
 
                         } catch (Exception ex) {
                             logger.error("Error when adding panel", ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                             try {
-                                DAOController.get().getPanelDAO().deletePanel(panelId);
+                                DAOController.getPanelDAO().deletePanel(panelId);
                             } catch (SQLException exc) {
                                 logger.error("Error when deleting panel", exc);
                                 Platform.runLater(() -> Message.error(exc.getMessage(), exc));
@@ -196,7 +196,7 @@ public class AnalysisParametersPanelsController extends HBox {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                DAOController.get().getPanelDAO().updatePanel(item, !item.isActive());
+                DAOController.getPanelDAO().updatePanel(item, !item.isActive());
                 item.setActive(!checkBox.isSelected());
                 checkBox.setSelected(!checkBox.isSelected());
                 loadPanels();
@@ -211,7 +211,7 @@ public class AnalysisParametersPanelsController extends HBox {
 
 
     private void loadPanels() throws SQLException {
-        panelsTable.getItems().setAll(DAOController.get().getPanelDAO().getPanels());
+        panelsTable.getItems().setAll(DAOController.getPanelDAO().getPanels());
     }
 
     public TableView<Panel> getPanelsTable() {return panelsTable;}

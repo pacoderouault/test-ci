@@ -83,7 +83,7 @@ public class ImportVariants {
             if (contig == null || contig.isBlank() || start == null || end == null || ref == null || ref.isBlank() || alt == null || alt.isBlank() || acmg == null || acmg_conf == null || fp == null) {
                 throw new NullPointerException("Variant is null : " + f);
             }
-            Variant v = DAOController.get().getVariantsDAO().getVariant(contig, start, ref, alt);
+            Variant v = DAOController.getVariantsDAO().getVariant(contig, start, ref, alt);
             if (v == null) {
                 System.out.println("Variant isn't found : " + f);
             } else {
@@ -98,8 +98,8 @@ public class ImportVariants {
                     LocalDateTime dateConf = tks[6].equals("null") ? LocalDateTime.parse(tks[5]) : LocalDateTime.parse(tks[6]);
                     String comment = tks[7].replace("&NL&", "\n");
                     ACMG newACMG = ACMG.getFromPathogenicityValue(newPatho);
-                    User user = DAOController.get().getUsersDAO().getUser(userName);
-                    User userConf = DAOController.get().getUsersDAO().getUser(userNameConfirm);
+                    User user = DAOController.getUsersDAO().getUser(userName);
+                    User userConf = DAOController.getUsersDAO().getUser(userNameConfirm);
 
                     VariantPathogenicity vp = new VariantPathogenicity(
                             v.getId(),
@@ -113,19 +113,19 @@ public class ImportVariants {
                             comment
                     );
 
-                    DAOController.get().getVariantPathogenicityDAO().addVariantPathogenicity(vp);
+                    DAOController.getVariantPathogenicityDAO().addVariantPathogenicity(vp);
                 }
 
                 for (String[] tks : comments) {
                     String userName = tks[1];
                     LocalDate date = LocalDate.parse(tks[2]);
                     String comment = tks[3].replace("&NL&", "\n");
-                    User user = DAOController.get().getUsersDAO().getUser(userName);
-                    DAOController.get().getVariantCommentaryDAO().addVariantCommentary(v.getId(), user, comment, date.atStartOfDay());
+                    User user = DAOController.getUsersDAO().getUser(userName);
+                    DAOController.getVariantCommentaryDAO().addVariantCommentary(v.getId(), user, comment, date.atStartOfDay());
                 }
                 v.setAcmg(variant_acmg);
                 v.setPathogenicityConfirmed(true);
-                DAOController.get().getVariantsDAO().updateVariant(v);
+                DAOController.getVariantsDAO().updateVariant(v);
             }
         }
     }

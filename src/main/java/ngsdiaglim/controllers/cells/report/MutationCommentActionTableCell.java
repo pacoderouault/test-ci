@@ -110,7 +110,7 @@ public class MutationCommentActionTableCell  extends TableCell<ReportMutationCom
                 Message.showDialog(dialog);
                 dialog.getButton(ButtonType.OK).setOnAction(event -> {
                     try {
-                        DAOController.get().getReportMutationCommentaryDAO().editReportMutationCommentary(
+                        DAOController.getReportMutationCommentaryDAO().editReportMutationCommentary(
                                 commentary.getId(),
                                 dialog.getValue().getTitle(),
                                 dialog.getValue().getComment()
@@ -137,7 +137,7 @@ public class MutationCommentActionTableCell  extends TableCell<ReportMutationCom
                 DialogPane.Dialog<ButtonType> dialog = Message.confirm(App.getBundle().getString("analysisviewreports.reportcomments.msg.confirm.confirmDelete"));
                 dialog.getButton(ButtonType.YES).setOnAction(event -> {
                     try {
-                        DAOController.get().getReportMutationCommentaryDAO().deleteReportMutationCommentary(commentary.getId());
+                        DAOController.getReportMutationCommentaryDAO().deleteReportMutationCommentary(commentary.getId());
                         getTableView().getItems().remove(commentary);
                     } catch (SQLException e) {
                         logger.error(e);

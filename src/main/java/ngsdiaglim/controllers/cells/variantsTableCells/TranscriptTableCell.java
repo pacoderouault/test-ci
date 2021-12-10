@@ -55,7 +55,7 @@ public class TranscriptTableCell extends TableCell<Annotation, Transcript> {
                 User loggedUser = App.get().getLoggedUser();
                 loggedUser.setPreference(DefaultPreferencesEnum.SELECT_TRANSCRIPT_FOR_ALL_VARIANTS, popover.setForAllVariants());
                 try {
-                    DAOController.get().getUsersDAO().updatePreferences(loggedUser);
+                    DAOController.getUsersDAO().updatePreferences(loggedUser);
                 } catch (SQLException e) {
                     logger.error(e);
                 }

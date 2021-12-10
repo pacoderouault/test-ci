@@ -98,7 +98,7 @@ public class AddCNVControlGroupDialog  extends DialogPane.Dialog<AddCNVControlGr
         depthFilesTable.setItems(getValue().getDepthFiles());
 
         try {
-            panelsCb.setItems(DAOController.get().getPanelDAO().getPanels());
+            panelsCb.setItems(DAOController.getPanelDAO().getPanels());
             algorithmCb.getItems().setAll(TargetEnrichment.values());
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -169,7 +169,7 @@ public class AddCNVControlGroupDialog  extends DialogPane.Dialog<AddCNVControlGr
             return App.getBundle().getString("addcnvcontrolgroup.msg.err.emptyname");
         } else {
             try {
-                if (DAOController.get().getCnvControlGroupsDAO().exists(getValue().getName())) {
+                if (DAOController.getCnvControlGroupsDAO().exists(getValue().getName())) {
                             return App.getBundle().getString("addcnvcontrolgroup.msg.err.nameexists");
                 } else if (getValue().getPanel() == null) {
                     return App.getBundle().getString("addcnvcontrolgroup.msg.err.emptypanel");

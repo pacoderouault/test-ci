@@ -53,7 +53,7 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
                     Gene g = (Gene) group.getUserData();
                     if (newV == null) {
                         try {
-                            DAOController.get().getGeneDAO().setPreferredTranscript(g.getId(), -1);
+                            DAOController.getGeneDAO().setPreferredTranscript(g.getId(), -1);
                         } catch (SQLException e) {
                             logger.error(e);
                             Message.error(e.getMessage(), e);
@@ -62,7 +62,7 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
                     else {
                         Transcript t = (Transcript) newV.getUserData();
                         try {
-                            DAOController.get().getGeneDAO().setPreferredTranscript(g.getId(), t.getId());
+                            DAOController.getGeneDAO().setPreferredTranscript(g.getId(), t.getId());
                         } catch (SQLException e) {
                             logger.error(e);
                             Message.error(e.getMessage(), e);

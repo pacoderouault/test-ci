@@ -51,7 +51,7 @@ public class ExportColumnsDropDownMenu extends VBox {
 
     private void fillListView() {
         try {
-            columnsExport = DAOController.get().getColumnsExportDAO().getColumnsExport(App.get().getLoggedUser().getId());
+            columnsExport = DAOController.getColumnsExportDAO().getColumnsExport(App.get().getLoggedUser().getId());
             if (columnsExport == null) {
                 columnsExport = new ColumnsExport();
                 for (VariantsTableColumns col : variantTableBuilder.getDefaultColumnsOrder()) {
@@ -97,7 +97,7 @@ public class ExportColumnsDropDownMenu extends VBox {
         File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
         if (selectedFile != null) {
             try {
-                DAOController.get().getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
+                DAOController.getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
             } catch (SQLException e) {
                 logger.error(e);
                 Message.error(e.getMessage(), e);

@@ -83,7 +83,7 @@ public class RunActionTableCell extends TableCell<Run, Void> {
             DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("home.module.runslist.table.actions.msg.deleteRunConfirm", arguments));
             dialog.getButton(ButtonType.YES).setOnAction(event -> {
                 try {
-                    DAOController.get().getRunsDAO().deleteRun(run.getId());
+                    DAOController.getRunsDAO().deleteRun(run.getId());
                     FileUtils.deleteDirectory(new File(run.getPath()));
                     ModuleManager.getHomeController().loadRuns();
                     Message.hideDialog(dialog);

@@ -141,7 +141,7 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
                         Prescriber prescriber = getTableRow().getItem();
                         if (prescriber != null) {
                             try {
-                                DAOController.get().getPrescriberDAO().deletePrescriber(prescriber.getId());
+                                DAOController.getPrescriberDAO().deletePrescriber(prescriber.getId());
                                 prescribersList.remove(prescriber);
                                 Message.hideDialog(dialog);
                             } catch (SQLException ex) {
@@ -168,7 +168,7 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
 
         try {
             prescribersTable.setItems(viewvablePrescribers);
-            prescribersList.setAll(DAOController.get().getPrescriberDAO().getPrescribers());
+            prescribersList.setAll(DAOController.getPrescriberDAO().getPrescribers());
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -190,9 +190,9 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
         if (!p.getState().getState().equals(Prescriber.PrescriberState.State.ERROR)) {
             try {
                 if (p.getId() > 0) {
-                    DAOController.get().getPrescriberDAO().updatePrescriber(p);
+                    DAOController.getPrescriberDAO().updatePrescriber(p);
                 } else {
-                    long id = DAOController.get().getPrescriberDAO().addPrescriber(p);
+                    long id = DAOController.getPrescriberDAO().addPrescriber(p);
                     p.setId(id);
                 }
             } catch (SQLException e) {

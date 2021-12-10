@@ -89,13 +89,13 @@ public class Run {
 
     public ObservableList<Analysis> getAnalyses() throws SQLException {
         if (analyses == null) {
-            analyses = DAOController.get().getAnalysisDAO().getAnalysis(this);
+            analyses = DAOController.getAnalysisDAO().getAnalysis(this);
         }
         return analyses;
     }
 
     public void loadAnalysesFromDB()  throws SQLException {
-        analyses = DAOController.get().getAnalysisDAO().getAnalysis(this);
+        analyses = DAOController.getAnalysisDAO().getAnalysis(this);
     }
 
     public boolean hasAnalysis(String analysisName) {
@@ -121,7 +121,7 @@ public class Run {
 
     public void loadRunFiles() {
         try {
-            setRunFiles(DAOController.get().getRunFilesDAO().getRunFiles(this));
+            setRunFiles(DAOController.getRunFilesDAO().getRunFiles(this));
         } catch (SQLException e) {
             logger.error(e);
             Platform.runLater(() -> Message.error(e.getMessage(), e));

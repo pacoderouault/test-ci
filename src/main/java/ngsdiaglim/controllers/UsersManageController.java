@@ -104,7 +104,7 @@ public class UsersManageController extends Module {
                         if (App.get().getLoggedUser().equals(user)) {
                             App.get().getLoggedUser().setUsername(t.getNewValue());
                         }
-                        DAOController.get().getUsersDAO().updateUsername(user);
+                        DAOController.getUsersDAO().updateUsername(user);
                     }
                 } catch (SQLException e) {
                     user.setUsername(t.getOldValue());
@@ -132,7 +132,7 @@ public class UsersManageController extends Module {
                     for (Role remitem : c.getRemoved()) {
                         if (remitem.getRoleName().equals(DefaultRolesEnum.ADMIN.name())) {
                             try {
-                                if (DAOController.get().getUsersDAO().isLastAdmin(user.getUsername())) {
+                                if (DAOController.getUsersDAO().isLastAdmin(user.getUsername())) {
                                     Message.error(App.getBundle().getString("usersmanage.msg.err.islastadmin"));
                                     continue;
                                 }
@@ -143,7 +143,7 @@ public class UsersManageController extends Module {
                         }
 
                         try {
-                            DAOController.get().getUserRolesDAO().removeUserRole(user.getId(), remitem);
+                            DAOController.getUserRolesDAO().removeUserRole(user.getId(), remitem);
                             user.getRoles().remove(remitem);
                         } catch (SQLException e) {
                             logger.error("Error when editing user role", e);
@@ -154,7 +154,7 @@ public class UsersManageController extends Module {
                     for (Role additem : c.getAddedSubList()) {
                         if (!user.hasRole(additem)) {
                             try {
-                                DAOController.get().getUserRolesDAO().addUserRole(user.getId(), additem);
+                                DAOController.getUserRolesDAO().addUserRole(user.getId(), additem);
                                 user.getRoles().add(additem);
                             } catch (SQLException e) {
                                 logger.error("Error when editing user role", e);
@@ -179,7 +179,7 @@ public class UsersManageController extends Module {
                 } else {
 //                    User user = getTableView().getItems().get(getIndex());
                     try {
-                        cb.getItems().setAll(DAOController.get().getRolesDAO().getRoles());
+                        cb.getItems().setAll(DAOController.getRolesDAO().getRoles());
                         if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
                             cb.setDisable(true);
                         }
@@ -234,7 +234,7 @@ public class UsersManageController extends Module {
                         dialog.getButton(ButtonType.OK).setOnAction(event -> {
                             if (dialog.isValid() && dialog.getValue() != null) {
                                 try {
-                                    DAOController.get().getUsersDAO().updatePassword(user, dialog.getValue());
+                                    DAOController.getUsersDAO().updatePassword(user, dialog.getValue());
                                 } catch (SQLException ex) {
                                     logger.error("Error when updating password", ex);
                                     Message.error(ex.getMessage(), ex);
@@ -275,15 +275,15 @@ public class UsersManageController extends Module {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                if(DAOController.get().getUsersDAO().isLastAdmin(user.getUsername())) {
+                if(DAOController.getUsersDAO().isLastAdmin(user.getUsername())) {
                     Message.error(App.getBundle().getString("usersmanage.msg.err.inactivelastadmin"));
                 }
                 else {
                     if (checkBox.isSelected()) {
-                        DAOController.get().getUsersDAO().inactiveUser(user.getId());
+                        DAOController.getUsersDAO().inactiveUser(user.getId());
                     }
                     else {
-                        DAOController.get().getUsersDAO().activeUser(user.getId());
+                        DAOController.getUsersDAO().activeUser(user.getId());
                     }
                     user.setActive(!checkBox.isSelected());
                     checkBox.setSelected(!checkBox.isSelected());
@@ -300,7 +300,7 @@ public class UsersManageController extends Module {
     }
 
     private void fillUsersTable() throws SQLException {
-        userTable.setItems(DAOController.get().getUsersDAO().getUsers());
+        userTable.setItems(DAOController.getUsersDAO().getUsers());
     }
 
     private String checkUsername(User user, String username) {
@@ -309,7 +309,7 @@ public class UsersManageController extends Module {
         }
         else {
             try {
-                User u = DAOController.get().getUsersDAO().getUser(username);
+                User u = DAOController.getUsersDAO().getUser(username);
                 if (u != null && !user.equals(u)) {
                     return App.getBundle().getString("adduserdialog.msg.err.usernamesexists");
                 }
@@ -331,7 +331,7 @@ public class UsersManageController extends Module {
             b.setOnAction(e -> {
                 if (dialog.isValid() && dialog.getValue() != null) {
                     try {
-                        DAOController.get().getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles());
+                        DAOController.getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles());
                         fillUsersTable();
                         Message.hideDialog(dialog);
                     } catch (SQLException ex) {
@@ -364,7 +364,7 @@ public class UsersManageController extends Module {
                     if (error != null) {
                         Message.error(error);
                     } else {
-                        DAOController.get().getRolesDAO().renameRole(role, t.getNewValue());
+                        DAOController.getRolesDAO().renameRole(role, t.getNewValue());
                         role.setRoleName(t.getNewValue());
                     }
                 } catch (SQLException e) {
@@ -392,7 +392,7 @@ public class UsersManageController extends Module {
                         DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("usermanage.roles.msg.conf.deleterole", arguments));
                         dialog.getButton(ButtonType.YES).setOnAction(event -> {
                             try {
-                                DAOController.get().getRolesDAO().deleteRole(role);
+                                DAOController.getRolesDAO().deleteRole(role);
                                 rolesTable.getItems().remove(role);
                                 userTable.refresh();
                                 Message.hideDialog(dialog);
@@ -426,7 +426,7 @@ public class UsersManageController extends Module {
             if (StringUtils.isBlank(roleName)) {
                 return App.getBundle().getString("usermanage.roles.err.emptyroleName");
             }
-            if (DAOController.get().getRolesDAO().roleExists(roleName)) {
+            if (DAOController.getRolesDAO().roleExists(roleName)) {
                 return App.getBundle().getString("usermanage.roles.err.roleexists");
             }
         } catch (SQLException e) {
@@ -439,7 +439,7 @@ public class UsersManageController extends Module {
 
     private void fillRolesTable() {
         try {
-            rolesTable.getItems().setAll(DAOController.get().getRolesDAO().getRoles());
+            rolesTable.getItems().setAll(DAOController.getRolesDAO().getRoles());
         } catch (SQLException e) {
             logger.error("Error when getting roles from db", e);
             Message.error(e.getMessage(), e);
@@ -473,7 +473,7 @@ public class UsersManageController extends Module {
                 treeItem.selectedProperty().addListener((obs, oldV, newV) -> {
                     if (newV) {
                         try {
-                            DAOController.get().getRolePermissionsDAO().addRolePermission(selectedRole.getId(), p);
+                            DAOController.getRolePermissionsDAO().addRolePermission(selectedRole.getId(), p);
                             selectedRole.getPermissions().add(p);
                             permissionsTreeView.refresh();
                         } catch (SQLException e) {
@@ -483,7 +483,7 @@ public class UsersManageController extends Module {
                     }
                     else {
                         try {
-                            DAOController.get().getRolePermissionsDAO().removeRolePermission(selectedRole.getId(), p);
+                            DAOController.getRolePermissionsDAO().removeRolePermission(selectedRole.getId(), p);
                             selectedRole.getPermissions().remove(p);
                             permissionsTreeView.refresh();
                         } catch (SQLException e) {
@@ -511,7 +511,7 @@ public class UsersManageController extends Module {
                 if (error != null) {
                     Message.error(error);
                 } else {
-                    DAOController.get().getRolesDAO().addRole(groupName);
+                    DAOController.getRolesDAO().addRole(groupName);
                     fillRolesTable();
                     userTable.refresh();
                     Message.hideDialog(dialog);

@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PanelTest  extends BaseSetup {
 
-    private static final PanelDAO panelDAO = DAOController.get().getPanelDAO();
-    private static final PanelRegionDAO panelRegionDAO = DAOController.get().getPanelRegionDAO();
+    private static final PanelDAO panelDAO = DAOController.getPanelDAO();
+    private static final PanelRegionDAO panelRegionDAO = DAOController.getPanelRegionDAO();
 
     @TempDir
     File tempDir;

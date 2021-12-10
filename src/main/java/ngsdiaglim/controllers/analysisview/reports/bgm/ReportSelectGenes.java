@@ -76,7 +76,7 @@ public class ReportSelectGenes extends ReportPane {
     private void initPanelCb() {
         // fill panels combobox
         try {
-            panelCb.getItems().setAll(DAOController.get().getGenesPanelDAO().getGenesPanels());
+            panelCb.getItems().setAll(DAOController.getGenesPanelDAO().getGenesPanels());
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);

@@ -60,7 +60,7 @@ public class RunStateTableCell extends TableCell<Run, Void> {
         int inProgressAnalysesCount = 0;
         int analysesDoneCount = 0;
         try {
-            Tuple<Integer, Integer> analysisCount = DAOController.get().getAnalysisDAO().getAnalysisCount(run.getId());
+            Tuple<Integer, Integer> analysisCount = DAOController.getAnalysisDAO().getAnalysisCount(run.getId());
             inProgressAnalysesCount = analysisCount.a;
             analysesDoneCount = analysisCount.b;
         } catch (SQLException e) {

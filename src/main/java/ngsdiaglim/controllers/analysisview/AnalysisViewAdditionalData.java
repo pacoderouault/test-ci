@@ -78,7 +78,7 @@ public class AnalysisViewAdditionalData extends HBox {
             if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
                 String comment = addVariantCommentaryDialog.getValue().getCommentary();
                 try {
-                    DAOController.get().getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment);
+                    DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment);
                     loadAnalysisCommentaries();
                     Message.hideDialog(addVariantCommentaryDialog);
                 } catch (SQLException ex) {
@@ -111,7 +111,7 @@ public class AnalysisViewAdditionalData extends HBox {
 
     public void loadAnalysisCommentaries() {
         try {
-            commentariesLv.setItems(DAOController.get().getAnalysisCommentaryDAO().getVariantCommentaries(analysis.getId()));
+            commentariesLv.setItems(DAOController.getAnalysisCommentaryDAO().getVariantCommentaries(analysis.getId()));
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -122,7 +122,7 @@ public class AnalysisViewAdditionalData extends HBox {
     public void loadAnalysisImages() {
         imagesFp.getChildren().clear();
         try {
-//            List<AdditionalImage> images = DAOController.get().getAnalysisImagesDAO().getAdditionalImages(analysis.getId());
+//            List<AdditionalImage> images = DAOController.getAnalysisImagesDAO().getAdditionalImages(analysis.getId());
             List<AdditionalImage> images = imageImporter.loadImages();
             for (AdditionalImage ai : images) {
                 imagesFp.getChildren().add(buildImageContainer(ai));

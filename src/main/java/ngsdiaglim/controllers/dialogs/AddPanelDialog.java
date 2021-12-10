@@ -101,7 +101,7 @@ public class AddPanelDialog extends DialogPane.Dialog<AddPanelDialog.PanelCreati
         }
         else {
             try {
-                if (DAOController.get().getPanelDAO().panelExists(getValue().getName())) {
+                if (DAOController.getPanelDAO().panelExists(getValue().getName())) {
                     return App.getBundle().getString("addpaneldialog.msg.err.nameExists");
                 }
             } catch (SQLException e) {

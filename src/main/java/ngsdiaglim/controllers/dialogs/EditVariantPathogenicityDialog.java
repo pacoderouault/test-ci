@@ -159,10 +159,10 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
                     commentaryTa.getText()
             );
             try {
-                DAOController.get().getVariantPathogenicityDAO().addVariantPathogenicity(vp);
+                DAOController.getVariantPathogenicityDAO().addVariantPathogenicity(vp);
                 getValue().setAcmg(acmg);
                 getValue().setPathogenicityConfirmed(user.isPermitted(PermissionsEnum.VALIDATE_VARIANT_PATHOGENICITY));
-                DAOController.get().getVariantsDAO().updateVariant(getValue());
+                DAOController.getVariantsDAO().updateVariant(getValue());
                 getValue().loadPathogenicityHistory();
                 historyTable.refresh();
 

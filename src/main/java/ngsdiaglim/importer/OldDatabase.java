@@ -71,14 +71,14 @@ public class OldDatabase {
                 String name = rs.getString(2);
                 boolean is_admin = rs.getBoolean(3);
 
-                if (!DAOController.get().getUsersDAO().userExists(name)) {
+                if (!DAOController.getUsersDAO().userExists(name)) {
                     Set<Role> roles = new HashSet<>();
                     if (is_admin) {
-                        roles.add(DAOController.get().getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name()));
+                        roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name()));
                     } else {
-                        roles.add(DAOController.get().getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
+                        roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
                     }
-                    DAOController.get().getUsersDAO().addUser(name, name, roles);
+                    DAOController.getUsersDAO().addUser(name, name, roles);
                 }
             }
         }

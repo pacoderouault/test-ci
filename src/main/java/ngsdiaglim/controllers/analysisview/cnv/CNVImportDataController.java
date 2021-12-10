@@ -83,7 +83,7 @@ public class CNVImportDataController extends VBox {
 
     private void initPanelsCombobox() {
         try {
-            ObservableList<Panel> panels = DAOController.get().getPanelDAO().getPanels();
+            ObservableList<Panel> panels = DAOController.getPanelDAO().getPanels();
             capturePanelCb.setItems(panels);
             ampliconPanelCb.setItems(panels);
         } catch (SQLException e) {

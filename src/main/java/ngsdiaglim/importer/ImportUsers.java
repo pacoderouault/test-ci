@@ -22,14 +22,14 @@ public class ImportUsers {
                 String[] tks = line.split("\t");
                 String name = tks[0];
                 boolean is_admin = Boolean.parseBoolean(tks[1]);
-                if (!DAOController.get().getUsersDAO().userExists(name)) {
+                if (!DAOController.getUsersDAO().userExists(name)) {
                     Set<Role> roles = new HashSet<>();
                     if (is_admin) {
-                        roles.add(DAOController.get().getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name()));
+                        roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name()));
                     } else {
-                        roles.add(DAOController.get().getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
+                        roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
                     }
-                    DAOController.get().getUsersDAO().addUser(name, name, roles);
+                    DAOController.getUsersDAO().addUser(name, name, roles);
                 }
             }
         }

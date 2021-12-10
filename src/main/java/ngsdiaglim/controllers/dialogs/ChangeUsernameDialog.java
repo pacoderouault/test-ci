@@ -63,7 +63,7 @@ public class ChangeUsernameDialog extends DialogPane.Dialog<ChangeUsernameDialog
             return App.getBundle().getString("changeusernamedialog.msg.err.emptyusername");
         } else if (userNameTf.getText().equalsIgnoreCase(App.get().getLoggedUser().getUsername())) {
             return App.getBundle().getString("changeusernamedialog.msg.err.usernameequals");
-        }  else if (DAOController.get().getUsersDAO().userExists(userNameTf.getText())) {
+        }  else if (DAOController.getUsersDAO().userExists(userNameTf.getText())) {
             return App.getBundle().getString("changeusernamedialog.msg.err.usernameexists");
         }
         return null;

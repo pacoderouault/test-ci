@@ -158,7 +158,7 @@ public class AnalysisViewController extends Module {
                 b.setOnAction(event -> {
                     if (dialog.isValid() && dialog.getValue() != null) {
                         try {
-                            DAOController.get().getAnalysisDAO().updateAnalysisStatus(analysis.get().getId(), dialog.getValue());
+                            DAOController.getAnalysisDAO().updateAnalysisStatus(analysis.get().getId(), dialog.getValue());
                             analysis.get().setStatus(dialog.getValue());
                             Message.hideDialog(dialog);
                         } catch (SQLException ex) {
@@ -211,7 +211,7 @@ public class AnalysisViewController extends Module {
 //                });
 //                wid.exec("LoadPanels", inputParam -> {
 //                    try {
-//                        AnalysisParameters params = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(newV.getAnalysisParameters().getId());
+//                        AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(newV.getAnalysisParameters().getId());
 //                        newV.setAnalysisParameters(params);
 //                        VCFParser vcfParser = new VCFParser(newV.getVcfFile(), newV.getAnalysisParameters(), newV.getRun());
 //                        vcfParser.parseVCF(true);

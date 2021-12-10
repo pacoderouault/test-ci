@@ -15,7 +15,7 @@ public abstract class BaseSetup {
         if (!started) {
             System.out.println("@BeforeAll static method invoked once.");
             System.out.println("Create database");
-            DAOController.get().getDatabaseCreatorDAO().createTables();
+            DAOController.getDatabaseCreatorDAO().createTables();
             started = true;
         }
         System.out.println("@BeforeAll static method invoked for every class.");

@@ -148,7 +148,7 @@ public class AnalysisParametersCreateController extends VBox {
             return App.getBundle().getString("createAnalasisParameters.msg.err.emptyname");
         } else {
             try {
-                if (DAOController.get().getAnalysisParametersDAO().analysisParametersExists(analysisNameTf.getText())) {
+                if (DAOController.getAnalysisParametersDAO().analysisParametersExists(analysisNameTf.getText())) {
                     return App.getBundle().getString("createAnalasisParameters.msg.err.analysisnameExists");
                 }
             } catch (SQLException e) {
@@ -188,7 +188,7 @@ public class AnalysisParametersCreateController extends VBox {
 
     private String checkAnalysisParametersIdUsed(long id) {
         try {
-            if (DAOController.get().getAnalysisParametersDAO().isUsed(id)) {
+            if (DAOController.getAnalysisParametersDAO().isUsed(id)) {
                 return App.getBundle().getString("createAnalasisParameters.msg.err.parametersUsed");
             }
         } catch (SQLException e) {
@@ -205,7 +205,7 @@ public class AnalysisParametersCreateController extends VBox {
         }
         else {
             try {
-                if (DAOController.get().getAnalysisParametersDAO().analysisParametersExists(name)) {
+                if (DAOController.getAnalysisParametersDAO().analysisParametersExists(name)) {
                     return App.getBundle().getString("createAnalasisParameters.msg.err.analysisnameExists");
                 }
             } catch (SQLException e) {
@@ -294,7 +294,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                    analysisParameters.setAnalysisName(t.getOldValue());
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            t.getNewValue(),
 //                            analysisParameters.getGenome(),
@@ -332,7 +332,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                    analysisParameters.setGenome(t.getOldValue());
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            analysisParameters.getAnalysisName(),
 //                            t.getNewValue(),
@@ -369,7 +369,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                if (error != null) {
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            analysisParameters.getAnalysisName(),
 //                            analysisParameters.getGenome(),
@@ -404,7 +404,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                if (error != null) {
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            analysisParameters.getAnalysisName(),
 //                            analysisParameters.getGenome(),
@@ -440,7 +440,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                if (error != null) {
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            analysisParameters.getAnalysisName(),
 //                            analysisParameters.getGenome(),
@@ -478,7 +478,7 @@ public class AnalysisParametersCreateController extends VBox {
 //                if (error != null) {
 //                    Message.error(error);
 //                } else {
-//                    DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(
+//                    DAOController.getAnalysisParametersDAO().updateAnalysisParameters(
 //                            analysisParameters.getId(),
 //                            analysisParameters.getAnalysisName(),
 //                            analysisParameters.getGenome(),
@@ -533,7 +533,7 @@ public class AnalysisParametersCreateController extends VBox {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                DAOController.get().getAnalysisParametersDAO().updateAnalysisParameters(item.getId(),
+                DAOController.getAnalysisParametersDAO().updateAnalysisParameters(item.getId(),
                         item.getAnalysisName(),
                         item.getGenome(),
                         item.getMinDepth(),
@@ -555,7 +555,7 @@ public class AnalysisParametersCreateController extends VBox {
 
 
     private void loadAnalysisParameters() throws SQLException {
-        analysisParametersTable.getItems().setAll(DAOController.get().getAnalysisParametersDAO().getAnalysisParameters());
+        analysisParametersTable.getItems().setAll(DAOController.getAnalysisParametersDAO().getAnalysisParameters());
     }
 
 
@@ -565,7 +565,7 @@ public class AnalysisParametersCreateController extends VBox {
         if(error == null) {
             try {
                 Long hotspotsSetId = hotspotsCb.getValue() == null ? null : hotspotsCb.getValue().getId();
-                DAOController.get().getAnalysisParametersDAO().addAnalysisParameters(
+                DAOController.getAnalysisParametersDAO().addAnalysisParameters(
                         analysisNameTf.getText(),
                         genomesCb.getValue(),
                         minDepthSpinner.getValue(),

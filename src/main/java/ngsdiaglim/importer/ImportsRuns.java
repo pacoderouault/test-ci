@@ -64,7 +64,7 @@ public class ImportsRuns {
                 throw new IOException(d.getPath());
             }
             long run_id = createRun(runName, runDate);
-            Run run = DAOController.get().getRunsDAO().getRun(run_id);
+            Run run = DAOController.getRunsDAO().getRun(run_id);
             // import analyses
             for (File analysisDir : Files.list(d.toPath()).map(Path::toFile).filter(File::isDirectory).collect(Collectors.toList())) {
                 importAnalyse(run, analysisDir);
@@ -99,7 +99,7 @@ public class ImportsRuns {
         }
 
         Path relativeRunPath = FilesUtils.convertAbsolutePathToRelative(runPath);
-        return DAOController.get().getRunsDAO().addRun(
+        return DAOController.getRunsDAO().addRun(
                 runName,
                 relativeRunPath.toString(),
                 runDate,
@@ -149,12 +149,12 @@ public class ImportsRuns {
 
         AnalysisParameters analysisParameters = null;
         if (design.equals("CMT_Calcium_MiSeq")) {
-            analysisParameters = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters("NeuroCalcium_capture");
+            analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters("NeuroCalcium_capture");
 
 
 
         } else if (design.equals("CMT126_proton")) {
-            analysisParameters = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters("NeuroCalcium_amplicon");
+            analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters("NeuroCalcium_amplicon");
         }
 
         if (analysisParameters == null) {
@@ -228,7 +228,7 @@ public class ImportsRuns {
         }
 
         // Insert Analysis in database
-        long analysis_id = DAOController.get().getAnalysisDAO().addAnalyse(
+        long analysis_id = DAOController.getAnalysisDAO().addAnalyse(
                 analysisName,
                 analysisDirectory.getPath(),
                 targetVCFFile,
@@ -242,7 +242,7 @@ public class ImportsRuns {
                 metadata
         );
 
-        Analysis analysis = DAOController.get().getAnalysisDAO().getAnalysis(run, analysis_id);
+        Analysis analysis = DAOController.getAnalysisDAO().getAnalysis(run, analysis_id);
         if (analysis == null) {
             throw new NullPointerException("Analysis is null : " + analysisDirectory.getPath());
         }
@@ -252,13 +252,13 @@ public class ImportsRuns {
         vcfParser.parseVCF(true);
 
         for (Annotation annotation : vcfParser.getAnnotations()) {
-            DAOController.get().getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
+            DAOController.getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
 
             Object[] analysisIds = new Object[run.getAnalyses().size()];
             for (int i = 0; i < run.getAnalyses().size(); i++) {
                 analysisIds[i] = (int) run.getAnalyses().get(i).getId();
             }
-            annotation.getVariant().setOccurrenceInRun(DAOController.get().getVariantAnalysisDAO().countRunOccurrence(annotation.getVariant().getId(), analysisIds));
+            annotation.getVariant().setOccurrenceInRun(DAOController.getVariantAnalysisDAO().countRunOccurrence(annotation.getVariant().getId(), analysisIds));
         }
 
         importImages(analysis, analysisDir);
@@ -305,12 +305,12 @@ public class ImportsRuns {
                 throw new NullPointerException("Empty file : " + f);
             }
 
-            User user = DAOController.get().getUsersDAO().getUser(userName);
+            User user = DAOController.getUsersDAO().getUser(userName);
             if (user == null) {
                 throw new NullPointerException("Unknow user : " + userName);
             }
 
-            DAOController.get().getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment.toString(), date, user);
+            DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment.toString(), date, user);
         }
     }
 

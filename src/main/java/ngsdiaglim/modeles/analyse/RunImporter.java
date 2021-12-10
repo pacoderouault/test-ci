@@ -64,8 +64,8 @@ public class RunImporter {
                 if (!FilesUtils.compareFiles(runFile.getFile(), destFile)) {
                     throw new IOException("Invalid copy file : " + runFile.getFile().getName());
                 }
-                if (!DAOController.get().getRunFilesDAO().runFileExists(run.getId(), destFile)) {
-                    DAOController.get().getRunFilesDAO().addRunFile(run.getId(), destFile);
+                if (!DAOController.getRunFilesDAO().runFileExists(run.getId(), destFile)) {
+                    DAOController.getRunFilesDAO().addRunFile(run.getId(), destFile);
                 }
             }
         }
@@ -161,7 +161,7 @@ public class RunImporter {
 //                    System.out.println(bamFile);
 //                    System.out.println(bamFile.exists());
 
-                    long analysis_id = DAOController.get().getAnalysisDAO().addAnalyse(
+                    long analysis_id = DAOController.getAnalysisDAO().addAnalyse(
                             analysisName,
                             analysisDirectory.getPath(),
                             targetVCFFile,
@@ -180,13 +180,13 @@ public class RunImporter {
                     vcfParser.parseVCF(true);
 
                     for (Annotation annotation : vcfParser.getAnnotations()) {
-                        DAOController.get().getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
+                        DAOController.getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
 
                         Object[] analysisIds = new Object[run.getAnalyses().size()];
                         for (int i = 0; i < run.getAnalyses().size(); i++) {
                             analysisIds[i] = (int) run.getAnalyses().get(i).getId();
                         }
-                        annotation.getVariant().setOccurrenceInRun(DAOController.get().getVariantAnalysisDAO().countRunOccurrence(annotation.getVariant().getId(), analysisIds));
+                        annotation.getVariant().setOccurrenceInRun(DAOController.getVariantAnalysisDAO().countRunOccurrence(annotation.getVariant().getId(), analysisIds));
                     }
                 }
 

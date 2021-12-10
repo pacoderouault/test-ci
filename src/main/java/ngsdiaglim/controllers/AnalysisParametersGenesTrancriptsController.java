@@ -91,7 +91,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
 //                    if (error != null) {
 //                        Message.error(error);
 //                    } else {
-//                        DAOController.get().getGeneSetDAO().updateGeneSet(geneSet, t.getNewValue(), geneSet.isActive());
+//                        DAOController.getGeneSetDAO().updateGeneSet(geneSet, t.getNewValue(), geneSet.isActive());
 //                        geneSet.setName(t.getNewValue());
 //                    }
 //                } catch (SQLException e) {
@@ -144,7 +144,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
 
 
     private void loadGeneSets() throws SQLException {
-        genesSetTable.getItems().setAll(DAOController.get().getGeneSetDAO().getGeneSets());
+        genesSetTable.getItems().setAll(DAOController.getGeneSetDAO().getGeneSets());
     }
 
 
@@ -172,19 +172,19 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
                         long geneSetId = -1;
                         try {
                             HashSet<Gene> genes = GeneSetParser.parseGeneSet(dialog.getValue().getFile());
-                            geneSetId = DAOController.get().getGeneSetDAO().addGeneSet(dialog.getValue().getName());
+                            geneSetId = DAOController.getGeneSetDAO().addGeneSet(dialog.getValue().getName());
                             for (Gene gene : genes) {
-                                long geneId = DAOController.get().getGeneDAO().addGene(gene, geneSetId);
+                                long geneId = DAOController.getGeneDAO().addGene(gene, geneSetId);
                                 gene.setId(geneId);
                                 for (Transcript transcript : gene.getTranscripts().values()) {
-                                    long transcriptId = DAOController.get().getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
+                                    long transcriptId = DAOController.getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
                                     transcript.setId(transcriptId);
                                 }
                                 // if only one transcript for the gene, set it as "preferred transcript"
                                 if (gene.getTranscripts().size() == 1) {
                                     Optional<Transcript> opt = gene.getTranscripts().values().stream().findAny();
                                     if(opt.isPresent()) {
-                                        DAOController.get().getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
+                                        DAOController.getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
                                     }
                                 }
                             }
@@ -192,7 +192,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
                             logger.error("Error when adding genetranscriptset", ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                             try {
-                                DAOController.get().getGeneSetDAO().deleteGeneSet(geneSetId);
+                                DAOController.getGeneSetDAO().deleteGeneSet(geneSetId);
                             } catch (SQLException exc) {
                                 logger.error("Error when deleting genetranscriptset", exc);
                                 Platform.runLater(() -> Message.error(exc.getMessage(), exc));
@@ -220,7 +220,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                DAOController.get().getGeneSetDAO().updateGeneSet(item, item.getName(), !item.isActive());
+                DAOController.getGeneSetDAO().updateGeneSet(item, item.getName(), !item.isActive());
                 item.setActive(!checkBox.isSelected());
                 checkBox.setSelected(!checkBox.isSelected());
                 loadGeneSets();

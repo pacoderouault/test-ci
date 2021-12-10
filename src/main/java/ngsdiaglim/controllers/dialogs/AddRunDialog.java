@@ -68,7 +68,7 @@ public class AddRunDialog extends DialogPane.Dialog<AddRunDialog.RunCreattionDat
         }
         else {
             try {
-                if (DAOController.get().getRunsDAO().runExists(getValue().getRunName())) {
+                if (DAOController.getRunsDAO().runExists(getValue().getRunName())) {
                     return App.getBundle().getString("addrundialog.msg.err.runNameExists");
                 }
             } catch (SQLException e) {

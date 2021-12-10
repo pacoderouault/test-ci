@@ -231,11 +231,11 @@ public class Variant {
     }
 
     public void loadPathogenicityHistory() throws SQLException {
-        pathogenicityHistory.setVariantPathogenicityHistory(DAOController.get().getVariantPathogenicityDAO().getVariantPathogenicityHistory(id));
+        pathogenicityHistory.setVariantPathogenicityHistory(DAOController.getVariantPathogenicityDAO().getVariantPathogenicityHistory(id));
     }
 
     public void loadFalsePositiveHistory() throws SQLException {
-        falsePositiveHistory.setVariantFalsePositiveHistory(DAOController.get().getVariantFalsePositiveDAO().getVariantFalsePositiveHistory(id));
+        falsePositiveHistory.setVariantFalsePositiveHistory(DAOController.getVariantFalsePositiveDAO().getVariantFalsePositiveHistory(id));
     }
 
     public VariantPathogenicityHistory getPathogenicityHistory() throws SQLException {

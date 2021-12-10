@@ -71,7 +71,7 @@ public class GenesPanelActionsCell extends TableCell<GenePanel, Void> {
                 });
                 wid.exec("LoadPanels", inputParam -> {
                     try {
-                        DAOController.get().getGenesPanelDAO().updateGenesPanel(genePanel.getId(), dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
+                        DAOController.getGenesPanelDAO().updateGenesPanel(genePanel.getId(), dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
                         genePanel.setName(dialog.getValue().getName());
                         genePanel.setGenes(dialog.getValue().getSelectedGenes());
                         getTableView().refresh();
@@ -93,7 +93,7 @@ public class GenesPanelActionsCell extends TableCell<GenePanel, Void> {
         DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("addgenepaneldialog.msg.conf.deleteGenePanel", arguments));
         dialog.getButton(ButtonType.YES).setOnAction(event -> {
             try {
-                DAOController.get().getGenesPanelDAO().removeGenesPanel(genePanel.getId());
+                DAOController.getGenesPanelDAO().removeGenesPanel(genePanel.getId());
                 getTableView().getItems().remove(genePanel);
                 getTableView().refresh();
             } catch (SQLException e) {

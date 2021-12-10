@@ -34,7 +34,7 @@ public class ValidateVariantFalsePositiveTableCell extends TableCell<VariantFals
                 VariantFalsePositive vfp = getTableRow().getItem();
                 if (vfp != null) {
                     try {
-                        Variant v = DAOController.get().getVariantsDAO().getVariant(vfp.getVariantId());
+                        Variant v = DAOController.getVariantsDAO().getVariant(vfp.getVariantId());
                         if (!v.isFalsePositiveConfirmed()) {
                             if (vfp.equals(v.getFalsePositiveHistory().getLastVariantFalsePositive())) {
                                 Button btn = new Button(App.getBundle().getString("editfalsepositivedialog.btn.validate"));
@@ -44,8 +44,8 @@ public class ValidateVariantFalsePositiveTableCell extends TableCell<VariantFals
                                     vfp.setVerifiedDateTime(LocalDateTime.now());
                                     v.setFalsePositiveConfirmed(true);
                                     try {
-                                        DAOController.get().getVariantFalsePositiveDAO().updateVariantFalsePositive(vfp);
-                                        DAOController.get().getVariantsDAO().updateVariant(v);
+                                        DAOController.getVariantFalsePositiveDAO().updateVariantFalsePositive(vfp);
+                                        DAOController.getVariantsDAO().updateVariant(v);
                                         getTableView().refresh();
                                     } catch (SQLException ex) {
                                         logger.error(ex);

@@ -74,11 +74,11 @@ public class AccountController extends Module {
         Message.showDialog(dialog);
         dialog.getButton(ButtonType.OK).setOnAction(event -> {
             try {
-                if (DAOController.get().getUsersDAO().checkUserConnection(App.get().getLoggedUser().getUsername(), dialog.getValue().getPassword()) == null) {
+                if (DAOController.getUsersDAO().checkUserConnection(App.get().getLoggedUser().getUsername(), dialog.getValue().getPassword()) == null) {
                     Message.error(App.getBundle().getString("changeusernamedialog.msg.err.invalidPassword"));
                 } else {
                     App.get().getLoggedUser().setUsername(dialog.getValue().getNewUsername());
-                    DAOController.get().getUsersDAO().updateUsername(App.get().getLoggedUser());
+                    DAOController.getUsersDAO().updateUsername(App.get().getLoggedUser());
                     Message.hideDialog(dialog);
                 }
             } catch (SQLException e) {
@@ -95,10 +95,10 @@ public class AccountController extends Module {
         Message.showDialog(dialog);
         dialog.getButton(ButtonType.OK).setOnAction(event -> {
             try {
-                if (DAOController.get().getUsersDAO().checkUserConnection(App.get().getLoggedUser().getUsername(), dialog.getValue().getOldPassword()) == null) {
+                if (DAOController.getUsersDAO().checkUserConnection(App.get().getLoggedUser().getUsername(), dialog.getValue().getOldPassword()) == null) {
                     Message.error(App.getBundle().getString("changeusernamedialog.msg.err.invalidPassword"));
                 } else {
-                    DAOController.get().getUsersDAO().updatePassword(App.get().getLoggedUser(), dialog.getValue().getNewPassword());
+                    DAOController.getUsersDAO().updatePassword(App.get().getLoggedUser(), dialog.getValue().getNewPassword());
                     Message.hideDialog(dialog);
                 }
             } catch (SQLException e) {

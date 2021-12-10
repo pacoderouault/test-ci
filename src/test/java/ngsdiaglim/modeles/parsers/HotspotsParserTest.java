@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HotspotsParserTest extends BaseSetup {
 
-    private static final HotspotsSetDAO hotspotsSetDAO = DAOController.get().getHotspotsSetDAO();
+    private static final HotspotsSetDAO hotspotsSetDAO = DAOController.getHotspotsSetDAO();
     private static final File resourcesDirectory = new File("src/test/resources");
     private static final HotspotDAO hotspotDAO = new HotspotDAO();
     @Test

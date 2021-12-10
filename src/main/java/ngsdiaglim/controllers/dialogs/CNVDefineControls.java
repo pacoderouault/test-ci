@@ -90,7 +90,7 @@ public class CNVDefineControls extends DialogPane.Dialog<CNVDefineControls.CNVCo
 
     private void initCNVControlGroupListView() {
         try {
-            cnvControlGroupListView.setItems(DAOController.get().getCnvControlGroupsDAO().getCNVControlGroups(cnvData.getPanel()));
+            cnvControlGroupListView.setItems(DAOController.getCnvControlGroupsDAO().getCNVControlGroups(cnvData.getPanel()));
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);

@@ -73,9 +73,9 @@ public class VCFParser {
                 }
 
                 variantParserReportData.incrementNbVariants();
-                Variant variant = DAOController.get().getVariantsDAO().getVariant(ctx.getContig(), ctx.getStart(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+                Variant variant = DAOController.getVariantsDAO().getVariant(ctx.getContig(), ctx.getStart(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
                 if (variant == null) {
-                    long variant_id = DAOController.get().getVariantsDAO().addVariant(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+                    long variant_id = DAOController.getVariantsDAO().addVariant(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
                     variant = new Variant(variant_id, ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
                 }
 
@@ -92,7 +92,7 @@ public class VCFParser {
                         for (int i = 0; i < run.getAnalyses().size(); i++) {
                             analysisIds[i] = (int) run.getAnalyses().get(i).getId();
                         }
-                        variant.setOccurrenceInRun(DAOController.get().getVariantAnalysisDAO().countRunOccurrence(variant.getId(), analysisIds));
+                        variant.setOccurrenceInRun(DAOController.getVariantAnalysisDAO().countRunOccurrence(variant.getId(), analysisIds));
                         parseTranscriptsConsequences(annotation, ctx, vepPredictionParser, params);
 //                        List<VepPredictionParser.VepPrediction> predictions = vepPredictionParser.getPredictions(ctx);
 //                        HashSet<String> geneNames = new HashSet<>();

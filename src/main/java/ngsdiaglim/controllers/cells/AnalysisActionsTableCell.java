@@ -98,7 +98,7 @@ public class AnalysisActionsTableCell extends TableCell<Analysis, Void> {
 //            });
 //            wid.exec("LoadPanels", inputParam -> {
 //                try {
-//                    AnalysisParameters params = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
+//                    AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
 //                    analysis.setAnalysisParameters(params);
 //                    VCFParser vcfParser = new VCFParser(analysis.getVcfFile(), analysis.getAnalysisParameters(), analysis.getRun());
 //                    vcfParser.parseVCF(true);
@@ -129,7 +129,7 @@ public class AnalysisActionsTableCell extends TableCell<Analysis, Void> {
         DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("home.module.analyseslist.msg.conf.deleteAnalysis", arguments));
         dialog.getButton(ButtonType.YES).setOnAction(event -> {
             try {
-                DAOController.get().getAnalysisDAO().deleteAnalysis(analysis.getId());
+                DAOController.getAnalysisDAO().deleteAnalysis(analysis.getId());
                 FileUtils.deleteDirectory(new File(analysis.getDirectoryPath()));
                 getTableView().refresh();
             } catch (SQLException | IOException e) {

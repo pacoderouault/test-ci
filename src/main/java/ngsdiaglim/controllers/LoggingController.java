@@ -35,7 +35,7 @@ public class LoggingController {
         }
 
         try {
-            User user = DAOController.get().getUsersDAO().checkUserConnection(login, password);
+            User user = DAOController.getUsersDAO().checkUserConnection(login, password);
             if (user == null) {
                 dialogPane.showError("TIELE", App.getBundle().getString("login.msg.err.badConnection"));
             }

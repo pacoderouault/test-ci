@@ -54,7 +54,7 @@ public class RunCreator {
         }
 
         Path relativeRunPath = FilesUtils.convertAbsolutePathToRelative(runPath);
-        return DAOController.get().getRunsDAO().addRun(
+        return DAOController.getRunsDAO().addRun(
                 runCreationData.getRunName(),
                 relativeRunPath.toString(),
                 runCreationData.getRunDate(),

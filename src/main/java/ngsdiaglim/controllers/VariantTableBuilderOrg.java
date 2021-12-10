@@ -65,7 +65,7 @@ public class VariantTableBuilderOrg {
     public void buildTable() throws SQLException {
 
         User loggedUser = App.get().getLoggedUser();
-        userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(loggedUser.getId());
+        userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(loggedUser.getId());
         initColumnsMap();
         setDefaultColumnsOrder();
         setDefaultVisibleColumns();
@@ -464,7 +464,7 @@ public class VariantTableBuilderOrg {
         defaultVisibleColumns.put(VariantsTableColumns.EXTERNAL_VARIATIONS, true);
 
         User user = App.get().getLoggedUser();
-        UserVariantTableColumns userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
+        UserVariantTableColumns userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
         if (userVariantTableColumns != null) {
             userVariantTableColumns.getColumnsVisibility().forEach((k, v) -> {
                if (defaultVisibleColumns.containsKey(k)) {
@@ -516,7 +516,7 @@ public class VariantTableBuilderOrg {
         defaultColumnsSize.put(VariantsTableColumns.EXTERNAL_VARIATIONS, v);
 
         User user = App.get().getLoggedUser();
-        UserVariantTableColumns userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
+        UserVariantTableColumns userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
         if (userVariantTableColumns != null) {
             userVariantTableColumns.getColumnsSize().forEach((k, v2) -> {
                if (defaultColumnsSize.containsKey(k)) {
@@ -576,28 +576,28 @@ public class VariantTableBuilderOrg {
 
     private void saveColumnsOrder() throws SQLException {
         User user = App.get().getLoggedUser();
-        UserVariantTableColumns userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
+        UserVariantTableColumns userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
         if (userVariantTableColumns == null) {
             userVariantTableColumns = new UserVariantTableColumns();
             userVariantTableColumns.setColumnsOrderFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         } else {
             userVariantTableColumns.setColumnsOrderFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         }
     }
 
 
     private void saveColumnsVisible() throws SQLException {
         User user = App.get().getLoggedUser();
-        UserVariantTableColumns userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
+        UserVariantTableColumns userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
         if (userVariantTableColumns == null) {
             userVariantTableColumns = new UserVariantTableColumns();
             userVariantTableColumns.setVisibleColumnsFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         } else {
             userVariantTableColumns.setVisibleColumnsFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         }
     }
 
@@ -605,14 +605,14 @@ public class VariantTableBuilderOrg {
     private void saveColumnsSize() throws SQLException {
         System.out.println("SAVE RESIZE");
         User user = App.get().getLoggedUser();
-        UserVariantTableColumns userVariantTableColumns = DAOController.get().getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
+        UserVariantTableColumns userVariantTableColumns = DAOController.getUserVariantTableColumnsDAO().getUsersVariantTableColumn(user.getId());
         if (userVariantTableColumns == null) {
             userVariantTableColumns = new UserVariantTableColumns();
             userVariantTableColumns.setColumnsSizeFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().addUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         } else {
             userVariantTableColumns.setColumnsSizeFromTable(table);
-            DAOController.get().getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
+            DAOController.getUserVariantTableColumnsDAO().updateUsersVariantTableColumn(user.getId(), userVariantTableColumns);
         }
     }
 

@@ -63,7 +63,7 @@ public class RunFileNode extends Label {
         DialogPane.Dialog<ButtonType> dialog = Message.confirm(App.getBundle().getString("importanalysesdialog.msg.conf.deleteRunFile"));
         dialog.getButton(ButtonType.YES).setOnAction(event -> {
             try {
-                DAOController.get().getRunFilesDAO().removeRunFile(runFile.getId());
+                DAOController.getRunFilesDAO().removeRunFile(runFile.getId());
                 if (getParent() instanceof Pane) {
                     Pane pane = (Pane) getParent();
                     pane.getChildren().remove(this);

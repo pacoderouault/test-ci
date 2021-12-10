@@ -51,7 +51,7 @@ public class AnalysisParametersActionsCol extends TableCell<AnalysisParameters, 
 
         if (analysisParameters != null) {
             try {
-                if (DAOController.get().getAnalysisParametersDAO().isUsed(analysisParameters.getId())) {
+                if (DAOController.getAnalysisParametersDAO().isUsed(analysisParameters.getId())) {
                     Message.error(App.getBundle().getString("createAnalasisParameters.msg.err.parametersUsed"));
                 }
                 else {
@@ -59,7 +59,7 @@ public class AnalysisParametersActionsCol extends TableCell<AnalysisParameters, 
                     DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("createAnalasisParameters.msg.confirm.deleteAnalysisParameters", arguments));
                     dialog.getButton(ButtonType.YES).setOnAction(event -> {
                         try {
-                            DAOController.get().getAnalysisParametersDAO().deleteAnalysisParameters(analysisParameters.getId());
+                            DAOController.getAnalysisParametersDAO().deleteAnalysisParameters(analysisParameters.getId());
                             getTableView().getItems().remove(analysisParameters);
                             Message.hideDialog(dialog);
                         } catch (SQLException e) {

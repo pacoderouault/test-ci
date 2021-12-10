@@ -76,7 +76,7 @@ public class AddUserDialog extends DialogPane.Dialog<AddUserDialog.UserCreation>
         else if (!passwordField.getText().equals(passwordFieldconfirm.getText())) {
             return App.getBundle().getString("adduserdialog.msg.err.passwordsmatch");
         }
-        else if (DAOController.get().getUsersDAO().userExists(usernameTf.getText())) {
+        else if (DAOController.getUsersDAO().userExists(usernameTf.getText())) {
             return App.getBundle().getString("adduserdialog.msg.err.usernamesexists");
         }
         return null;
@@ -115,7 +115,7 @@ public class AddUserDialog extends DialogPane.Dialog<AddUserDialog.UserCreation>
     }
 
     private void fillRoles() throws SQLException {
-        rolesCb.getItems().addAll(DAOController.get().getRolesDAO().getRoles());
+        rolesCb.getItems().addAll(DAOController.getRolesDAO().getRoles());
     }
 
     private void checkDefaultRole() {

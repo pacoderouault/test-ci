@@ -97,7 +97,7 @@ public class SearchAnalysesDialog extends DialogPane.Dialog<Void> {
             String query = searchTf.getText();
             if (query != null && !query.isEmpty()) {
                 try {
-                    ObservableList<Analysis> analyses = DAOController.get().getAnalysisDAO().searchAnalysis(query);
+                    ObservableList<Analysis> analyses = DAOController.getAnalysisDAO().searchAnalysis(query);
                     Platform.runLater(() -> analysesTable.setItems(analyses));
                 } catch (SQLException e) {
                     logger.error(e);

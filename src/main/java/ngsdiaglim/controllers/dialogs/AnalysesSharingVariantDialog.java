@@ -122,7 +122,7 @@ public class AnalysesSharingVariantDialog extends DialogPane.Dialog<Void> {
             SearchVariantResult r = getTableRow().getItem();
             if (r != null) {
                 try {
-                    Run run = DAOController.get().getRunsDAO().getRun(r.getRunId());
+                    Run run = DAOController.getRunsDAO().getRun(r.getRunId());
                     Optional<Analysis> toLoad = run.getAnalyses().stream().filter(a -> a.getId() == r.getAnalysisId()).findAny();
                     toLoad.ifPresent(value -> {
                         App.get().getAppController().openAnalysis(value);
@@ -143,10 +143,10 @@ public class AnalysesSharingVariantDialog extends DialogPane.Dialog<Void> {
 //                });
 //                wid.exec("loadAnalysis", inputParam -> {
 //                    try {
-//                        Run run = DAOController.get().getRunsDAO().getRun(r.getRunId());
+//                        Run run = DAOController.getRunsDAO().getRun(r.getRunId());
 //                        Optional<Analysis> toLoad = run.getAnalyses().stream().filter(a -> a.getId() == r.getAnalysisId()).findAny();
 //                        if (toLoad.isPresent()) {
-//                            AnalysisParameters params = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(toLoad.get().getAnalysisParameters().getId());
+//                            AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(toLoad.get().getAnalysisParameters().getId());
 //                            toLoad.get().setAnalysisParameters(params);
 //                            VCFParser vcfParser = new VCFParser(toLoad.get().getVcfFile(), toLoad.get().getAnalysisParameters(), toLoad.get().getRun());
 //                            vcfParser.parseVCF(true);

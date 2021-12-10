@@ -139,7 +139,7 @@ public class ReportComments extends ReportPane {
             }
         }
         reportGeneCommentaryTable.getItems().setAll(
-                DAOController.get().getReportGeneCommentaryDAO().getReportGeneCommentary(
+                DAOController.getReportGeneCommentaryDAO().getReportGeneCommentary(
                         ReportType.BGM,
                         genes));
     }
@@ -151,13 +151,13 @@ public class ReportComments extends ReportPane {
             variants.put(reportedVariant.getVariant().getId(), reportedVariant);
         }
         reportMutCommentaryTable.getItems().setAll(
-                DAOController.get().getReportMutationCommentaryDAO().getReportMutationCommentary(ReportType.BGM, variants));
+                DAOController.getReportMutationCommentaryDAO().getReportMutationCommentary(ReportType.BGM, variants));
     }
 
 
     private void fillOtherCommentsTable() throws SQLException {
         reportOtherCommentaryTable.getItems().setAll(
-                DAOController.get().getReportCommentaryDAO().getReportCommentary(ReportType.BGM));
+                DAOController.getReportCommentaryDAO().getReportCommentary(ReportType.BGM));
     }
 
 
@@ -196,7 +196,7 @@ public class ReportComments extends ReportPane {
                         dialog.getValue().getComment()
                 );
                 try {
-                    long id = DAOController.get().getReportGeneCommentaryDAO().insertReportGeneCommentary(commentary);
+                    long id = DAOController.getReportGeneCommentaryDAO().insertReportGeneCommentary(commentary);
                     commentary.setId(id);
                     Message.hideDialog(dialog);
                     fillGeneCommentsTable();
@@ -223,7 +223,7 @@ public class ReportComments extends ReportPane {
                         dialog.getValue().getVariant()
                 );
                 try {
-                    long id = DAOController.get().getReportMutationCommentaryDAO().insertReportMutationCommentary(commentary);
+                    long id = DAOController.getReportMutationCommentaryDAO().insertReportMutationCommentary(commentary);
                     commentary.setId(id);
                     Message.hideDialog(dialog);
                     fillMutationCommentsTable();
@@ -248,7 +248,7 @@ public class ReportComments extends ReportPane {
                         dialog.getValue().getComment()
                 );
                 try {
-                    long id = DAOController.get().getReportCommentaryDAO().insertReportCommentary(commentary);
+                    long id = DAOController.getReportCommentaryDAO().insertReportCommentary(commentary);
                     commentary.setId(id);
                     Message.hideDialog(dialog);
                     fillOtherCommentsTable();

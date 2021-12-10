@@ -65,7 +65,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         try {
-            genes = DAOController.get().getGeneDAO().getGenes();
+            genes = DAOController.getGeneDAO().getGenes();
         } catch (SQLException e) {
             genes = new HashSet<>();
             logger.error(e);
@@ -133,7 +133,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
         }
         else {
             try {
-                long existingPanelId = DAOController.get().getGenesPanelDAO().genesPanelNameExists(getValue().getName());
+                long existingPanelId = DAOController.getGenesPanelDAO().genesPanelNameExists(getValue().getName());
                 if (existingPanelId > 0 && existingPanelId != getValue().getId()) {
                     return App.getBundle().getString("addgenepaneldialog.msg.err.nameExists");
                 }

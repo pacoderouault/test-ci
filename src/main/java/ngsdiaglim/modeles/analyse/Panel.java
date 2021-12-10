@@ -64,7 +64,7 @@ public class Panel {
     }
 
     private void loadRegions() throws SQLException {
-        regions = DAOController.get().getPanelRegionDAO().getPanelRegions(id);
+        regions = DAOController.getPanelRegionDAO().getPanelRegions(id);
     }
 
     public int getSize() throws SQLException {

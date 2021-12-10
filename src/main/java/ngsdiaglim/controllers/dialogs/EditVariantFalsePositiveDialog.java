@@ -178,10 +178,10 @@ public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> 
                     commentaryTa.getText()
             );
             try {
-                DAOController.get().getVariantFalsePositiveDAO().addVariantFalsePositive(vfp);
+                DAOController.getVariantFalsePositiveDAO().addVariantFalsePositive(vfp);
                 getValue().setFalsePositive(falsePositive);
                 getValue().setFalsePositiveConfirmed(user.isPermitted(PermissionsEnum.VALIDATE_VARIANT_FALSE_POSITIVE));
-                DAOController.get().getVariantsDAO().updateVariant(getValue());
+                DAOController.getVariantsDAO().updateVariant(getValue());
                 getValue().loadFalsePositiveHistory();
                 historyTable.refresh();
             } catch (Exception e) {

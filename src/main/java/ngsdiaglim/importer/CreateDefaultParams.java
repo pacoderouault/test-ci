@@ -32,7 +32,7 @@ public class CreateDefaultParams {
         long panel_id = addPanel(bedFile, "NeuroCalcium_capture");
         long transcripts_id = addTranscripts(transcriptsFile, "NeuroCalcium_capture");
 
-        DAOController.get().getAnalysisParametersDAO().addAnalysisParameters(
+        DAOController.getAnalysisParametersDAO().addAnalysisParameters(
                 "NeuroCalcium_capture",
                 Genome.GRCh37,
                 30,
@@ -51,7 +51,7 @@ public class CreateDefaultParams {
 
         long panel_id = addPanel(bedFile, "CMT126_amplicon");
         long transcripts_id = addTranscripts(transcriptsFile, "CMT126_amplicon");
-        DAOController.get().getAnalysisParametersDAO().addAnalysisParameters(
+        DAOController.getAnalysisParametersDAO().addAnalysisParameters(
                 "NeuroCalcium_amplicon",
                 Genome.GRCh37,
                 30,
@@ -75,9 +75,9 @@ public class CreateDefaultParams {
         File panelFile = Paths.get(panelDataPath.toString(), name + ".bed.gz").toFile();
         PanelParser.writePanel(regions, panelFile);
 
-        long panelId = DAOController.get().getPanelDAO().addPanel(name, panelFile.getPath());
+        long panelId = DAOController.getPanelDAO().addPanel(name, panelFile.getPath());
         for (PanelRegion region : regions) {
-            DAOController.get().getPanelRegionDAO().addRegion(region, panelId);
+            DAOController.getPanelRegionDAO().addRegion(region, panelId);
         }
 
         return panelId;
@@ -85,19 +85,19 @@ public class CreateDefaultParams {
 
     private static long addTranscripts(File transcriptsFile, String name) throws IOException, SQLException, MalformedGeneTranscriptFile {
         HashSet<Gene> genes = GeneSetParser.parseGeneSet(transcriptsFile);
-        long geneSetId = DAOController.get().getGeneSetDAO().addGeneSet(name);
+        long geneSetId = DAOController.getGeneSetDAO().addGeneSet(name);
         for (Gene gene : genes) {
-            long geneId = DAOController.get().getGeneDAO().addGene(gene, geneSetId);
+            long geneId = DAOController.getGeneDAO().addGene(gene, geneSetId);
             gene.setId(geneId);
             for (Transcript transcript : gene.getTranscripts().values()) {
-                long transcriptId = DAOController.get().getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
+                long transcriptId = DAOController.getTranscriptsDAO().addTranscript(transcript.getName(), gene.getId());
                 transcript.setId(transcriptId);
             }
             // if only one transcript for the gene, set it as "preferred transcript"
             if (gene.getTranscripts().size() == 1) {
                 Optional<Transcript> opt = gene.getTranscripts().values().stream().findAny();
                 if(opt.isPresent()) {
-                    DAOController.get().getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
+                    DAOController.getGeneDAO().setPreferredTranscript(gene.getId(), opt.get().getId());
                 }
             }
         }

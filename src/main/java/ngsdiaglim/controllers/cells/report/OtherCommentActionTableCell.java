@@ -97,7 +97,7 @@ public class OtherCommentActionTableCell extends TableCell<ReportCommentary, Voi
                 Message.showDialog(dialog);
                 dialog.getButton(ButtonType.OK).setOnAction(event -> {
                     try {
-                        DAOController.get().getReportCommentaryDAO().editReportCommentary(
+                        DAOController.getReportCommentaryDAO().editReportCommentary(
                                 commentary.getId(),
                                 dialog.getValue().getTitle(),
                                 dialog.getValue().getComment()
@@ -124,7 +124,7 @@ public class OtherCommentActionTableCell extends TableCell<ReportCommentary, Voi
                 DialogPane.Dialog<ButtonType> dialog = Message.confirm(App.getBundle().getString("analysisviewreports.reportcomments.msg.confirm.confirmDelete"));
                 dialog.getButton(ButtonType.YES).setOnAction(event -> {
                     try {
-                        DAOController.get().getReportCommentaryDAO().deleteReportCommentary(commentary.getId());
+                        DAOController.getReportCommentaryDAO().deleteReportCommentary(commentary.getId());
                         getTableView().getItems().remove(commentary);
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {

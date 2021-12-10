@@ -77,7 +77,7 @@ public class App extends Application {
 
 //        try {
 //
-//            setLoggedUser(DAOController.get().getUsersDAO().getUser("admin"));
+//            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
 //
 //            File localRunDir = new File("/mnt/Data/CHU_services/biochimie_genetique_moleculaire/CMT/Runs_MiSeq/propres/allRuns");
 //            File dir = new File("/mnt/Data/tmp/BGMEXPORT/");
@@ -146,14 +146,14 @@ public class App extends Application {
 
         try {
             setLoggedUser(null);
-            setLoggedUser(DAOController.get().getUsersDAO().getUser("admin"));
+            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
 //        try {
-//            DAOController.get().getRunsDAO().close();
+//            DAOController.getRunsDAO().close();
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }

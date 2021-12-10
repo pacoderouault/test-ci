@@ -149,7 +149,7 @@ public class AnalysisParametersHotspotsController extends HBox {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                DAOController.get().getHotspotsSetDAO().updateHotspotsSet(item, item.getName(), !item.isActive());
+                DAOController.getHotspotsSetDAO().updateHotspotsSet(item, item.getName(), !item.isActive());
                 item.setActive(!checkBox.isSelected());
                 checkBox.setSelected(!checkBox.isSelected());
                 loadHotspotsSets();
@@ -164,7 +164,7 @@ public class AnalysisParametersHotspotsController extends HBox {
     }
 
     private void loadHotspotsSets() throws SQLException {
-        hotspotsSetTable.getItems().setAll(DAOController.get().getHotspotsSetDAO().getHotspotsSets());
+        hotspotsSetTable.getItems().setAll(DAOController.getHotspotsSetDAO().getHotspotsSets());
     }
 
     @FXML
@@ -193,16 +193,16 @@ public class AnalysisParametersHotspotsController extends HBox {
                         long id = -1;
                         try {
                             List<Hotspot> hotspots = HotspotsParser.parseHotspotFile(hotspotsFile);
-                            id = DAOController.get().getHotspotsSetDAO().addHotspotsSet(hotspotsSetName);
+                            id = DAOController.getHotspotsSetDAO().addHotspotsSet(hotspotsSetName);
                             for (Hotspot hotspot : hotspots) {
-                                DAOController.get().getHotspotDAO().addHotspot(id, hotspot);
+                                DAOController.getHotspotDAO().addHotspot(id, hotspot);
                             }
                         } catch (Exception  ex) {
                             logger.error(ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                             if (id >= 0) {
                                 try {
-                                    DAOController.get().getHotspotsSetDAO().deleteHotspotsSet(id);
+                                    DAOController.getHotspotsSetDAO().deleteHotspotsSet(id);
                                 } catch (SQLException exc) {
                                     logger.error(exc);
                                 }

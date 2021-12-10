@@ -81,7 +81,7 @@ public class AnnotationCommentaryListCell extends ListCell<AnnotationCommentary>
             if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
                 String comment = addVariantCommentaryDialog.getValue().getCommentary();
                 try {
-                    DAOController.get().getAnnotationCommentaryDAO().updateAnnotationCommentary(getItem().getId(), comment);
+                    DAOController.getAnnotationCommentaryDAO().updateAnnotationCommentary(getItem().getId(), comment);
                     ModuleManager.getAnalysisViewController().getVariantsViewController().getVariantDetailController().loadAnnotationCommentaries();
                     Message.hideDialog(addVariantCommentaryDialog);
                 } catch (SQLException ex) {
@@ -98,7 +98,7 @@ public class AnnotationCommentaryListCell extends ListCell<AnnotationCommentary>
         DialogPane.Dialog<ButtonType> d =  Message.confirm(App.getBundle().getString("analysisview.variantdetail.msg.deletecomment"));
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                DAOController.get().getAnnotationCommentaryDAO().deleteAnnotationCommentary(getItem().getId());
+                DAOController.getAnnotationCommentaryDAO().deleteAnnotationCommentary(getItem().getId());
                 ModuleManager.getAnalysisViewController().getVariantsViewController().getVariantDetailController().loadAnnotationCommentaries();
                 Message.hideDialog(d);
             } catch (SQLException ex) {

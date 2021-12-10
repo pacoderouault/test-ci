@@ -468,7 +468,7 @@ public class AnalysisViewVariantsController2 extends VBox {
 
     private void loadGenesPanels() throws SQLException {
         GenePanel selectedgenePanel = panelsCb.getValue();
-        panelsCb.setItems(DAOController.get().getGenesPanelDAO().getGenesPanels());
+        panelsCb.setItems(DAOController.getGenesPanelDAO().getGenesPanels());
         // add a null value for unselect panels
         panelsCb.getItems().add(0, null);
         panelsCb.getSelectionModel().select(selectedgenePanel);
@@ -496,7 +496,7 @@ public class AnalysisViewVariantsController2 extends VBox {
                 });
                 wid.exec("LoadPanels", inputParam -> {
                     try {
-                        DAOController.get().getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
+                        DAOController.getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
                     } catch (Exception ex) {
                         logger.error("Error when adding panel", ex);
                         Platform.runLater(() -> Message.error(ex.getMessage(), ex));

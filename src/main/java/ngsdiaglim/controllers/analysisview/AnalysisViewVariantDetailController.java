@@ -302,7 +302,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                 User loggedUser = App.get().getLoggedUser();
                 loggedUser.setPreference(DefaultPreferencesEnum.SELECT_TRANSCRIPT_FOR_ALL_VARIANTS, popover.setForAllVariants());
                 try {
-                    DAOController.get().getUsersDAO().updatePreferences(loggedUser);
+                    DAOController.getUsersDAO().updatePreferences(loggedUser);
                 } catch (SQLException e) {
                     logger.error(e);
                 }
@@ -646,7 +646,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         } else {
             Runnable task = () -> {
                 try {
-                    annotation.get().setSangerState(DAOController.get().getSangerStateDAO().getSangerChecks(
+                    annotation.get().setSangerState(DAOController.getSangerStateDAO().getSangerChecks(
                             annotation.get(),
                             ModuleManager.getAnalysisViewController().getAnalysis().getId()));
                     //                        if (annotation.get().getSangerState().getLastState() != null) {
@@ -667,7 +667,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
     public void loadVariantCommentaries() {
         try {
-            variantCommentaryLv.setItems(DAOController.get().getVariantCommentaryDAO().getVariantCommentaries(annotation.get().getVariant().getId()));
+            variantCommentaryLv.setItems(DAOController.getVariantCommentaryDAO().getVariantCommentaries(annotation.get().getVariant().getId()));
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -676,7 +676,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
     public void loadAnnotationCommentaries() {
         try {
-            annotationCommentaryLv.setItems(DAOController.get().getAnnotationCommentaryDAO().getAnnotationCommentaries(
+            annotationCommentaryLv.setItems(DAOController.getAnnotationCommentaryDAO().getAnnotationCommentaries(
                     annotation.get().getVariant().getId(),
                     ModuleManager.getAnalysisViewController().getAnalysis().getId()));
         } catch (SQLException e) {
@@ -741,7 +741,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
                 String comment = addVariantCommentaryDialog.getValue().getCommentary();
                 try {
-                    DAOController.get().getVariantCommentaryDAO().addVariantCommentary(annotation.get().getVariant().getId(), comment);
+                    DAOController.getVariantCommentaryDAO().addVariantCommentary(annotation.get().getVariant().getId(), comment);
                     loadVariantCommentaries();
                     Message.hideDialog(addVariantCommentaryDialog);
                 } catch (SQLException ex) {
@@ -762,7 +762,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
                 String comment = addVariantCommentaryDialog.getValue().getCommentary();
                 try {
-                    DAOController.get().getAnnotationCommentaryDAO().addAnnotationCommentary(
+                    DAOController.getAnnotationCommentaryDAO().addAnnotationCommentary(
                             annotation.get().getVariant().getId(),
                             ModuleManager.getAnalysisViewController().getAnalysis().getId(),
                             comment);
@@ -903,7 +903,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         wid.exec("loadingAnalyses", inputParams -> {
             try {
                 if (searchVariantResults == null) {
-                    searchVariantResults = DAOController.get().getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
+                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
                 }
             } catch (Exception e) {
                 logger.error(e);
@@ -931,7 +931,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         wid.exec("loadingAnalyses", inputParams -> {
             try {
                 if (searchVariantResults == null) {
-                    searchVariantResults = DAOController.get().getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
+                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
                 }
             } catch (Exception e) {
                 logger.error(e);

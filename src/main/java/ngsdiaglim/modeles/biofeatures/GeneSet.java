@@ -59,7 +59,7 @@ public class GeneSet {
 
     public int getGenesCount() {
         try {
-            return DAOController.get().getGeneDAO().getGeneCount(id);
+            return DAOController.getGeneDAO().getGeneCount(id);
         } catch (SQLException e) {
             logger.error("Error when getting gene count", e);
             return 0;

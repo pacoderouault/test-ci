@@ -73,7 +73,7 @@ public class GenePanelsManageController extends Module {
 
     public void loadGenesPanels() throws SQLException {
 //        try {
-            genePanelTable.getItems().setAll(DAOController.get().getGenesPanelDAO().getGenesPanels());
+            genePanelTable.getItems().setAll(DAOController.getGenesPanelDAO().getGenesPanels());
 //        } catch (SQLException e) {
 //            logger.error(e);
 //            Message.error(e.getMessage(), e);
@@ -103,7 +103,7 @@ public class GenePanelsManageController extends Module {
                     wid.exec("LoadPanels", inputParam -> {
                         final long panelId;
                         try {
-                            panelId = DAOController.get().getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
+                            panelId = DAOController.getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
                         } catch (Exception ex) {
                             logger.error("Error when adding panel", ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));

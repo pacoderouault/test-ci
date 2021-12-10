@@ -73,7 +73,7 @@ public class ReportPersonalInformation extends ReportPane {
 
     private void fillPrescribersCb() {
         try {
-            AutoCompleteComboboxBuilder.createAutoCompleteCombobox(prescribersCb, DAOController.get().getPrescriberDAO().getPrescribers());
+            AutoCompleteComboboxBuilder.createAutoCompleteCombobox(prescribersCb, DAOController.getPrescriberDAO().getPrescribers());
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);

@@ -120,7 +120,7 @@ public class User {
 
     public void savePreferences() {
         try {
-            DAOController.get().getUsersDAO().updatePreferences(this);
+            DAOController.getUsersDAO().updatePreferences(this);
         } catch (SQLException e) {
             logger.error(e);
         }

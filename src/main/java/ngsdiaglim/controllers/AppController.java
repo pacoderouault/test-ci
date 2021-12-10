@@ -148,7 +148,7 @@ public class AppController {
             });
             wid.exec("LoadPanels", inputParam -> {
                 try {
-                    AnalysisParameters params = DAOController.get().getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
+                    AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
                     analysis.setAnalysisParameters(params);
                     VCFParser vcfParser = new VCFParser(analysis.getVcfFile(), analysis.getAnalysisParameters(), analysis.getRun());
                     vcfParser.parseVCF(true);

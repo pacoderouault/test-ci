@@ -33,7 +33,7 @@ public class ValidateVariantPathogenicityTableCell extends TableCell<VariantPath
                 VariantPathogenicity vp = getTableRow().getItem();
                 if (vp != null) {
                     try {
-                        Variant v = DAOController.get().getVariantsDAO().getVariant(vp.getVariantId());
+                        Variant v = DAOController.getVariantsDAO().getVariant(vp.getVariantId());
                         if (!v.isPathogenicityConfirmed()) {
                             if (vp.equals(v.getPathogenicityHistory().getLastVariantPathogenicity())) {
                                 Button btn = new Button(App.getBundle().getString("editpathogenicitydialog.btn.validatepathogenicity"));
@@ -42,8 +42,8 @@ public class ValidateVariantPathogenicityTableCell extends TableCell<VariantPath
                                     vp.setVerifiedUserId(user.getId());vp.setVerifiedDateTime(LocalDateTime.now());
                                     v.setPathogenicityConfirmed(true);
                                     try {
-                                        DAOController.get().getVariantPathogenicityDAO().updateVariantPathogenicity(vp);
-                                        DAOController.get().getVariantsDAO().updateVariant(v);
+                                        DAOController.getVariantPathogenicityDAO().updateVariantPathogenicity(vp);
+                                        DAOController.getVariantsDAO().updateVariant(v);
                                         getTableView().refresh();
                                     } catch (SQLException ex) {
                                         logger.error(ex);

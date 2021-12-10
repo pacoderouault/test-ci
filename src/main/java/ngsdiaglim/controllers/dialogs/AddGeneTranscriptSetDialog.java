@@ -105,7 +105,7 @@ public class AddGeneTranscriptSetDialog extends DialogPane.Dialog<AddGeneTranscr
         }
         else {
             try {
-                if (DAOController.get().getGeneSetDAO().geneSetExists(getValue().getName())) {
+                if (DAOController.getGeneSetDAO().geneSetExists(getValue().getName())) {
                     return App.getBundle().getString("addGeneTranscriptSetDialog.msg.err.nameExists");
                 }
             } catch (SQLException e) {

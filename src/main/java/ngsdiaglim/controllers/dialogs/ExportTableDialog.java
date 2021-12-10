@@ -157,7 +157,7 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
         try {
             tableBuilder.buildTable(false);
 
-            columnsExport = DAOController.get().getColumnsExportDAO().getColumnsExport(App.get().getLoggedUser().getId());
+            columnsExport = DAOController.getColumnsExportDAO().getColumnsExport(App.get().getLoggedUser().getId());
             if (columnsExport == null) {
                 // init columns exports from visibles columns
                 columnsExport = new ColumnsExport();
@@ -180,7 +180,7 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
 
             previewTable.getVisibleLeafColumns().addListener((ListChangeListener<TableColumn<Annotation, ?>>) change -> {
                 try {
-                    DAOController.get().getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
+                    DAOController.getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
                 } catch (SQLException e) {
                     logger.error(e);
                 }

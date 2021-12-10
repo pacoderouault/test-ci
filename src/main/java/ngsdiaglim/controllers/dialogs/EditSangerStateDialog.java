@@ -120,13 +120,13 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
             User user = App.get().getLoggedUser();
             if (user.isPermitted(PermissionsEnum.ADD_SANGER_CHECK)) {
                 try {
-                    DAOController.get().getSangerStateDAO().addSangerState(
+                    DAOController.getSangerStateDAO().addSangerState(
                             getValue().getVariant().getId(),
                             ModuleManager.getAnalysisViewController().getAnalysis().getId(),
                             sangerStateLv.getSelectionModel().getSelectedItem(),
                             commentaryCol.getText()
                     );
-                    getValue().setSangerState(DAOController.get().getSangerStateDAO().getSangerChecks(
+                    getValue().setSangerState(DAOController.getSangerStateDAO().getSangerChecks(
                             getValue(),
                             ModuleManager.getAnalysisViewController().getAnalysis().getId()));
                     fillHistoryTable();

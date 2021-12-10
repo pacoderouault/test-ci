@@ -95,7 +95,7 @@ public class ManageCNVsController  extends Module {
 
     private void fillControlGroupsTable() {
         try {
-            controlGroupTable.setItems(DAOController.get().getCnvControlGroupsDAO().getCNVControlGroups());
+            controlGroupTable.setItems(DAOController.getCnvControlGroupsDAO().getCNVControlGroups());
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -126,7 +126,7 @@ public class ManageCNVsController  extends Module {
                     FileUtils.copyFile(dialog.getValue().getMatrixFile(), destFile);
 
 
-                    CNVControlGroup cnvControlGroup = DAOController.get().getCnvControlGroupsDAO().addGroup(
+                    CNVControlGroup cnvControlGroup = DAOController.getCnvControlGroupsDAO().addGroup(
                             dialog.getValue().getPanel(),
                             dialog.getValue().getName(),
                             dialog.getValue().getAlgorithm(),
@@ -135,7 +135,7 @@ public class ManageCNVsController  extends Module {
                     );
                     if (cnvControlGroup != null) {
                         for (String controlName : AmpliconMatrixParser.getSampleNames(destFile)) {
-                            DAOController.get().getCnvControlsDAO().addCNVControl(cnvControlGroup, controlName, null, Gender.FEMALE);
+                            DAOController.getCnvControlsDAO().addCNVControl(cnvControlGroup, controlName, null, Gender.FEMALE);
                         }
                     }
                     fillControlGroupsTable();
@@ -161,7 +161,7 @@ public class ManageCNVsController  extends Module {
                         Files.createDirectories(targetDirectory.toPath());
                     }
 
-                    CNVControlGroup cnvControlGroup = DAOController.get().getCnvControlGroupsDAO().addGroup(
+                    CNVControlGroup cnvControlGroup = DAOController.getCnvControlGroupsDAO().addGroup(
                             dialog.getValue().getPanel(),
                             dialog.getValue().getName(),
                             dialog.getValue().getAlgorithm(),
@@ -176,7 +176,7 @@ public class ManageCNVsController  extends Module {
 
                             String controlName = FilenameUtils.getBaseName(destFile.getPath());
 
-                            DAOController.get().getCnvControlsDAO().addCNVControl(
+                            DAOController.getCnvControlsDAO().addCNVControl(
                                     cnvControlGroup,
                                     controlName,
                                     destFile,
@@ -222,7 +222,7 @@ public class ManageCNVsController  extends Module {
                 DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("cnvsmanage.msg.confirmdeletegroup", arguments));
                 dialog.getButton(ButtonType.YES).setOnAction(event -> {
                     try {
-                        DAOController.get().getCnvControlGroupsDAO().removeCNVControlGroup(group.getId());
+                        DAOController.getCnvControlGroupsDAO().removeCNVControlGroup(group.getId());
                         FileUtils.deleteDirectory(group.getPath());
                         getTableView().getItems().remove(group);
                         getTableView().refresh();
@@ -263,7 +263,7 @@ public class ManageCNVsController  extends Module {
                 DialogPane.Dialog<ButtonType> dialog = Message.confirm(BundleFormatter.format("cnvsmanage.msg.confirmdeletecontrol", arguments));
                 dialog.getButton(ButtonType.YES).setOnAction(event -> {
                     try {
-                        DAOController.get().getCnvControlsDAO().removeCNVControl(control.getId());
+                        DAOController.getCnvControlsDAO().removeCNVControl(control.getId());
                         getTableView().getItems().remove(control);
                         getTableView().refresh();
                         Message.hideDialog(dialog);
@@ -313,7 +313,7 @@ public class ManageCNVsController  extends Module {
                     control.setGender(Gender.MALE);
                 }
                 try {
-                    DAOController.get().getCnvControlsDAO().updateControl(control);
+                    DAOController.getCnvControlsDAO().updateControl(control);
                 } catch (SQLException e) {
                     logger.error(e);
                     Message.error(e.getMessage(), e);
