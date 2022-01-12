@@ -29,11 +29,9 @@ public class EditGeneReportCommentDialog extends DialogPane.Dialog<EditGeneRepor
     @FXML private TextArea comment;
     @FXML private Label errorLb;
     private final SimpleBooleanProperty editable = new SimpleBooleanProperty(false);
-    private final Set<String> targetGenes;
 
     public EditGeneReportCommentDialog(Set<String> targetGenes) {
         super(App.get().getAppController().getDialogPane(), DialogPane.Type.INPUT);
-        this.targetGenes = targetGenes;
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/EditGeneReportCommentDialog.fxml"), App.getBundle());

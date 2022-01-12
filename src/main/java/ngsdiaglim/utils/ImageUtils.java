@@ -14,7 +14,6 @@ public class ImageUtils {
 
     /**
      *
-     * @param file
      * @return True if the file is an image
      */
     public static boolean isImage(File file) {

@@ -4,24 +4,21 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.enumerations.AnalysisStatus;
 import ngsdiaglim.exceptions.MalformedCoverageFile;
 import ngsdiaglim.modeles.TabixGetter;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
 import ngsdiaglim.modeles.parsers.CoverageFileParser;
 import ngsdiaglim.modeles.variants.Annotation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 
 public class Analysis {
 
-    private static final Logger logger = LogManager.getLogger(Analysis.class);
     private final long id;
     private String directoryPath;
     private final File vcfFile;
@@ -159,6 +156,32 @@ public class Analysis {
 //            }
         }
     }
+
+    public String getMetadata() {
+        return metadata.get();
+    }
+
+    public SimpleStringProperty metadataProperty() {
+        return metadata;
+    }
+
+    public HashMap<String, String> getmMetadataAsMap() {
+        HashMap<String, String> map = new HashMap<>();
+        for (String d : metadata.get().split(";")) {
+            String[] tks = d.split(":");
+            if (tks.length == 2) {
+                map.put(tks[0], tks[1]);
+            }
+        }
+        return map;
+    }
+
+
+    public void clear() {
+        annotations.clear();
+        coverageRegions.clear();
+    }
+
 
     @Override
     public boolean equals(Object o) {

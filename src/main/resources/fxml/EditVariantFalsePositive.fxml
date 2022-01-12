@@ -41,7 +41,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#editVariant" text="%editfalsepositivedialog.btn.edit" />
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#editVariant" fx:id="editFalsePositiveBtn" text="%editfalsepositivedialog.btn.edit" />
                </children>
             </HBox>
          </children>

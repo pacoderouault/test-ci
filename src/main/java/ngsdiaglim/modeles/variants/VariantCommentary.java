@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class VariantCommentary {
 
-    private long id;
-    private long variant_id;
-    private long userID;
-    private String username;
-    private String comment;
-    private LocalDateTime datetime;
+    private final long id;
+    private final long variant_id;
+    private final long userID;
+    private final String username;
+    private final String comment;
+    private final LocalDateTime datetime;
 
     public VariantCommentary(long id, long variant_id, long userID, String username, String comment, LocalDateTime datetime) {
         this.id = id;

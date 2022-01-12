@@ -13,8 +13,11 @@ import ngsdiaglim.enumerations.VariantsTableColumns;
 import ngsdiaglim.modeles.TableExporter;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.users.ColumnsExport;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +29,7 @@ import java.util.List;
 
 public class ExportColumnsDropDownMenu extends VBox {
 
-    private Logger logger = LogManager.getLogger(ExportColumnsDropDownMenu.class);
+    private static final Logger logger = LogManager.getLogger(ExportColumnsDropDownMenu.class);
     @FXML private ListView<VariantsTableColumns> lv;
     private Analysis analysis;
     private TableView<Annotation> tableview;
@@ -96,6 +99,9 @@ public class ExportColumnsDropDownMenu extends VBox {
         fc.setInitialFileName(analysis.getName().replaceAll("[/\\.]", "_") + ".xlsx");
         File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             try {
                 DAOController.getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
             } catch (SQLException e) {

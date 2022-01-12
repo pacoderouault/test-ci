@@ -19,7 +19,7 @@ public class CNVSample {
     private final SimpleBooleanProperty control = new SimpleBooleanProperty(false);
     private BoxplotData boxplotData;
     private Map<String, BoxplotData> boxplotDatabyPool = new HashMap<>();
-    private List<CNV> cnvList = new ArrayList<>();
+    private final List<CNV> cnvList = new ArrayList<>();
     private final SimpleBooleanProperty visible = new SimpleBooleanProperty(true);
     private Double meanOfNormalValues;
     private Double stdOfNormalValues;
@@ -131,11 +131,11 @@ public class CNVSample {
 
         CNVSample cnvSample = (CNVSample) o;
 
-        return barcode != null ? barcode.equals(cnvSample.barcode) : cnvSample.barcode == null;
+        return barcode.equals(cnvSample.barcode);
     }
 
     @Override
     public int hashCode() {
-        return barcode != null ? barcode.hashCode() : 0;
+        return barcode.hashCode();
     }
 }

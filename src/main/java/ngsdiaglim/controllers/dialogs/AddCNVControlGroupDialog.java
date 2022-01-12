@@ -16,7 +16,10 @@ import ngsdiaglim.controllers.cells.FileTableCell;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.modeles.analyse.Panel;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,21 +67,11 @@ public class AddCNVControlGroupDialog  extends DialogPane.Dialog<AddCNVControlGr
         setValue(new CNVControlGroupData());
         setValid(false);
 
-        nameTf.textProperty().addListener((obs,oldV, newV) -> {
-            validGroup();
-        });
-        panelsCb.valueProperty().addListener((obs,oldV, newV) -> {
-            validGroup();
-        });
-        algorithmCb.valueProperty().addListener((obs,oldV, newV) -> {
-            validGroup();
-        });
-        matrixFile.addListener((obs,oldV, newV) -> {
-            validGroup();
-        });
-        depthFilesTable.getItems().addListener((ListChangeListener<File>) change -> {
-            validGroup();
-        });
+        nameTf.textProperty().addListener((obs,oldV, newV) -> validGroup());
+        panelsCb.valueProperty().addListener((obs,oldV, newV) -> validGroup());
+        algorithmCb.valueProperty().addListener((obs,oldV, newV) -> validGroup());
+        matrixFile.addListener((obs,oldV, newV) -> validGroup());
+        depthFilesTable.getItems().addListener((ListChangeListener<File>) change -> validGroup());
 
         initView();
     }
@@ -125,6 +118,9 @@ public class AddCNVControlGroupDialog  extends DialogPane.Dialog<AddCNVControlGr
         FileChooser fc = FileChooserUtils.getFileChooser();
         File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             matrixFile.set(selectedFile);
         }
     }
@@ -135,6 +131,9 @@ public class AddCNVControlGroupDialog  extends DialogPane.Dialog<AddCNVControlGr
         FileChooser fc = FileChooserUtils.getFileChooser();
         List<File> selectedFiles = fc.showOpenMultipleDialog(App.getPrimaryStage());
         if (!selectedFiles.isEmpty()) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFiles.get(0)));
+            user.savePreferences();
             depthFilesTable.getItems().addAll(selectedFiles);
         }
     }

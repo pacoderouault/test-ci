@@ -32,12 +32,7 @@ public class PasswordFieldSkin extends TextFieldWithButtonSkin {
     @Override protected String maskText(String txt) {
         if (getSkinnable() instanceof PasswordField && !isMaskTextDisabled) {
             int n = txt.length();
-            StringBuilder passwordBuilder = new StringBuilder(n);
-            for (int i = 0; i < n; i++) {
-                passwordBuilder.append(BULLET);
-            }
-
-            return passwordBuilder.toString();
+            return String.valueOf(BULLET).repeat(n);
         } else {
             return txt;
         }

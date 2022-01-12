@@ -23,9 +23,7 @@ import ngsdiaglim.modeles.reports.ReportGeneCommentary;
 import ngsdiaglim.modeles.reports.ReportMutationCommentary;
 import ngsdiaglim.modeles.reports.bgm.ReportCommentary;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
-import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modeles.variants.Variant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

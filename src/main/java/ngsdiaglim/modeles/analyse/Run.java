@@ -10,11 +10,9 @@ import ngsdiaglim.database.DAOController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 public class Run {
 
@@ -35,12 +33,6 @@ public class Run {
         this.date.set(date);
         this.creationDate.set(creationDate);
         this.creationUser = creationUser;
-//        Random rd = new Random(); // creating Random object
-//        for (int i = 0; i < 12; i++) {
-//            Analysis a = new Analysis();
-//            a.setDone(rd.nextBoolean());
-//            analyses.add(a);
-//        }
     }
 
     public long getId() {return id;}

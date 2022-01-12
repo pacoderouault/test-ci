@@ -4,8 +4,6 @@ import htsjdk.samtools.SAMException;
 import htsjdk.samtools.reference.FastaSequenceIndexCreator;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
-import ngsdiaglim.App;
-import ngsdiaglim.AppSettings;
 
 import java.io.File;
 import java.io.IOException;

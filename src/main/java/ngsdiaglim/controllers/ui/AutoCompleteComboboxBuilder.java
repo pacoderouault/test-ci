@@ -13,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.ListView;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyEvent;
 
 import java.util.List;
@@ -56,7 +55,6 @@ public class AutoCompleteComboboxBuilder {
 
         FilteredList<HideableItem<T>> filteredHideableItems = new FilteredList<>(hideableHideableItems, t -> !t.isHidden());
 
-//        ComboBox<HideableItem<T>> comboBox = new ComboBox<>();
         comboBox.setItems(filteredHideableItems);
 
         @SuppressWarnings("unchecked")
@@ -74,10 +72,6 @@ public class AutoCompleteComboboxBuilder {
         {
             if(newValue)
             {
-//                @SuppressWarnings("unchecked")
-//                ListView<HideableItem<T>> lv = ((ComboBoxListViewSkin<HideableItem<T>>) comboBox.getSkin()).getListView();
-
-
                 Platform.runLater(() ->
                 {
                     Node node = comboBox.getScene().lookup("list-view");
@@ -124,7 +118,7 @@ public class AutoCompleteComboboxBuilder {
                 {
                     boolean validText = false;
 
-                    for(HideableItem hideableItem : hideableHideableItems)
+                    for(HideableItem<?> hideableItem : hideableHideableItems)
                     {
                         if(hideableItem.getObject().toString().equals(newValue))
                         {

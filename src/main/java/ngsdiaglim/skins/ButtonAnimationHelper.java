@@ -17,16 +17,16 @@ class ButtonAnimationHelper {
     private static final Duration SCALE_TRANSITION_DURATION = Duration.millis(400);
     private static final double SCALE_ON_PRESS = 0.97;
 
-    private EventHandler<MouseEvent> buttonPressed = this::onButtonPressed;
-    private EventHandler<MouseEvent> buttonReleased = this::onButtonReleased;
-    private EventHandler<KeyEvent> keyPressed = this::onKeyPressed;
-    private EventHandler<KeyEvent> keyReleased = this::onKeyReleased;
+    private final EventHandler<MouseEvent> buttonPressed = this::onButtonPressed;
+    private final EventHandler<MouseEvent> buttonReleased = this::onButtonReleased;
+    private final EventHandler<KeyEvent> keyPressed = this::onKeyPressed;
+    private final EventHandler<KeyEvent> keyReleased = this::onKeyReleased;
 
     private boolean isKeyPressed = false;
 
-    private BooleanProperty buttonShrinkAnimateOnPressProperty;
+    private final BooleanProperty buttonShrinkAnimateOnPressProperty;
 
-    private ButtonBase button;
+    private final ButtonBase button;
 
     private ButtonAnimationHelper(ButtonBase button, BooleanProperty buttonShrinkAnimateOnPressProperty) {
         this.buttonShrinkAnimateOnPressProperty = buttonShrinkAnimateOnPressProperty;

@@ -14,9 +14,6 @@ public abstract class Module extends AnchorPane {
         this.title = title;
     }
 
-    private void initBreadcrumb() {
-    }
-
     @FXML
     private void goHome() {
         App.get().getAppController().showUsersManageView();

@@ -16,7 +16,6 @@ public class HotspotTableCell extends TableCell<Annotation, Hotspot> {
             FontIcon fi = new FontIcon("mdmz-warning");
             fi.setFill(Color.RED);
             setGraphic(fi);
-
         }
         else {
             setGraphic(null);

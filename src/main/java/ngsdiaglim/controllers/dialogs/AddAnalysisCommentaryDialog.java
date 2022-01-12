@@ -18,14 +18,10 @@ public class AddAnalysisCommentaryDialog extends DialogPane.Dialog<AddAnalysisCo
 
     private final static Logger logger = LogManager.getLogger(AddVariantCommentaryDialog.class);
 
-    @FXML
-    private VBox dialogContainer;
-    @FXML
-    private Label variantLb;
-    @FXML
-    private Label errorLb;
-    @FXML
-    private TextArea commentTa;
+    @FXML private VBox dialogContainer;
+    @FXML private Label variantLb;
+    @FXML private Label errorLb;
+    @FXML private TextArea commentTa;
 
     public AddAnalysisCommentaryDialog(DialogPane pane) {
         super(pane, DialogPane.Type.INPUT);
@@ -43,14 +39,12 @@ public class AddAnalysisCommentaryDialog extends DialogPane.Dialog<AddAnalysisCo
 
         setTitle(App.getBundle().getString("addanalysiscommentary.title"));
         setContent(dialogContainer);
-        setValue(new AddAnalysisCommentaryDialog.AnalysisCommentaryData());
+        setValue(new AnalysisCommentaryData());
         setValid(false);
 
         initView();
 
-        commentTa.textProperty().addListener((obs, oldV, newV) -> {
-            validComment();
-        });
+        commentTa.textProperty().addListener((obs, oldV, newV) -> validComment());
     }
 
     private void validComment() {
@@ -75,7 +69,7 @@ public class AddAnalysisCommentaryDialog extends DialogPane.Dialog<AddAnalysisCo
         return null;
     }
 
-    public class AnalysisCommentaryData {
+    public static class AnalysisCommentaryData {
         private long id;
         private final SimpleStringProperty commentary = new SimpleStringProperty();
 

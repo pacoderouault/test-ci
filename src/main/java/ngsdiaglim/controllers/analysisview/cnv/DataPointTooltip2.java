@@ -4,31 +4,29 @@ package ngsdiaglim.controllers.analysisview.cnv;
  * Copyright (c) 2016 European Organisation for Nuclear Research (CERN), All Rights Reserved.
  */
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
+import de.gsi.chart.Chart;
+import de.gsi.chart.XYChart;
+import de.gsi.chart.axes.Axis;
 import de.gsi.chart.plugins.AbstractDataFormattingPlugin;
+import de.gsi.chart.renderer.Renderer;
+import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.dataset.DataSet;
+import de.gsi.dataset.GridDataSet;
+import de.gsi.dataset.spi.utils.Tuple;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
-import de.gsi.chart.Chart;
-import de.gsi.chart.XYChart;
-import de.gsi.chart.axes.Axis;
-import de.gsi.chart.renderer.Renderer;
-import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
-import de.gsi.dataset.DataSet;
-import de.gsi.dataset.GridDataSet;
-import de.gsi.dataset.spi.utils.Tuple;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A tool tip label appearing next to the mouse cursor when placed over a data point's symbol. If symbols are not
@@ -274,9 +272,6 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
     }
 
     private void updateToolTip(final MouseEvent event) {
-
-//        System.out.println(event);
-
         final Bounds plotAreaBounds = getChart().getPlotArea().getBoundsInLocal();
         final Optional<DataPoint> dataPoint = findDataPoint(event, plotAreaBounds);
 
@@ -291,10 +286,6 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
             getChartChildren().add(label);
             label.requestLayout();
         }
-//        for (Node chartChild : getChartChildren()) {
-//            chartChild.toFront();
-//        }
-//        label.toFront();
     }
 
     public static class DataPoint {

@@ -31,14 +31,14 @@ public class PredictionsChart extends Region {
     private Pane pane;
     private final ObservableList<PredictionChartItem> items = FXCollections.observableArrayList();
     private final int size;
-    private int maxValue;
+    private final int maxValue;
     private final int textSize = 120;
     private final double centerSize = 5;
 
     private double lastMouseX;
     private double lastMouseY;
-    private static int TOOLTIP_XOFFSET = 10;
-    private static int TOOLTIP_YOFFSET = 7;
+    private static final int TOOLTIP_XOFFSET = 10;
+    private static final int TOOLTIP_YOFFSET = 7;
 
 
 
@@ -285,9 +285,7 @@ public class PredictionsChart extends Region {
         toolTip.setShowDelay(Duration.ZERO);
         Timeline hideTimer = new Timeline();
         hideTimer.getKeyFrames().add(new KeyFrame(hideDelay));
-        hideTimer.setOnFinished(event -> {
-            toolTip.hide();
-        });
+        hideTimer.setOnFinished(event -> toolTip.hide());
 
         Timeline activationTimer = new Timeline();
         activationTimer.getKeyFrames().add(new KeyFrame(openDelay));

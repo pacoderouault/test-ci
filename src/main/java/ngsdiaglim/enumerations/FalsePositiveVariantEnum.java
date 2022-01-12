@@ -7,8 +7,8 @@ public enum FalsePositiveVariantEnum {
     FP(App.getBundle().getString("editfalsepositivedialog.lb.fp"), true),
     VP(App.getBundle().getString("editfalsepositivedialog.lb.vp"), false);
 
-    private String valueName;
-    private boolean value;
+    private final String valueName;
+    private final boolean value;
 
     FalsePositiveVariantEnum(String valueName, boolean value) {
         this.valueName = valueName;

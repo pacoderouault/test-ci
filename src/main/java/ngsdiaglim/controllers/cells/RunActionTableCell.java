@@ -1,7 +1,6 @@
 package ngsdiaglim.controllers.cells;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
@@ -9,14 +8,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.dialogs.ImportAnalysisDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.controllers.dialogs.RunInfoDialog;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.modeles.analyse.AnalysisInputData;
 import ngsdiaglim.modeles.analyse.Run;
-import ngsdiaglim.modeles.analyse.RunFile;
-import ngsdiaglim.modeles.analyse.RunImporter;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.BundleFormatter;
@@ -27,11 +22,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RunActionTableCell extends TableCell<Run, Void> {
 

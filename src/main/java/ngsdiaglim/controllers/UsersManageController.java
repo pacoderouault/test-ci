@@ -1,7 +1,6 @@
 package ngsdiaglim.controllers;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
@@ -38,6 +37,8 @@ public class UsersManageController extends Module {
 
     private final Logger logger = LogManager.getLogger(UsersManageController.class);
 
+    @FXML private Button addNewUserBtn;
+    @FXML private Button addNewGroupBtn;
     @FXML private TableView<User> userTable;
     @FXML private TableColumn<User, String> nameCol;
     @FXML private TableColumn<User, String> creationDateCol;
@@ -83,6 +84,9 @@ public class UsersManageController extends Module {
             logger.error("Error when initializing use table", e);
             Message.error(e.getMessage(), e);
         }
+
+        addNewGroupBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES));
+        addNewUserBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.USERS_MANAGEMENT));
     }
 
     private void initUserTable() throws SQLException {
@@ -114,8 +118,8 @@ public class UsersManageController extends Module {
                     logger.error("Error when editing user name", e);
                     Message.error(e.getMessage(), e);
                 }
-                userTable.refresh();
             }
+            userTable.refresh();
         });
 
         creationDateCol.setCellValueFactory(data -> new SimpleStringProperty(
@@ -212,6 +216,9 @@ public class UsersManageController extends Module {
                     else {
                         setGraphic(checkBox);
                         checkBox.setSelected(item);
+                        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
+                            checkBox.setDisable(true);
+                        }
                     }
                 }
             };
@@ -219,9 +226,10 @@ public class UsersManageController extends Module {
             return tableCell;
         });
 
-        actionsCol.setCellFactory((tableColumn) -> new TableCell<User, Void>() {
+        actionsCol.setCellFactory((tableColumn) -> new TableCell<>() {
             private final HBox box = new HBox();
             private final Button resetPassword = new Button("", new FontIcon("mdal-autorenew"));
+
             {
                 box.getStyleClass().add("box-action-cell");
                 resetPassword.getStyleClass().add("button-action-cell");
@@ -243,6 +251,9 @@ public class UsersManageController extends Module {
                         });
                     }
                 });
+                if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
+                    resetPassword.setDisable(true);
+                }
 
                 box.getChildren().addAll(resetPassword);
             }
@@ -251,10 +262,9 @@ public class UsersManageController extends Module {
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(null);
-                if(empty){
+                if (empty) {
                     this.setGraphic(null);
-                }
-                else {
+                } else {
                     this.setGraphic(box);
                 }
             }
@@ -324,25 +334,28 @@ public class UsersManageController extends Module {
 
     @FXML
     private void AddNewUser() {
-        if (App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
-            AddUserDialog dialog = new AddUserDialog(App.get().getAppController().getDialogPane());
-            Message.showDialog(dialog);
-            Button b = dialog.getButton(ButtonType.OK);
-            b.setOnAction(e -> {
-                if (dialog.isValid() && dialog.getValue() != null) {
-                    try {
-                        DAOController.getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles());
-                        fillUsersTable();
-                        Message.hideDialog(dialog);
-                    } catch (SQLException ex) {
-                        logger.error("Error when adding user", ex);
-                        Message.error(ex.getMessage(), ex);
-                    }
-                }
-
-            });
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+            return;
         }
+        AddUserDialog dialog = new AddUserDialog(App.get().getAppController().getDialogPane());
+        Message.showDialog(dialog);
+        Button b = dialog.getButton(ButtonType.OK);
+        b.setOnAction(e -> {
+            if (dialog.isValid() && dialog.getValue() != null) {
+                try {
+                    DAOController.getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles());
+                    fillUsersTable();
+                    Message.hideDialog(dialog);
+                } catch (SQLException ex) {
+                    logger.error("Error when adding user", ex);
+                    Message.error(ex.getMessage(), ex);
+                }
+            }
+
+        });
     }
+
 
 
     private void initRolesTable() {
@@ -376,7 +389,7 @@ public class UsersManageController extends Module {
             }
         });
 
-        roleActionsCol.setCellFactory((tableColumn) -> new TableCell<Role, Void>() {
+        roleActionsCol.setCellFactory((tableColumn) -> new TableCell<>() {
             private final HBox box = new HBox();
             private final Button deleteRoleBtn = new Button("", new FontIcon("mdal-delete_forever"));
 
@@ -503,6 +516,10 @@ public class UsersManageController extends Module {
 
     @FXML
     private void addNewGroup() {
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+            return;
+        }
         DialogPane.Dialog<String> dialog = Message.showTextInput("Ajouter un group", "");
         dialog.getButton(ButtonType.OK).setOnAction(event -> {
             String groupName = dialog.getValue();

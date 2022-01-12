@@ -5,18 +5,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.cells.RunFileListCell;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.RunFile;
 import ngsdiaglim.utils.DateFormatterUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 

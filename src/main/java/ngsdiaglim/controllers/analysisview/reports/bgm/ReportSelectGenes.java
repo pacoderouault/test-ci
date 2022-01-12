@@ -1,9 +1,6 @@
 package ngsdiaglim.controllers.analysisview.reports.bgm;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
@@ -13,6 +10,7 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GenePanel;
+import ngsdiaglim.utils.ListSelectionViewUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +19,6 @@ import org.controlsfx.control.ListSelectionView;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ReportSelectGenes extends ReportPane {
@@ -52,9 +49,11 @@ public class ReportSelectGenes extends ReportPane {
         initSelectionListView();
         initPanelCb();
         initGeneFilter();
+        fillSourcesItems();
     }
 
     private void initSelectionListView() {
+        ListSelectionViewUtils.rewriteButtons(genesListView);
     }
 
     private void initGeneFilter() {
@@ -77,6 +76,7 @@ public class ReportSelectGenes extends ReportPane {
         // fill panels combobox
         try {
             panelCb.getItems().setAll(DAOController.getGenesPanelDAO().getGenesPanels());
+            panelCb.getItems().add(0, null);
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -87,7 +87,11 @@ public class ReportSelectGenes extends ReportPane {
 
     private void fillSourcesItems() {
         genesListView.getSourceItems().clear();
-        panelCb.getValue().getGenes().forEach(this::addGeneToListView);
+        if (panelCb.getValue() != null) {
+            panelCb.getValue().getGenes().forEach(this::addGeneToListView);
+        } else {
+            reportController.getAnalysis().getAnalysisParameters().getGeneSet().getGenes().forEach((k, v) -> addGeneToListView(v));
+        }
     }
 
     private void addGeneToListView(Gene gene) {
@@ -119,4 +123,5 @@ public class ReportSelectGenes extends ReportPane {
         }
         return null;
     }
+
 }

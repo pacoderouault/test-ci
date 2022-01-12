@@ -1,7 +1,5 @@
 package ngsdiaglim.modeles.variants.predictions;
 
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
@@ -28,7 +26,6 @@ public class GnomADFrequencies {
 
     public void setAfr(GnomadPopulationFreq afr) {
         if (this.afr == null) this.afr = new SimpleObjectProperty<>();
-//        this.afr.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.afr.set(afr);
     }
 
@@ -43,7 +40,6 @@ public class GnomADFrequencies {
 
     public void setAmr(GnomadPopulationFreq amr) {
         if (this.amr == null) this.amr = new SimpleObjectProperty<>();
-//        this.amr.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.amr.set(amr);
     }
 
@@ -58,7 +54,6 @@ public class GnomADFrequencies {
 
     public void setAsj(GnomadPopulationFreq asj) {
         if (this.asj == null) this.asj = new SimpleObjectProperty<>();
-//        this.asj.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.asj.set(asj);
     }
 
@@ -88,7 +83,6 @@ public class GnomADFrequencies {
 
     public void setFin(GnomadPopulationFreq fin) {
         if (this.fin == null) this.fin = new SimpleObjectProperty<>();
-//        this.fin.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.fin.set(fin);
     }
 
@@ -103,7 +97,6 @@ public class GnomADFrequencies {
 
     public void setNfe(GnomadPopulationFreq nfe) {
         if (this.nfe == null) this.nfe = new SimpleObjectProperty<>();
-//        this.nfe.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.nfe.set(nfe);
     }
 
@@ -118,7 +111,6 @@ public class GnomADFrequencies {
 
     public void setSas(GnomadPopulationFreq sas) {
         if (this.sas == null) this.sas = new SimpleObjectProperty<>();
-//        this.sas.addListener((obs, oldV, newV) -> computeMaxGnomad());
         this.sas.set(sas);
     }
 
@@ -129,7 +121,6 @@ public class GnomADFrequencies {
     }
 
     public void computeMaxGnomad() {
-//        float maxFreq = -1;
         if (max == null || (afr != null && afr.get().getAf() > max.get().getAf())) max = afr;
         if (max == null || (amr != null && amr.get().getAf() > max.get().getAf())) max = amr;
         if (max == null || (asj != null && asj.get().getAf() > max.get().getAf())) max = asj;

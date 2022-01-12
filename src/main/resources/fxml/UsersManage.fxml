@@ -20,7 +20,7 @@
                      <children>
                         <Label text="%usersmanage.lb.module.users.title" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button defaultButton="true" mnemonicParsing="false" onAction="#AddNewUser" styleClass="button-small" text="%usersmanage.lb.module.users.btn.adduser" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#AddNewUser" fx:id="addNewUserBtn" styleClass="button-small" text="%usersmanage.lb.module.users.btn.adduser" />
                      </children>
                   </HBox>
                   <AnchorPane styleClass="module-box-container" VBox.vgrow="ALWAYS">
@@ -54,7 +54,7 @@
                                        <children>
                                           <Label styleClass="font-medium" text="%usersmanage.module.groups.lb.grouplist" />
                                           <Region HBox.hgrow="ALWAYS" />
-                                          <Button defaultButton="true" mnemonicParsing="false" onAction="#addNewGroup" styleClass="button-small" text="%usersmanage.module.groups.btn.addgroup" />
+                                          <Button defaultButton="true" mnemonicParsing="false" onAction="#addNewGroup" fx:id="addNewGroupBtn" styleClass="button-small" text="%usersmanage.module.groups.btn.addgroup" />
                                        </children>
                                     </HBox>
                                     <TableView fx:id="rolesTable" VBox.vgrow="ALWAYS">

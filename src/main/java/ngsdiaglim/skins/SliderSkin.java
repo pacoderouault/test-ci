@@ -22,13 +22,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SliderSkin extends javafx.scene.control.skin.SliderSkin {
-    private StackPane fill = new StackPane();
+    private final StackPane fill = new StackPane();
 
-    private StackPane thumb, track;
+    private final StackPane thumb, track;
 
-    private double trackToTickGap = 2;
+    private final double trackToTickGap = 2;
 
-    private SliderPopup popup = new SliderPopup();
+    private final SliderPopup popup = new SliderPopup();
     private static final int POPUP_DISTANCE_FROM_THUMB = 50;
     private static final Duration POPUP_FADE_DURATION = Duration.millis(200);
 
@@ -214,7 +214,7 @@ public class SliderSkin extends javafx.scene.control.skin.SliderSkin {
                 }
             };
 
-    private BooleanProperty showValueOnInteraction = new SimpleStyleableBooleanProperty(SHOW_VALUE_ON_INTERACTION_META_DATA, true);
+    private final BooleanProperty showValueOnInteraction = new SimpleStyleableBooleanProperty(SHOW_VALUE_ON_INTERACTION_META_DATA, true);
 
     private BooleanProperty showValueOnInteractionProperty() { return showValueOnInteraction; }
 

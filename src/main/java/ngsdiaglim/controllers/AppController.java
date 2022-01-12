@@ -10,10 +10,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.dialogs.AboutDialog;
+import ngsdiaglim.controllers.dialogs.DocumentationDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.controllers.dialogs.SearchAnalysesDialog;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.modeles.Cytobands;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.parsers.VCFParser;
@@ -22,8 +23,6 @@ import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Objects;
 
 public class AppController {
 
@@ -58,11 +57,11 @@ public class AppController {
                 || App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_CNVS_PARAMETERS)
         ) {
             adminMenu.setVisible(true);
-            adminMenu.setVisible(true);
+            adminMenu.setManaged(true);
         }
         else {
             adminMenu.setVisible(false);
-            adminMenu.setVisible(false);
+            adminMenu.setManaged(false);
         }
 
         userManagementMenuItem.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES)
@@ -71,9 +70,7 @@ public class AppController {
         cnvsManagementMenuItem.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_CNVS_PARAMETERS));
         genePanelsBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_GENEPANELS));
 
-        moduleContainer.getChildren().addListener((ListChangeListener<Node>) c -> {
-            initBreadcrumbs();
-        });
+        moduleContainer.getChildren().addListener((ListChangeListener<Node>) c -> initBreadcrumbs());
     }
 
     @FXML
@@ -132,7 +129,18 @@ public class AppController {
         SearchAnalysesDialog dialog = new SearchAnalysesDialog();
         Message.showDialog(dialog);
         dialog.getButton(ButtonType.OK).setOnAction(e -> Message.hideDialog(dialog));
+    }
 
+    @FXML
+    private void showAboutDialog() {
+        AboutDialog dialog = new AboutDialog(dialogPane);
+        Message.showDialog(dialog);
+    }
+
+    @FXML
+    private void showDocumentation() {
+        DocumentationDialog dialog = new DocumentationDialog(dialogPane);
+        Message.showDialog(dialog);
     }
 
 

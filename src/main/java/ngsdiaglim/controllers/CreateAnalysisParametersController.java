@@ -1,50 +1,15 @@
 package ngsdiaglim.controllers;
 
-import com.dlsc.gemsfx.DialogPane;
-import javafx.application.Platform;
-import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Tab;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.cells.AnalysisParametersActionsCol;
-import ngsdiaglim.controllers.cells.GeneTranscriptsCell;
-import ngsdiaglim.controllers.dialogs.AddGeneTranscriptSetDialog;
-import ngsdiaglim.controllers.dialogs.AddPanelDialog;
 import ngsdiaglim.controllers.dialogs.Message;
-import ngsdiaglim.database.DAOController;
-import ngsdiaglim.enumerations.Genome;
-import ngsdiaglim.modeles.analyse.AnalysisParameters;
-import ngsdiaglim.modeles.analyse.Panel;
-import ngsdiaglim.modeles.analyse.PanelRegion;
-import ngsdiaglim.modeles.analyse.RunConstants;
-import ngsdiaglim.modeles.biofeatures.Gene;
-import ngsdiaglim.modeles.biofeatures.GeneSet;
-import ngsdiaglim.modeles.biofeatures.Transcript;
-import ngsdiaglim.modeles.parsers.GeneSetParser;
-import ngsdiaglim.modeles.parsers.PanelParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
-import ngsdiaglim.modeles.variants.Hotspot;
-import ngsdiaglim.modeles.variants.HotspotsSet;
-import ngsdiaglim.utils.BundleFormatter;
-import ngsdiaglim.utils.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.MaskerPane;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 public class CreateAnalysisParametersController extends Module {
 
@@ -60,10 +25,15 @@ public class CreateAnalysisParametersController extends Module {
     private AnalysisParametersGenesTrancriptsController analysisParametersGenesTrancriptsController;
     private AnalysisParametersHotspotsController analysisParametersHotspotsController;
 
-    private final Tooltip inactivePanelTooltip = new Tooltip(App.getBundle().getString("createAnalasisParameters.tooltip.inactivePanel"));
+//    private final Tooltip inactivePanelTooltip = new Tooltip(App.getBundle().getString("createAnalasisParameters.tooltip.inactivePanel"));
 
     public CreateAnalysisParametersController() {
+
         super(App.getBundle().getString("createAnalasisParameters.title"));
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ANALYSISPARAMETERS)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+            return;
+        }
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CreateAnalysisParameters.fxml"), App.getBundle());
             fxml.setRoot(this);

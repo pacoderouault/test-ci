@@ -79,9 +79,7 @@ public class OtherCommentActionTableCell extends TableCell<ReportCommentary, Voi
             EditReportCommentDialog dialog = new EditReportCommentDialog();
             dialog.setValue(commentary);
             Message.showDialog(dialog);
-            dialog.getButton(ButtonType.OK).setOnAction(event -> {
-                Message.hideDialog(dialog);
-            });
+            dialog.getButton(ButtonType.OK).setOnAction(event -> Message.hideDialog(dialog));
         }
     }
 

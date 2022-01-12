@@ -19,7 +19,10 @@ import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.exceptions.FileFormatException;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.Panel;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -106,6 +109,9 @@ public class CNVImportDataController extends VBox {
         FileChooser fc = FileChooserUtils.getFileChooser();
         File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             matrixFile.set(selectedFile);
         }
     }

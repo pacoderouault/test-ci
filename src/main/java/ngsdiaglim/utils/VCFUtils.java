@@ -24,9 +24,7 @@ public class VCFUtils {
 
     /**
      *
-     * @param file
      * @return the appropriate VCFReader for the vcf file for .vcf or .gz.vcf.
-     * @throws IOException
      */
     public static VCFFileReader getVCFReader(File file) throws IOException, TribbleException {
         VCFFileReader reader;
@@ -47,9 +45,6 @@ public class VCFUtils {
 
     /**
      * Return true if the file is block compressed
-     * @param file
-     * @return
-     * @throws IOException
      */
     public static boolean isGZipped(File file) throws IOException {
         RandomAccessFile raf = new RandomAccessFile(file, "r");
@@ -60,8 +55,6 @@ public class VCFUtils {
 
     /**
      * Create a tabix index from a block compressed VCF file
-     * @param file
-     * @throws IOException
      */
     public static void indexCompressedVCF(File file) throws IOException {
         TabixIndex tabixIndexGz = IndexFactory.createTabixIndex(file, new VCFCodec(), TabixFormat.VCF, null);
@@ -70,9 +63,6 @@ public class VCFUtils {
 
     /**
      * Block compress a VCF file
-     * @param file
-     * @return
-     * @throws IOException
      */
     public static File compressBGZP(File file) throws IOException {
         File outfile = new File(file.getPath() + ".gz");
@@ -136,10 +126,8 @@ public class VCFUtils {
     }
 
     public static VCFHeaderVersion getVCFHeaderVersion(VCFHeader vcfHeader){
-        Iterator<VCFHeaderLine> iter = vcfHeader.getMetaDataInInputOrder().iterator();
-        while(iter.hasNext()){
-            VCFHeaderLine hl = iter.next();
-            if(hl.getKey().equals("fileformat")){
+        for (VCFHeaderLine hl : vcfHeader.getMetaDataInInputOrder()) {
+            if (hl.getKey().equals("fileformat")) {
                 return VCFHeaderVersion.toHeaderVersion(hl.getValue());
             }
         }

@@ -1,7 +1,6 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -10,10 +9,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import ngsdiaglim.App;
@@ -22,7 +19,11 @@ import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GenePanel;
 import ngsdiaglim.modeles.parsers.GenesPanelParser;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
+import ngsdiaglim.utils.ListSelectionViewUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.GenePanelCreationData> {
 
-    private Logger logger = LogManager.getLogger(AddGenePanelDialog.class);
+    private static final Logger logger = LogManager.getLogger(AddGenePanelDialog.class);
 
     @FXML private VBox dialogContainer;
     @FXML private TextField genePanelNameTf;
@@ -47,8 +48,6 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
     @FXML private Label errorLabel;
 
     private final static NaturalSortComparator naturalSortComparator = new NaturalSortComparator();
-    private final FilteredList<Gene> filteredGenesList;
-    private final SortedList<Gene> sortedGenesList;
 
     private Set<Gene> genes;
 
@@ -72,8 +71,8 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
             Message.error(e.getMessage(), e);
         }
 
-        filteredGenesList = new FilteredList<>(genes.stream().collect(Collectors.toCollection(FXCollections::observableArrayList)));
-        sortedGenesList = new SortedList<>(filteredGenesList);
+        FilteredList<Gene> filteredGenesList = new FilteredList<>(genes.stream().collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        SortedList<Gene> sortedGenesList = new SortedList<>(filteredGenesList);
         sortedGenesList.setComparator(Comparator.comparing(Gene::getGeneName, naturalSortComparator));
 
         setTitle(App.getBundle().getString("addgenepaneldialog.title"));
@@ -94,10 +93,10 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
         listSelectionView.getSourceItems().sort(Comparator.comparing(Gene::getGeneName, naturalSortComparator));
         getValue().setSelectedGenes(listSelectionView.getTargetItems());
 
-        geneFilterTf.textProperty().addListener((obs, oldV, newV) -> {
-            filterGenes(newV);
-        });
+        geneFilterTf.textProperty().addListener((obs, oldV, newV) -> filterGenes(newV));
         geneFilterTf.setOnAction(e -> filterGenes(geneFilterTf.getText()));
+
+        ListSelectionViewUtils.rewriteButtons(listSelectionView);
     }
 
 
@@ -190,6 +189,9 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
         FileChooser fc = FileChooserUtils.getFileChooser();
         File selectedFile = fc.showOpenDialog(getDialogPane().getScene().getWindow());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             try {
                 Set<Gene> genes = GenesPanelParser.parseGenes(selectedFile);
                 listSelectionView.getTargetItems().addAll(genes);

@@ -2,7 +2,6 @@ package ngsdiaglim.modeles.analyse;
 
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.tribble.Tribble;
-import htsjdk.variant.vcf.VCFFileReader;
 import javafx.collections.ObservableList;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.WorkIndicatorDialog;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -158,9 +156,7 @@ public class RunImporter {
                         bamParser.parseFile(coverageFile);
                     }
 
-//                    System.out.println(bamFile);
-//                    System.out.println(bamFile.exists());
-
+                    String metadata = App.getAppName() + ":" + App.getVersion();
                     long analysis_id = DAOController.getAnalysisDAO().addAnalyse(
                             analysisName,
                             analysisDirectory.getPath(),
@@ -172,7 +168,7 @@ public class RunImporter {
                             sampleName,
                             run,
                             analysisParameters,
-                            ""
+                            metadata
                     );
 
                     // read vcf

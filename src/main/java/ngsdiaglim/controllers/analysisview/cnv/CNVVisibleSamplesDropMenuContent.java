@@ -10,6 +10,7 @@ import ngsdiaglim.App;
 import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.modules.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +40,7 @@ public class CNVVisibleSamplesDropMenuContent extends VBox {
     public void initialize() {
         lv.setCellFactory(data -> new Cell());
         fillListView();
+        getStyleClass().add("dropdown-menu");
     }
 
     private void fillListView() {
@@ -50,12 +52,14 @@ public class CNVVisibleSamplesDropMenuContent extends VBox {
     @FXML
     private void selectAllSamples() {
         lv.getItems().forEach(s -> s.setVisible(true));
+        ModuleManager.getAnalysisViewController().getAnalysisViewCNVController().getCnvNormalizedViewController().getCnvNormalizedMapsViewController().drawMaps();
     }
 
 
     @FXML
     private void unselectAllSamples() {
         lv.getItems().forEach(s -> s.setVisible(false));
+        ModuleManager.getAnalysisViewController().getAnalysisViewCNVController().getCnvNormalizedViewController().getCnvNormalizedMapsViewController().drawMaps();
     }
 
 
@@ -73,6 +77,9 @@ public class CNVVisibleSamplesDropMenuContent extends VBox {
                 cb.setText(item.getBarcode());
                 cb.selectedProperty().bindBidirectional(item.visibleProperty());
                 setGraphic(cb);
+                cb.selectedProperty().addListener((obs, oldV, newV) -> {
+                    ModuleManager.getAnalysisViewController().getAnalysisViewCNVController().getCnvNormalizedViewController().getCnvNormalizedMapsViewController().drawMaps();
+                });
             }
         }
     }

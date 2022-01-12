@@ -20,7 +20,6 @@ import ngsdiaglim.controllers.WorkIndicatorDialog;
 import ngsdiaglim.controllers.dialogs.AddGenePanelDialog;
 import ngsdiaglim.controllers.dialogs.ExportTableDialog;
 import ngsdiaglim.controllers.dialogs.Message;
-import ngsdiaglim.controllers.ui.DropDownMenu;
 import ngsdiaglim.controllers.ui.FilterTableView;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.VariantsTableColumns;
@@ -29,14 +28,19 @@ import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GenePanel;
 import ngsdiaglim.modeles.biofeatures.Transcript;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.TranscriptConsequence;
 import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.PredicateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -46,7 +50,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public class AnalysisViewVariantsController2 extends VBox {
@@ -58,23 +61,28 @@ public class AnalysisViewVariantsController2 extends VBox {
     @FXML private Button closeSearchBtn;
     @FXML private Button prevSearchBtn;
     @FXML private Button nextSearchBtn;
+    @FXML private Button addgenePanelBtn;
+    @FXML private Button visibleColumnsBtn;
+    @FXML private Button hideVariantsBtn;
     @FXML private Label searchResultLb;
     @FXML private HBox tableMenuContainer;
     @FXML private VBox tableContainer;
     @FXML private final FontIcon searchIcon = new FontIcon("mdmz-search");
-    @FXML private final FilterTableView<Annotation> variantsTable;
+    @FXML private FilterTableView<Annotation> variantsTable;
     @FXML private SplitPane splitPane;
     @FXML private AnchorPane variantDetailContainer;
 
 //    private DropDownMenu exportTableDropmenu;
-    private DropDownMenu columnsVisibilityDropmenu;
-    private DropDownMenu hideVariantsDropmenu;
+//    private DropDownMenu columnsVisibilityDropmenu;
+//    private DropDownMenu hideVariantsDropmenu;
+    private PopOver visibleColumnsPopOver;
+    private PopOver hideVariantPopOver;
     private HideVariantDropDownMenuContent hideVariantDropDownMenuContent;
 
     private final Analysis analysis;
     private FilteredList<Annotation> filteredAnnotations;
-    private final VariantTableBuilder tableBuilder;
-    private final AnalysisViewVariantDetailController variantDetailController;
+    private VariantTableBuilder tableBuilder;
+    private AnalysisViewVariantDetailController variantDetailController;
     private final AnnotationComparator annotationComparator = new AnnotationComparator();
     private final ObservableList<Integer> searchRsltRowIndex = FXCollections.observableArrayList();
     private int searchRsltCursor = 0;
@@ -113,7 +121,6 @@ public class AnalysisViewVariantsController2 extends VBox {
         setTableItems();
         initView();
 
-//        primaryFilteredAnnotations = FXCollections.observableArrayList();
         setAnnotationsFilters();
 
         variantDetailController.annotationProperty().bind(variantsTable.getSelectionModel().selectedItemProperty());
@@ -125,30 +132,23 @@ public class AnalysisViewVariantsController2 extends VBox {
         if (variantsTable.getItems().size() > 0) {
             variantsTable.getSelectionModel().select(0, variantsTable.getColumns().get(0));
         }
+
+        addgenePanelBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL));
     }
 
     @FXML
     public void initialize() {
-        // init mouse click event on header table
+//        // init mouse click event on header table
 //        Platform.runLater(() -> {
-////            variantsTable.refresh();
-////            variantsTable.applyCss();
-////            variantsTable.layout();
-////            variantsTable.refresh();
-////            PlatformUtils.runAndWait(() -> {
-//            System.out.println(getParent());
 //            getParent().applyCss();
 //            getParent().layout();
 //            tableBuilder.setColumnsHeaderEvent();
-////            });
-//
 //        });
     }
 
     private void setTableItems() {
         filteredAnnotations = new FilteredList<>(analysis.getAnnotations().sorted(annotationComparator));
         SortedList<Annotation> sortedAnnotations = new SortedList<>(filteredAnnotations);
-//        sortedAnnotations.setComparator(annotationComparator);
         sortedAnnotations.comparatorProperty().bind(variantsTable.comparatorProperty());
         variantsTable.setItems(sortedAnnotations);
 
@@ -179,47 +179,12 @@ public class AnalysisViewVariantsController2 extends VBox {
 
         Predicate<Annotation> predicate = PredicateUtils.addPredicates(hideVariantsPredicate, genesPanelPredicate, tablePredicate);
         filteredAnnotations.setPredicate(predicate);
-//
-//        Predicate<Annotation> predicate = null;
-//        if (hideVariantsPredicate != null) {
-//            predicate = hideVariantsPredicate;
-//        }
-//        if (genesPanelPredicate != null) {
-//            if (predicate != null) {
-//                predicate = predicate.and(genesPanelPredicate);
-//            } else {
-//                predicate = genesPanelPredicate;
-//            }
-//        }
-//        if (predicate != null) {
-//            primaryFilteredAnnotations.setAll(
-//                    analysis.getAnnotations().stream()
-//                            .filter(predicate)
-//                            .collect(Collectors.toCollection(ArrayList::new))
-//            );
-//        } else {
-//            primaryFilteredAnnotations.setAll(analysis.getAnnotations());
-//        }
-
-//        primaryFilteredAnnotations.sort(new AnnotationComparator());
-//        filteredAnnotations = new FilteredList<>(primaryFilteredAnnotations);
-//        sortedAnnotations = new SortedList<>(filteredAnnotations);
-//        sortedAnnotations.comparatorProperty().bind(variantsTable.comparatorProperty());
-//        filteredAnnotations.predicateProperty().bind(variantsTable.predicateProperty());
-//        variantsTable.setItems(sortedAnnotations);
     }
 
 
     @FXML
     private void resetVariantSort() {
-//        sortedAnnotations.comparatorProperty().unbind();
         variantsTable.getSortOrder().clear();
-//        variantsTable.sort();
-//        sortedAnnotations.setComparator(annotationComparator);
-//        sortedAnnotations.comparatorProperty().bind(variantsTable.comparatorProperty());
-
-
-//        sortedAnnotations.setComparator(annotationComparator);
     }
 
 
@@ -234,12 +199,11 @@ public class AnalysisViewVariantsController2 extends VBox {
 
 
 
-//        splitPane.setDividerPositions();
+        splitPane.setDividerPositions();
     }
 
     /**
      * Hide the search UI elements
-     * @param value
      */
     private void setSearchUIVisible(boolean value) {
         nextSearchBtn.setVisible(value);
@@ -252,10 +216,8 @@ public class AnalysisViewVariantsController2 extends VBox {
 
     private void initTableMenu() {
         initTableExportButton();
-        initColumnVisibilityDropMenu();
-        initHideVariantsDropMenu();
-
-        this.tableMenuContainer.getChildren().addAll(columnsVisibilityDropmenu, hideVariantsDropmenu);
+        initColumnVisibilityPopOver();
+        initHideVariantsPopOver();
     }
 
 
@@ -276,29 +238,42 @@ public class AnalysisViewVariantsController2 extends VBox {
     }
 
 
-    private void initColumnVisibilityDropMenu() {
-        columnsVisibilityDropmenu = new DropDownMenu(App.getBundle().getString("analysisview.variants.menu.columnvisibility"));
-        FontIcon icon = new FontIcon("mdmz-view_column");
-        columnsVisibilityDropmenu.setGraphic(icon);
-        columnsVisibilityDropmenu.getStyleClass().add("button-link");
-
+    private void initColumnVisibilityPopOver() {
+//        if (columnsVisibilityDropmenu == null) {
+//            columnsVisibilityDropmenu = new DropDownMenu(App.getBundle().getString("analysisview.variants.menu.columnvisibility"));
+//            FontIcon icon = new FontIcon("mdmz-view_column");
+//            columnsVisibilityDropmenu.setGraphic(icon);
+//            columnsVisibilityDropmenu.getStyleClass().add("button-link");
+//        }
+//
+        visibleColumnsPopOver = new PopOver();
+        visibleColumnsPopOver.setAnimated(false);
+        visibleColumnsPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
         ColumnsVisivilityDropDownMenuContent columnsVisivilityDropDownMenuContent = new ColumnsVisivilityDropDownMenuContent();
         columnsVisivilityDropDownMenuContent.setVariantTableBuilder(tableBuilder);
-        columnsVisibilityDropmenu.setContentNode(columnsVisivilityDropDownMenuContent);
+//        columnsVisibilityDropmenu.setContentNode(columnsVisivilityDropDownMenuContent);
+
+        visibleColumnsPopOver.setContentNode(columnsVisivilityDropDownMenuContent);
+;
     }
 
 
-    private void initHideVariantsDropMenu() {
-        hideVariantsDropmenu = new DropDownMenu(App.getBundle().getString("analysisview.variants.menu.hidevariants"));
-        FontIcon icon = new FontIcon("mdmz-visibility_off");
-        hideVariantsDropmenu.setGraphic(icon);
-        hideVariantsDropmenu.getStyleClass().add("button-link");
-
+    private void initHideVariantsPopOver() {
+//        hideVariantsDropmenu = new DropDownMenu(App.getBundle().getString("analysisview.variants.menu.hidevariants"));
+//        FontIcon icon = new FontIcon("mdmz-visibility_off");
+//        hideVariantsDropmenu.setGraphic(icon);
+//        hideVariantsDropmenu.getStyleClass().add("button-link");
+//
         hideVariantDropDownMenuContent = new HideVariantDropDownMenuContent();
         hideVariantDropDownMenuContent.predicateProperty().addListener((observable, oldValue, newValue) -> {
             setAnnotationsFilters();
         });
-        hideVariantsDropmenu.setContentNode(hideVariantDropDownMenuContent);
+//        hideVariantsDropmenu.setContentNode(hideVariantDropDownMenuContent);
+        hideVariantPopOver = new PopOver();
+        hideVariantPopOver.setAnimated(false);
+        hideVariantPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        hideVariantPopOver.setContentNode(hideVariantDropDownMenuContent);
+
     }
 
 
@@ -319,14 +294,17 @@ public class AnalysisViewVariantsController2 extends VBox {
     private void exportTableHandler() {
         ExportTableDialog dialog = new ExportTableDialog(App.get().getAppController().getDialogPane(), variantsTable.getItems());
         Message.showDialog(dialog);
-        Button b = dialog.getButton(ButtonType.OK);
-        b.setOnAction(e -> {
-
+        Button bOk = dialog.getButton(ButtonType.OK);
+        Button bCancel = dialog.getButton(ButtonType.CANCEL);
+        bOk.setOnAction(e -> {
+            dialog.clear();
             FileChooser fc = FileChooserUtils.getFileChooser();
-            fc.setInitialFileName(analysis.getName().replaceAll("[/\\.]", "_") + ".xlsx");
+            fc.setInitialFileName(analysis.getName().replaceAll("[/.]", "_") + ".xlsx");
             File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
             if (selectedFile != null) {
-
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+                user.savePreferences();
                 WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("exportvariants.msg.exportVariant"));
                 wid.addTaskEndNotification(r -> {
                     if (r == 0) {
@@ -351,9 +329,10 @@ public class AnalysisViewVariantsController2 extends VBox {
                     return 0;
                 });
             }
-
-
-
+        });
+        bCancel.setOnAction(e -> {
+            dialog.clear();
+            App.get().getAppController().getDialogPane().hideDialog(dialog);
         });
     }
 
@@ -381,12 +360,6 @@ public class AnalysisViewVariantsController2 extends VBox {
                                 break;
                             }
                         }
-//                        //Column is ok when it is neither equal to Name or External Links
-//                        //Options that matches the item are Commentary, Vaf or Observed
-//                        if (colTitleIsOkAndItemMatchesOptions(query, item, column)) {
-//                            searchRsltRowIndex.add(getItemIndex(item));
-//                            break;
-//                        }
                     }
                 }
 
@@ -467,16 +440,20 @@ public class AnalysisViewVariantsController2 extends VBox {
 
 
     private void loadGenesPanels() throws SQLException {
-        GenePanel selectedgenePanel = panelsCb.getValue();
+        GenePanel selectedGenePanel = panelsCb.getValue();
         panelsCb.setItems(DAOController.getGenesPanelDAO().getGenesPanels());
         // add a null value for unselect panels
         panelsCb.getItems().add(0, null);
-        panelsCb.getSelectionModel().select(selectedgenePanel);
+        panelsCb.getSelectionModel().select(selectedGenePanel);
     }
 
 
     @FXML
     private void addPanelHandler() {
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+            return;
+        }
         AddGenePanelDialog dialog = new AddGenePanelDialog(App.get().getAppController().getDialogPane());
         Message.showDialog(dialog);
         Button b = dialog.getButton(ButtonType.OK);
@@ -522,6 +499,8 @@ public class AnalysisViewVariantsController2 extends VBox {
         variantsTable.refresh();
     }
 
+    public FilterTableView<Annotation> getVariantsTable() {return variantsTable;}
+
     public VariantTableBuilder getTableBuilder() {return tableBuilder;}
 
     public AnalysisViewVariantDetailController getVariantDetailController() {return variantDetailController;}
@@ -533,5 +512,20 @@ public class AnalysisViewVariantsController2 extends VBox {
     public void setDividerPosition() {
         double divPos = (splitPane.getHeight() - (variantDetailController.getTest().getHeight() + 8)) / splitPane.getHeight();
         splitPane.setDividerPositions(divPos);
+    }
+
+    public void clear() {
+        tableBuilder.clear();
+        variantDetailController.clear();
+    }
+
+    @FXML
+    private void showVisibleColumnsPopOver() {
+        visibleColumnsPopOver.show(visibleColumnsBtn);
+    }
+
+    @FXML
+    private void showHideVariantsPopOver() {
+        hideVariantPopOver.show(hideVariantsBtn);
     }
 }

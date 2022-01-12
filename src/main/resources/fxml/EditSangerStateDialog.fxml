@@ -41,7 +41,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#editSangerState" text="%ditsangerstatedialog.btn.editsangerstate" />
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#editSangerState" fx:id="editSangerStateBtn" text="%ditsangerstatedialog.btn.editsangerstate" />
                </children>
             </HBox>
          </children>

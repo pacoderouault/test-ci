@@ -4,14 +4,14 @@ import ngsdiaglim.controllers.ui.FilterTableColumn;
 import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 
-public class DepthPopupFilter extends NumberPopupFilter2 {
+public class DepthPopupFilter extends NumberPopupFilter {
 
     public DepthPopupFilter(FilterTableColumn<Annotation, Number> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, Number value) {
+    protected void updatePredicate(Operators op, Number value) {
         if (value == null) {
             getTableColumn().setPredicate(null);
         } else {

@@ -25,14 +25,12 @@ public class QualityCalculator {
             List<Integer> values = new ArrayList<>();
             int finalSampleIdx = sampleIdx;
 
-            data.getCovcopRegions().values().forEach(amplicons -> {
-                amplicons.forEach(a -> {
-                    Integer v = a.getRaw_values().get(finalSampleIdx);
-                    if (v != null) {
-                        values.add(v);
-                    }
-                });
-            });
+            data.getCovcopRegions().values().forEach(amplicons -> amplicons.forEach(a -> {
+                Integer v = a.getRaw_values().get(finalSampleIdx);
+                if (v != null) {
+                    values.add(v);
+                }
+            }));
 
             Quartiles allPoolsQuartiles = null;
             if (values.size() >= 4) {

@@ -1,7 +1,5 @@
 package ngsdiaglim.modeles.variants.predictions;
 
-import ngsdiaglim.enumerations.PredictionTools;
-
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 

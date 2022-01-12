@@ -12,8 +12,6 @@ import ngsdiaglim.modeles.analyse.Run;
 import ngsdiaglim.modeles.analyse.RunFile;
 import ngsdiaglim.utils.DateFormatterUtils;
 
-import java.io.File;
-
 public class RunInfoDialog extends DialogPane.Dialog<Run> {
 
     private final GridPane gridPane = new GridPane();

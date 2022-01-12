@@ -5,14 +5,14 @@ import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 import org.apache.commons.lang3.StringUtils;
 
-public class GenesPopupFilter extends StringPopupFilter2 {
+public class GenesPopupFilter extends StringPopupFilter {
 
     public GenesPopupFilter(FilterTableColumn<Annotation, String> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, String value) {
+    protected void updatePredicate(Operators op, String value) {
         if (StringUtils.isBlank(value)) {
             getTableColumn().setPredicate(null);
         } else {

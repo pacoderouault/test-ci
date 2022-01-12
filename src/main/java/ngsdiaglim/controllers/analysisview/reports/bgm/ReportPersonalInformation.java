@@ -2,10 +2,8 @@ package ngsdiaglim.controllers.analysisview.reports.bgm;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.dialogs.AddAnalysisCommentaryDialog;
 import ngsdiaglim.controllers.dialogs.ManagePrescribersDialogController;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.controllers.ui.AutoCompleteComboboxBuilder;
@@ -19,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class ReportPersonalInformation extends ReportPane {
 

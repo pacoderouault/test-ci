@@ -46,7 +46,7 @@
                                   <Region HBox.hgrow="ALWAYS" />
                                   <Label minWidth="-Infinity" text="%analysisview.lb.userPanels" />
                                   <ComboBox fx:id="panelsCb" minWidth="-Infinity" prefWidth="150.0" />
-                           <Button mnemonicParsing="false" onAction="#addPanelHandler" text="%analysisview.variants.btn.addGenesPanel" />
+                           <Button fx:id="addgenePanelBtn" mnemonicParsing="false" onAction="#addPanelHandler" text="%analysisview.variants.btn.addGenesPanel" />
                                   <Button alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#resetVariantSort" styleClass="button-link" text="%analysisview.variants.btn.resetSorting">
                               <graphic>
                                  <FontIcon iconLiteral="mdal-autorenew" iconSize="16" />
@@ -55,6 +55,16 @@
                            <Button alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#exportTableHandler" styleClass="button-link" text="%analysisview.exporttable.btn.export">
                               <graphic>
                                  <FontIcon iconLiteral="mdal-input" iconSize="16" />
+                              </graphic>
+                           </Button>
+                           <Button fx:id="visibleColumnsBtn" alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#showVisibleColumnsPopOver" styleClass="button-link" text="%analysisview.variants.menu.columnvisibility">
+                              <graphic>
+                                 <FontIcon iconLiteral="mdmz-view_column" iconSize="16" />
+                              </graphic>
+                           </Button>
+                           <Button fx:id="hideVariantsBtn" alignment="TOP_LEFT" minWidth="-Infinity" mnemonicParsing="false" onAction="#showHideVariantsPopOver" styleClass="button-link" text="%analysisview.variants.menu.hidevariants">
+                              <graphic>
+                                 <FontIcon iconLiteral="mdmz-visibility_off" iconSize="16" />
                               </graphic>
                            </Button>
                               </children>

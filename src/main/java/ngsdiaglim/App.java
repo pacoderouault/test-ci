@@ -1,8 +1,5 @@
 package ngsdiaglim;
 
-import fr.brouillard.oss.cssfx.CSSFX;
-import htsjdk.tribble.readers.TabixReader;
-import htsjdk.variant.vcf.VCFReader;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -11,21 +8,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import ngsdiaglim.controllers.AppController;
-import ngsdiaglim.controllers.WorkIndicatorDialog;
-import ngsdiaglim.database.DAOController;
-import ngsdiaglim.database.DatabaseConnection;
-import ngsdiaglim.importer.*;
-import ngsdiaglim.modeles.TabixGetter;
-import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.analyse.Run;
-import ngsdiaglim.modeles.analyse.RunImporter;
-import ngsdiaglim.modeles.igv.IGVHandler;
-import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.dao.DatabaseCreatorDAO;
+import ngsdiaglim.enumerations.Service;
+import ngsdiaglim.modeles.igv.IGVHandler;
+import ngsdiaglim.modeles.igv.IGVLinks;
 import ngsdiaglim.modeles.users.User;
-import ngsdiaglim.utils.VCFUtils;
+import ngsdiaglim.modules.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,9 +24,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 
@@ -45,13 +34,16 @@ public class App extends Application {
 
     private static App instance;
     private AppController appController;
+    private Scene scene;
     private static final Logger logger = LogManager.getLogger(App.class);
     public static Locale locale = Locale.FRANCE;
     private static final ResourceBundle bundle = ResourceBundle.getBundle("strings/NGSDiag", locale);
     private static Stage primaryStage;
-    private final SimpleObjectProperty<User> loggedUser = new SimpleObjectProperty<User>();
+    private final SimpleObjectProperty<User> loggedUser = new SimpleObjectProperty<>();
     private AppSettings appSettings;
     public final IGVHandler igvHandler = new IGVHandler();
+    public IGVLinks igvLinks;
+    private Service service;
 
     public App() {
         instance = this;
@@ -73,6 +65,7 @@ public class App extends Application {
         } catch (SQLException e) {
             logger.error("Error when setup admin roles", e);
         }
+
 
 
 //        try {
@@ -105,13 +98,17 @@ public class App extends Application {
         } catch (IOException e) {
             logger.error("Error when reader application properties file");
         }
-        CSSFX.start();
+//        CSSFX.start();
         primaryStage = stage;
 
-        primaryStage.setMaximized(Boolean.parseBoolean(appSettings.getProperty(AppSettings.DefaultAppSettings.MAXIMIZED.name())));
-        primaryStage.maximizedProperty().addListener((obs, oldV, newV) -> {
-            appSettings.setValue(AppSettings.DefaultAppSettings.MAXIMIZED, newV);
-        });
+
+
+        try {
+            service = Service.valueOf(appSettings.getProperty(AppSettings.DefaultAppSettings.SERVICE.name()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            service = Service.UNKNOW;
+        }
 
         loggedUser.addListener((obs, oldV, newV) -> {
 
@@ -140,16 +137,21 @@ public class App extends Application {
         try {
             loadLoggingScreen();
         } catch (IOException e) {
-            logger.fatal("Error when loadding logging view fxml");
+            logger.fatal(e);
             Message.error(bundle.getString("app.msg.err.loadLoggingScreenErr"), e.getMessage());
         }
 
-        try {
-            setLoggedUser(null);
-            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        primaryStage.setMaximized(Boolean.parseBoolean(appSettings.getProperty(AppSettings.DefaultAppSettings.MAXIMIZED.name())));
+        primaryStage.maximizedProperty().addListener((obs, oldV, newV) -> {
+            appSettings.setValue(AppSettings.DefaultAppSettings.MAXIMIZED, newV);
+        });
+
+//        try {
+//            setLoggedUser(null);
+//            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
 
 //        try {
@@ -158,16 +160,22 @@ public class App extends Application {
 //            e.printStackTrace();
 //        }
 
+        igvLinks = new IGVLinks();
 
+        primaryStage.setOnCloseRequest((event) -> {// <----------- this is what you need
+            Platform.exit();
+        });
     }
 
     public IGVHandler getIgvHandler() {return igvHandler;}
+
+    public IGVLinks getIgvLinks() {return igvLinks;}
 
     private void loadLoggingScreen() throws IOException {
         FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/Logging.fxml"));
         fxml.setResources(App.bundle);
         AnchorPane page = fxml.load();
-        Scene scene = new Scene(page);
+        scene = new Scene(page);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/theme.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -175,14 +183,11 @@ public class App extends Application {
     }
 
     private void loadAppscreen() throws IOException {
-        FXMLLoader fxml = new FXMLLoader(App.class.getResource("/fxml/App.fxml"));
+        FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/App.fxml"));
         fxml.setResources(bundle);
         AnchorPane page = fxml.load();
         appController = fxml.getController();
-        Scene scene = new Scene(page);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/theme.css")).toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        scene.setRoot(page);
         appController.showHomeView();
     }
 
@@ -257,7 +262,37 @@ public class App extends Application {
         return Paths.get(getJarPath(), AppSettings.TOOLS_DATA, AppSettings.CNV_DIRNAME, AppSettings.CNV_CONTROLES_DIRNAME);
     }
 
+    public static String getAppName() {
+        String version = "null";
+        final Properties properties = new Properties();
+        try {
+            properties.load(App.class.getClassLoader().getResourceAsStream("project.properties"));
+            version = properties.getProperty("artifactId");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return version;
+    }
+
+    public static String getVersion() {
+        String version = "null";
+        final Properties properties = new Properties();
+        try {
+            properties.load(App.class.getClassLoader().getResourceAsStream("project.properties"));
+            version = properties.getProperty("version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return version;
+    }
+
+    /**
+     * Return the CHU service of the application instance
+     */
+    public Service getService() {return service;}
+
     public static void main(String[] args) {
+        System.setProperty("javafx.preloader", PreloaderSplash.class.getCanonicalName());
         launch(args);
     }
 

@@ -4,10 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import ngsdiaglim.enumerations.HotspotType;
-import ngsdiaglim.modeles.LeftTrimAlleles;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import java.io.IOException;
 
 public class Hotspot {
 

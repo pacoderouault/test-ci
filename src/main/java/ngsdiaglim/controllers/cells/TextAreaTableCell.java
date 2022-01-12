@@ -134,7 +134,7 @@ public class TextAreaTableCell<S, T> extends TableCell<S, T> {
     }
 
     private TextArea textArea;
-    private ObjectProperty<StringConverter<T>> converter = new SimpleObjectProperty<>(this, "converter");
+    private final ObjectProperty<StringConverter<T>> converter = new SimpleObjectProperty<>(this, "converter");
 
     public TextAreaTableCell() {
         this(null);

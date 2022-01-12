@@ -3,7 +3,6 @@ package ngsdiaglim.controllers.dialogs;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,7 +18,7 @@ import java.time.LocalDate;
 
 public class AddRunDialog extends DialogPane.Dialog<AddRunDialog.RunCreattionData> {
 
-    private final Logger logger = LogManager.getLogger(AddRunDialog.class);
+    private final static Logger logger = LogManager.getLogger(AddRunDialog.class);
 
     private final GridPane gridPane = new GridPane();
     private final TextField runNameTf = new TextField();
@@ -36,12 +35,8 @@ public class AddRunDialog extends DialogPane.Dialog<AddRunDialog.RunCreattionDat
         setValue(new RunCreattionData());
         getValue().runNameProperty().bind(runNameTf.textProperty());
         getValue().runDateProperty().bind(runDateDp.valueProperty());
-        getValue().runNameProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
-        getValue().runDateProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
+        getValue().runNameProperty().addListener((obs, oldV, newV) -> changeFormEvent());
+        getValue().runDateProperty().addListener((obs, oldV, newV) -> changeFormEvent());
         setValid(false);
     }
 

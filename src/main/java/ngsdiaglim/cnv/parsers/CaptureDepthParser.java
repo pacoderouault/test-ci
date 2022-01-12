@@ -93,8 +93,8 @@ public class CaptureDepthParser {
 
                     CovCopRegion cnvAmplicon = regions.get(windowName);
                     List<Double> depths = new ArrayList<>();
-                    for (int k = 0; k < depth.size(); k++) {
-                        depths.add(Double.parseDouble(depth.get(k)[2]));
+                    for (String[] strings : depth) {
+                        depths.add(Double.parseDouble(strings[2]));
 //                        depths.add(Double.parseDouble(row[2]));
                     }
                     Double median = MathUtils.median(depths);
@@ -121,9 +121,7 @@ public class CaptureDepthParser {
             regionByPool.putIfAbsent(a.getPool(), FXCollections.observableArrayList());
             regionByPool.get(a.getPool()).add(a);
         });
-        regionByPool.forEach((pool, regionsList) -> {
-            regionsList.sort(new RegionComparator());
-        });
+        regionByPool.forEach((pool, regionsList) -> regionsList.sort(new RegionComparator()));
 
         CovCopCNVData cnvData = new CovCopCNVData(panel);
         cnvData.setSamples(samples);
@@ -192,8 +190,8 @@ public class CaptureDepthParser {
 
                     CovCopRegion cnvAmplicon = regions.get(windowName);
                     List<Double> depths = new ArrayList<>();
-                    for (int k = 0; k < depth.size(); k++) {
-                        depths.add(Double.parseDouble(depth.get(k)[2]));
+                    for (String[] strings : depth) {
+                        depths.add(Double.parseDouble(strings[2]));
 //                        depths.add(Double.parseDouble(row[2]));
                     }
                     Double median = MathUtils.median(depths);
@@ -219,9 +217,7 @@ public class CaptureDepthParser {
             regionByPool.putIfAbsent(a.getPool(), FXCollections.observableArrayList());
             regionByPool.get(a.getPool()).add(a);
         });
-        regionByPool.forEach((pool, regionsList) -> {
-            regionsList.sort(new RegionComparator());
-        });
+        regionByPool.forEach((pool, regionsList) -> regionsList.sort(new RegionComparator()));
 
         CovCopCNVData covCopCNVData = new CovCopCNVData(cnvControlGroup.getPanel());
         covCopCNVData.setSamples(samples);

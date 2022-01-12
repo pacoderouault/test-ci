@@ -3,21 +3,23 @@ package ngsdiaglim.controllers.dialogs;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.h2.util.Tool;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -26,28 +28,25 @@ public class AddGeneTranscriptSetDialog extends DialogPane.Dialog<AddGeneTranscr
 
     private final static Logger logger = LogManager.getLogger(AddGeneTranscriptSetDialog.class);
 
+    private final HBox box = new HBox();
     private final GridPane gridPane = new GridPane();
     private final TextField nameTf = new TextField();
     private final Label geneTranscriptFileLb = new Label();
     private final Button loadFileBtn = new Button(App.getBundle().getString("addGeneTranscriptSetDialog.btn.filebtn"));
     private final Label errorLabel = new Label();
-    private final Tooltip fileFormatTp = new Tooltip(App.getBundle().getString("addGeneTranscriptSetDialog.msg.inf.fileformat"));
+    private final Label formatLb = new Label();
 
     public AddGeneTranscriptSetDialog(DialogPane pane) {
         super(pane, DialogPane.Type.INPUT);
 
         setTitle(App.getBundle().getString("addGeneTranscriptSetDialog.title"));
-        setContent(gridPane);
+        setContent(box);
         initView();
 
         setValue(new GeneTranscritptSetCreationData());
         getValue().nameProperty().bind(nameTf.textProperty());
-        getValue().nameProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
-        getValue().fileProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
+        getValue().nameProperty().addListener((obs, oldV, newV) -> changeFormEvent());
+        getValue().fileProperty().addListener((obs, oldV, newV) -> changeFormEvent());
         setValid(false);
     }
 
@@ -58,23 +57,30 @@ public class AddGeneTranscriptSetDialog extends DialogPane.Dialog<AddGeneTranscr
         Label nameLb = new Label(App.getBundle().getString("addpaneldialog.lb.panelname"));
         errorLabel.getStyleClass().add("error-label");
 
-        FontIcon fileFormatInfo = new FontIcon("mdal-info");
-        Tooltip.install(fileFormatInfo, fileFormatTp);
-        fileFormatTp.setShowDelay(Duration.ZERO);
-        loadFileBtn.setGraphic(fileFormatInfo);
-
         int rowIdx = 0;
         gridPane.add(nameLb, 0, ++rowIdx);
         gridPane.add(nameTf, 1, rowIdx);
-        gridPane.add(loadFileBtn, 0, ++rowIdx);
+        gridPane.add(loadFileBtn, 1, ++rowIdx);
         gridPane.add(geneTranscriptFileLb, 1, rowIdx);
         gridPane.add(errorLabel, 0, ++rowIdx);
         GridPane.setColumnSpan(errorLabel, 2);
+
+        formatLb.setText(App.getBundle().getString("help.format.transcripts"));
+        formatLb.setWrapText(false);
+        formatLb.getStyleClass().add("font-mono");
+
+        Separator sep = new Separator();
+        sep.setOrientation(Orientation.VERTICAL);
+        box.getChildren().addAll(gridPane, sep, formatLb);
+        box.setSpacing(20);
 
         loadFileBtn.setOnAction(e -> {
             FileChooser fc = FileChooserUtils.getFileChooser();
             File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
             if (selectedFile != null) {
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+                user.savePreferences();
                 geneTranscriptFileLb.setText(selectedFile.getName());
                 getValue().setBedFile(selectedFile);
             }

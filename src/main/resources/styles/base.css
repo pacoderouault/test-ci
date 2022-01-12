@@ -42,7 +42,7 @@
 }
 
 .font-mono {
-    -fx-font-family: 'Ubuntu Mono';
+    -fx-font-family: 'Ubuntu Mono' !important;
 }
 
 .font-mono-medium {
@@ -345,47 +345,7 @@ Button {
     -fx-border-color: #666666;
 }
 
-/* focused */
 
-.check-box:focused > .box{
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    /* - first border is focus ring
-       - second border is control border */
-    -fx-border-color: focus_ring_color, box_border_color;
-    -fx-border-width: 1, 2;
-    /*noinspection CssInvalidFunction*/
-    -fx-border-style: segments(1, 2), solid;
-    -fx-border-insets: -3, 0;
-}
-
-/* -- focused - selected */
-.check-box:focused:selected > .box{
-    -fx-border-color: focus_ring_color, accent_color;
-}
-
-/* -- focused - selected, hover */
-.check-box:focused:selected:hover > .box{
-    -fx-border-color: focus_ring_color, box_border_hover_color;
-}
-
-/* -- focused - pressed */
-.check-box:focused:pressed > .box{
-    -fx-border-color: focus_ring_color, #666666;
-}
-
-.check-box:focused:selected:pressed > .box{
-    -fx-border-color: focus_ring_color, #666666;
-}
-
-.check-box:focused:indeterminate:pressed > .box{
-    -fx-border-color: focus_ring_color, #666666;
-}
-
-/* -- focused - indeterminate*/
-.check-box:focused:indeterminate > .box {
-    -fx-border-color: white, accent_color;
-}
 
 /* disabled */
 .check-box:disabled {
@@ -1548,10 +1508,10 @@ TextField {
 }
 
 /* Hover style */
-.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover,
+/*.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover,
 .list-view.alternating-row-colors > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
     -fx-background-color: cell_hover_color;
-}
+}*/
 
 /* Pressed style */
 .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:pressed,
@@ -1569,16 +1529,16 @@ TextField {
 }
 
 /* Selected, Hover style */
-.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover,
+/*.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover,
 .list-view.alternating-row-colors > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
     -fx-background-color: cell_selected_hover_color;
-}
+}*/
 
 /* Selected, Hover, Pressed style */
-.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover:pressed,
+/*.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover:pressed,
 .list-view.alternating-row-colors > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover:pressed {
     -fx-background-color: cell_selected_pressed_color;
-}
+}*/
 
 /*******************************************************************************
  *                                                                             *
@@ -1672,22 +1632,22 @@ TextField {
     -fx-border-color: transparent;
 }
 
-.table-cell:filled:hover {
+/*.table-cell:filled:hover {
     -fx-background-color: cell_hover_color;
-}
+}*/
 
 .table-cell .text {
     -fx-fill: text_color;
 }
 
-.table-cell:hover .text {
+/*.table-cell:hover .text {
     -fx-fill: hover_text_color;
-}
+}*/
 
 /* hover row (row selection mode) */
-.table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:hover {
+/*.table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:hover {
     -fx-background-color: cell_hover_color;
-}
+}*/
 
 /* Selected cells and rows */
 .table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected .text,
@@ -1702,10 +1662,10 @@ TextField {
     -fx-border-width: 0;
 }
 
-.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected:hover,
+/*.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected:hover,
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected:hover .table-cell{
     -fx-background-color: cell_selected_hover_color;
-}
+}*/
 
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected > .text,
 .table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected .table-cell > .text {
@@ -1718,9 +1678,9 @@ TextField {
     -fx-background-color: cell_selected_color;
 }
 
-.table-view:focused:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected:hover {
+/*.table-view:focused:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected:hover {
     -fx-background-color: cell_selected_hover_color;
-}
+}*/
 
 /* - when not focused */
 .table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected,

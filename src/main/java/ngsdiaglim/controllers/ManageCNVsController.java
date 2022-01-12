@@ -17,6 +17,7 @@ import ngsdiaglim.enumerations.Gender;
 import ngsdiaglim.exceptions.FileFormatException;
 import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.parsers.SamtoolsDepthParser;
+import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -48,6 +49,10 @@ public class ManageCNVsController  extends Module {
     public ManageCNVsController() {
 
         super(App.getBundle().getString("cnvsmanage.title"));
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_CNVS_PARAMETERS)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+            return;
+        }
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/ManageCNVs.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -196,7 +201,7 @@ public class ManageCNVsController  extends Module {
 
     }
 
-    private class GroupActionsCell extends TableCell<CNVControlGroup, Void> {
+    private static class GroupActionsCell extends TableCell<CNVControlGroup, Void> {
         private final Button deleteButton = new Button("", new FontIcon("mdal-delete_forever"));
 
         public GroupActionsCell() {
@@ -237,7 +242,7 @@ public class ManageCNVsController  extends Module {
     }
 
 
-    private class ControlActionsCell extends TableCell<CNVControl, Void> {
+    private static class ControlActionsCell extends TableCell<CNVControl, Void> {
         private final Button deleteButton = new Button("", new FontIcon("mdal-delete_forever"));
 
         public ControlActionsCell() {

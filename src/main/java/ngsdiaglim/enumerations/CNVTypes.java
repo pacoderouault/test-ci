@@ -27,9 +27,9 @@ public enum CNVTypes {
 	NORMAL("Normal"),
 	UNDEFINED("Undefined");
 	
-	private String CNVType;  
+	private final String CNVType;
 	
-	private CNVTypes(String t) {  
+	CNVTypes(String t) {
         this.CNVType = t ;  
     }  
 	

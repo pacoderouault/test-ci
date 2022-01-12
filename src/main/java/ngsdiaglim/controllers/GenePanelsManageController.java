@@ -22,6 +22,7 @@ import java.sql.SQLException;
 public class GenePanelsManageController extends Module {
     private final Logger logger = LogManager.getLogger(GenePanelsManageController.class);
 
+    @FXML private Button addGenePanelBtn;
     @FXML private TableView<GenePanel> genePanelTable;
     @FXML private TableColumn<GenePanel, String> genePanelNameCol;
     @FXML private TableColumn<GenePanel, Integer> genePanelGeneNbCol;
@@ -51,6 +52,7 @@ public class GenePanelsManageController extends Module {
             logger.error("Error when loading panel", e);
             Message.error(e.getMessage(), e);
         }
+        addGenePanelBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL));
     }
 
     private void initGanesPanelTable() {
@@ -101,9 +103,8 @@ public class GenePanelsManageController extends Module {
                         }
                     });
                     wid.exec("LoadPanels", inputParam -> {
-                        final long panelId;
                         try {
-                            panelId = DAOController.getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
+                            DAOController.getGenesPanelDAO().addGenesPanel(dialog.getValue().getName(), dialog.getValue().getSelectedGenes());
                         } catch (Exception ex) {
                             logger.error("Error when adding panel", ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));

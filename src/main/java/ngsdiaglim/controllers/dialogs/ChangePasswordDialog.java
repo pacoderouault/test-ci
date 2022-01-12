@@ -5,10 +5,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import ngsdiaglim.App;
-import ngsdiaglim.database.DAOController;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 
 public class ChangePasswordDialog extends DialogPane.Dialog<ChangePasswordDialog.ChangePasswordData> {
 
-    private final Logger logger = LogManager.getLogger(ChangePasswordDialog.class);
+    private final static Logger logger = LogManager.getLogger(ChangePasswordDialog.class);
 
     private final GridPane gridPane = new GridPane();
     private final PasswordField newPasswordTf = new PasswordField();
@@ -30,7 +29,7 @@ public class ChangePasswordDialog extends DialogPane.Dialog<ChangePasswordDialog
 
     public ChangePasswordDialog(DialogPane pane) {
 
-        super(App.get().getAppController().getDialogPane(), DialogPane.Type.INPUT);
+        super(pane, DialogPane.Type.INPUT);
         setTitle(App.getBundle().getString("changepassworddialog.title"));
         setContent(gridPane);
         setValue(new ChangePasswordData());
@@ -57,10 +56,17 @@ public class ChangePasswordDialog extends DialogPane.Dialog<ChangePasswordDialog
         gridPane.add(newPasswordTf, 1, rowIdx);
         gridPane.add(confirmPawwordLb, 0, ++rowIdx);
         gridPane.add(newPasswordConfirmTf, 1, rowIdx);
+
+        ++rowIdx;
+
         gridPane.add(actualPasswordLb, 0, ++rowIdx);
         gridPane.add(actualPasswordTf, 1, rowIdx);
         gridPane.add(errorLabel, 0, ++rowIdx);
         GridPane.setColumnSpan(errorLabel, 2);
+
+        for (int i = 0; i < rowIdx; i++) {
+            gridPane.getRowConstraints().add(i, new RowConstraints(30));
+        }
     }
 
     private String checkErrorForm() throws SQLException {
@@ -90,7 +96,7 @@ public class ChangePasswordDialog extends DialogPane.Dialog<ChangePasswordDialog
         }
     }
 
-    public class ChangePasswordData {
+    public static class ChangePasswordData {
         private final SimpleStringProperty newPassword = new SimpleStringProperty();
         private final SimpleStringProperty oldPassword = new SimpleStringProperty();
 

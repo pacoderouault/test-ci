@@ -1,6 +1,5 @@
 package ngsdiaglim.controllers.analysisview.reports.bgm;
 
-import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 public abstract class ReportPane extends VBox {
@@ -18,4 +17,7 @@ public abstract class ReportPane extends VBox {
         this.reportController = reportController;
     }
 
+    public void clear() {
+        this.reportController = null;
+    }
 }

@@ -117,7 +117,7 @@ public class CNVDetectionManual extends CNVDetection {
     }
 
     public static final class Builder {
-        private CovCopCNVData cnvData;
+        private final CovCopCNVData cnvData;
         private double delThreshold = 0.7;
         private double dupThreshold = 1.3;
         private int minConsecutiveAmplicons = 3;

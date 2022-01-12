@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FluentButtonSkin extends ButtonSkin {
 
-    private ButtonAnimationHelper buttonAnimationHelper;
+    private final ButtonAnimationHelper buttonAnimationHelper;
 
     public FluentButtonSkin(Button button) {
         super(button);
@@ -44,7 +44,7 @@ public class FluentButtonSkin extends ButtonSkin {
                 }
             };
 
-    private BooleanProperty shrinkAnimateOnPress = new SimpleStyleableBooleanProperty(SHRINK_ANIMATE_ON_PRESS_META_DATA, true);
+    private final BooleanProperty shrinkAnimateOnPress = new SimpleStyleableBooleanProperty(SHRINK_ANIMATE_ON_PRESS_META_DATA, true);
 
     private BooleanProperty shrinkAnimateOnPressProperty() { return shrinkAnimateOnPress; }
 

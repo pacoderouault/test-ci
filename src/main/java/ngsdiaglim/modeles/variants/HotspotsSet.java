@@ -5,9 +5,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import ngsdiaglim.comparators.HotspotComparator;
 import ngsdiaglim.comparators.NaturalSortComparator;
-import ngsdiaglim.enumerations.HotspotType;
-
-import java.util.Optional;
 
 public class HotspotsSet {
 
@@ -59,32 +56,8 @@ public class HotspotsSet {
         return name.get();
     }
 
-//    public Hotspot getHotspot(Variant variant) {
-//        Optional<Hotspot> hotspot = hotspots.parallelStream().filter(h -> {
-//            if (h.getType().equals(HotspotType.POINT_MUTATION)) {
-//                return h.getContig().equalsIgnoreCase(variant.getContig())
-//                        && h.getStart() == variant.getStart()
-//                        && h.getRef().equalsIgnoreCase(variant.getRef())
-//                        && h.getAlt().equalsIgnoreCase(variant.getAlt());
-//            } else {
-//                return h.getContig().equalsIgnoreCase(variant.getContig())
-//                        && h.getStart() <= variant.getEnd()
-//                        && h.getEnd() >= variant.getStart();
-//            }
-//        }).findAny();
-//        return hotspot.orElse(null);
-//    }
-
-//    public Hotspot getHotspot(Variant variant) {
-//        Hotspot hotspot = getPositionHotspot(variant);
-//        if (hotspot == null || hotspot.isHotspot()) return null;
-//        else {
-//    }
-
     /**
      * Recherche dichotomique
-     * @param variant
-     * @return
      */
     public Hotspot getHotspot(Variant variant) {
         int low = 0;

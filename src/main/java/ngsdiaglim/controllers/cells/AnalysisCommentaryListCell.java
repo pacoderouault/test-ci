@@ -24,26 +24,19 @@ import java.sql.SQLException;
 public class AnalysisCommentaryListCell  extends ListCell<AnalysisCommentary> {
 
     private final Logger logger = LogManager.getLogger(VariantCommentaryListCell.class);
-    private AnalysisCommentary vc;
     private FXMLLoader mLLoader;
 
-    @FXML
-    private Label usernameLb;
-    @FXML
-    private Label dateLb;
-    @FXML
-    private Label commentLb;
-    @FXML
-    private Button editBtn;
-    @FXML
-    private Button deleteBtn;
+    @FXML private Label usernameLb;
+    @FXML private Label dateLb;
+    @FXML private Label commentLb;
+    @FXML private Button editBtn;
+    @FXML private Button deleteBtn;
 
     @Override
     protected void updateItem(AnalysisCommentary item, boolean empty) {
         super.updateItem(item, empty);
         if (item != null && !empty) {
             getStyleClass().add("transparent-list-cell");
-            vc = item;
             if (mLLoader == null) {
                 mLLoader = new FXMLLoader(getClass().getResource("/fxml/VariantCommentaryListCell.fxml"), App.getBundle());
                 mLLoader.setController(this);

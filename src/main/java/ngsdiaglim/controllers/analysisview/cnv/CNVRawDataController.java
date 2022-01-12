@@ -31,7 +31,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.io.IOException;
 
 public class CNVRawDataController extends VBox {
-    private final Logger logger = LogManager.getLogger(CNVRawDataController.class);
+    private final static Logger logger = LogManager.getLogger(CNVRawDataController.class);
 
     @FXML private ComboBox<String> poolCb;
     @FXML private Button closeSearchBtn;
@@ -163,9 +163,7 @@ public class CNVRawDataController extends VBox {
     private ToggleButton getGenderToggleButton(CNVSample sample) {
         ToggleButton genderBtn = new ToggleButton();
         genderBtn.getStyleClass().addAll("icon-button");
-        genderBtn.setOnMouseEntered(e -> {
-            Tooltip.install(genderBtn, genderBtnTooltip);
-        });
+        genderBtn.setOnMouseEntered(e -> Tooltip.install(genderBtn, genderBtnTooltip));
 
         if (sample.getGender().equals(Gender.MALE)) {
             genderBtn.setSelected(true);
@@ -184,16 +182,7 @@ public class CNVRawDataController extends VBox {
                 genderBtn.setText("XX");
             }
         });
-        sample.genderProperty().addListener((obs, oldV, newV) -> {
-            if (newV.equals(Gender.MALE)) {
-                genderBtn.setSelected(true);
-//                genderBtn.setText("XY");
-            }
-            else {
-                genderBtn.setSelected(false);
-//                genderBtn.setText("XX");
-            }
-        });
+        sample.genderProperty().addListener((obs, oldV, newV) -> genderBtn.setSelected(newV.equals(Gender.MALE)));
         return genderBtn;
     }
 
@@ -230,14 +219,7 @@ public class CNVRawDataController extends VBox {
                 controlBtn.setGraphic(new FontIcon("mdmz-person"));
             }
         });
-        sample.controlProperty().addListener((obs, oldV, newV) -> {
-            if (newV) {
-                controlBtn.setSelected(true);
-            }
-            else {
-                controlBtn.setSelected(false);
-            }
-        });
+        sample.controlProperty().addListener((obs, oldV, newV) -> controlBtn.setSelected(newV));
         return controlBtn;
     }
 
@@ -348,7 +330,6 @@ public class CNVRawDataController extends VBox {
 
     /**
      * Hide the search UI elements
-     * @param value
      */
     private void setSearchUIVisible(boolean value) {
         nextSearchResultBtn.setVisible(value);

@@ -1,10 +1,6 @@
 package ngsdiaglim.modeles.analyse;
 
-import htsjdk.samtools.SAMFileHeader;
-import htsjdk.samtools.util.Interval;
-import htsjdk.samtools.util.IntervalList;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.Region;
 import ngsdiaglim.database.DAOController;
 
 import java.io.File;
@@ -18,7 +14,7 @@ public class Panel {
     private final long id;
     private String name;
     private boolean active;
-    private File bedFile;
+    private final File bedFile;
     private ObservableList<PanelRegion> regions;
 
     public Panel(long id, String name, boolean active, File bedFile) {

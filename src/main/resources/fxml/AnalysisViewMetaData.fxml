@@ -68,8 +68,10 @@
                         <Label text="%metadata.lb.parameters" />
                      </children>
                   </HBox>
-                  <GridPane hgap="5.0" styleClass="module-box-container">
+                  <GridPane fx:id="parametersGrid" hgap="5.0" styleClass="module-box-container">
                      <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                         <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>

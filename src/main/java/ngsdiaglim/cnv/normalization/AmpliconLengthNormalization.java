@@ -1,6 +1,5 @@
 package ngsdiaglim.cnv.normalization;
 
-import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.enumerations.FitterMethod;
 import ngsdiaglim.utils.MathUtils;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class AmpliconLengthNormalization extends CNVNormalization {
 
     private final LoessInterpolator loessInterpolator = new LoessInterpolator(0.30, 4, 10);
-    private final PolynomialCurveFitter polynomialFitter = PolynomialCurveFitter.create(2);
+//    private final PolynomialCurveFitter polynomialFitter = PolynomialCurveFitter.create(2);
     private FitterMethod fitterMethod = FitterMethod.POLYNOMIAL;
 
     public AmpliconLengthNormalization(CovCopCNVData cnvData) {

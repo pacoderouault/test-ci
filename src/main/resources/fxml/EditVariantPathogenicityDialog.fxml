@@ -40,7 +40,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#editPathogenicity" text="%editpathogenicitydialog.btn.editpathogenicity" />
+                  <Button fx:id="updatePathogenicityBtn" defaultButton="true" mnemonicParsing="false" onAction="#editPathogenicity" text="%editpathogenicitydialog.btn.editpathogenicity" />
                </children>
             </HBox>
          </children>
@@ -64,7 +64,7 @@
                   <TableColumn fx:id="verifiedUserCol" prefWidth="120.0" sortable="false" text="%editpathogenicitydialog.col.validationusername" />
                   <TableColumn fx:id="verifiedDateCol" prefWidth="150.0" sortable="false" text="%editpathogenicitydialog.col.validationdate" />
                   <TableColumn fx:id="commentaryCol" prefWidth="300.0" sortable="false" text="%editpathogenicitydialog.col.comment" />
-                  <TableColumn fx:id="actionsCol" prefWidth="75.0" />
+                  <TableColumn fx:id="actionsCol" prefWidth="180.0" />
               </columns>
             </TableView>
          </children>

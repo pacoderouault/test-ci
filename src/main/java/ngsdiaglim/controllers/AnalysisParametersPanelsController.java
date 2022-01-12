@@ -19,6 +19,7 @@ import ngsdiaglim.modeles.analyse.PanelRegion;
 import ngsdiaglim.modeles.parsers.PanelParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.utils.BundleFormatter;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,10 +46,7 @@ public class AnalysisParametersPanelsController extends HBox {
     @FXML private TableColumn<PanelRegion, Integer> regionsEndCol;
     @FXML private TableColumn<PanelRegion, String> regionsNameCol;
 
-    private final CreateAnalysisParametersController createAnalysisParametersController;
-
     public AnalysisParametersPanelsController(CreateAnalysisParametersController createAnalysisParametersController) {
-        this.createAnalysisParametersController = createAnalysisParametersController;
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisParametersPanels.fxml"), App.getBundle());
@@ -159,8 +157,8 @@ public class AnalysisParametersPanelsController extends HBox {
                             }
                             File panelFile = Paths.get(panelDataPath.toString(), dialog.getValue().getName() + ".bed.gz").toFile();
                             PanelParser.writePanel(regions, panelFile);
-
-                            panelId = DAOController.getPanelDAO().addPanel(dialog.getValue().getName(), panelFile.getPath());
+                            Path panelPath = FilesUtils.convertAbsolutePathToRelative(panelFile.toPath());
+                            panelId = DAOController.getPanelDAO().addPanel(dialog.getValue().getName(), panelPath.toString());
                             for (PanelRegion region : regions) {
                                 DAOController.getPanelRegionDAO().addRegion(region, panelId);
                             }

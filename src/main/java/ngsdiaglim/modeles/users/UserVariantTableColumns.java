@@ -6,14 +6,12 @@ import ngsdiaglim.enumerations.VariantsTableColumns;
 import ngsdiaglim.utils.TableViewUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.tableview2.TableColumn2;
-import org.controlsfx.control.tableview2.TableView2;
 
 import java.util.*;
 
 public class UserVariantTableColumns {
 
-    private final Logger logger = LogManager.getLogger(UserVariantTableColumns.class);
+    private final static Logger logger = LogManager.getLogger(UserVariantTableColumns.class);
 
     private final Map<VariantsTableColumns, Boolean> columnsVisibility = new HashMap<>();
     private final Map<VariantsTableColumns, Double> columnsSize = new HashMap<>();

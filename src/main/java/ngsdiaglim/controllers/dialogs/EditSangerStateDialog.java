@@ -8,16 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.cells.ValidateVariantPathogenicityTableCell;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.enumerations.SangerState;
 import ngsdiaglim.modeles.analyse.SangerCheck;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modeles.variants.Variant;
-import ngsdiaglim.modeles.variants.VariantPathogenicity;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.DateFormatterUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +31,7 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
     @FXML private VBox dialogContainer;
     @FXML private ListView<SangerState> sangerStateLv;
     @FXML private TextArea commentaryTa;
+    @FXML private Button editSangerStateBtn;
     @FXML private TableView<SangerCheck> historyTable;
     @FXML private TableColumn<SangerCheck, SangerState> stateCol;
     @FXML private TableColumn<SangerCheck, String> userCol;
@@ -67,6 +64,8 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
             selectState();
             commentaryTa.setText(null);
         }));
+
+        editSangerStateBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_SANGER_CHECK));
     }
 
     private void initSangerStateListView() {
@@ -140,7 +139,10 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
 
 
     private String checkError() {
-        if (sangerStateLv.getSelectionModel().getSelectedItem() == null) {
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_SANGER_CHECK)) {
+            return App.getBundle().getString("app.msg.err.nopermit");
+        }
+        else if (sangerStateLv.getSelectionModel().getSelectedItem() == null) {
             return App.getBundle().getString("ditsangerstatedialog.msg.err.emptyState");
         } else if(StringUtils.isBlank(commentaryTa.getText())) {
             return App.getBundle().getString("ditsangerstatedialog.msg.err.emptyComment");

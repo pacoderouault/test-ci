@@ -1,7 +1,4 @@
 package ngsdiaglim.controllers;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -13,11 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -26,6 +20,10 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
 /**
  * Public domain. Use as you like. No warranties. P = Input parameter type.
@@ -108,29 +106,7 @@ public class WorkIndicatorDialog<P> {
      */
     private void setupDialog() {
         vbox.getStyleClass().add("waitingdialog");
-//        root.getChildren().add(stackPane);
-//        stackPane.setMinSize(dialog.getWidth(), dialog.getHeight());
-//        hbox.setAlignment(Pos.CENTER);
-//        vbox.setAlignment(Pos.CENTER);
-//        vbox.getChildren().add(dialogContainer);
-//        hbox.getChildren().add(vbox);
-//        stackPane.getChildren().add(hbox);
-//
-//        dialogContainer.getChildren().addAll(label, progressIndicator, labelProgress);
-//
-//        dialog.setScene(scene);
-//        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/theme.css")).toExternalForm());
-//
-//        dialog.setOnHiding(event -> {
-//            /*
-//             * Gets notified when task ended, but BEFORE result value is attributed. Using
-//             * the observable list above is recommended.
-//             */ });
-//
-//        dialog.show();
-
         root.getChildren().add(mainPane);
-//        vbox.setStyle("-fx-border-width: 1px; -fx-border-color: #00789c;");
         vbox.setSpacing(5);
         vbox.setAlignment(Pos.CENTER);
         vbox.setMinSize(330, 120);

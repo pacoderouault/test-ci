@@ -9,14 +9,12 @@ import java.io.IOException;
 
 public class RoleListCell extends ListCell<Role> {
 
-    private Role role;
     private FXMLLoader mLLoader;
 
     @Override
     protected void updateItem(Role item, boolean empty) {
         super.updateItem(item, empty);
         if (item != null && !empty) {
-            role = item;
             if (mLLoader == null) {
                 mLLoader = new FXMLLoader(getClass().getResource("/fxml/RoleListCell.fxml"), App.getBundle());
                 mLLoader.setController(this);
@@ -27,8 +25,6 @@ public class RoleListCell extends ListCell<Role> {
                     e.printStackTrace();
                 }
             }
-        } else {
-
         }
     }
 }

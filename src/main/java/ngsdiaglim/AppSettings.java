@@ -69,7 +69,8 @@ public class AppSettings extends Properties {
         REFERENCE_HG19("/mnt/Data/Biological_Data/References/hg19.fasta"),
         IGV_IP("127.0.0.1"),
         IGV_PORT("60151"),
-        BGM_BLANK_REPORT("./.data/bgm_report_template.docx");
+        BGM_BLANK_REPORT("./.data/bgm_report_template.docx"),
+        SERVICE("");
 
         private final String value;
 

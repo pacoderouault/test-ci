@@ -7,10 +7,8 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
-import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.modeles.variants.VariantFalsePositive;
-import ngsdiaglim.modeles.variants.VariantPathogenicity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +17,7 @@ import java.time.LocalDateTime;
 
 public class ValidateVariantFalsePositiveTableCell extends TableCell<VariantFalsePositive, Void> {
 
-    private final Logger logger = LogManager.getLogger(ValidateVariantFalsePositiveTableCell.class);
+    private final static Logger logger = LogManager.getLogger(ValidateVariantFalsePositiveTableCell.class);
 
     @Override
     protected void updateItem(Void unused, boolean empty) {

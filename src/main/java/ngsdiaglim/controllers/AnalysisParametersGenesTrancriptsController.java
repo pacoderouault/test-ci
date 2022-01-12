@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.App;
@@ -23,7 +22,6 @@ import ngsdiaglim.modeles.biofeatures.Transcript;
 import ngsdiaglim.modeles.parsers.GeneSetParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.utils.BundleFormatter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,10 +44,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
     @FXML private TableColumn<Gene, String> genesCol;
     @FXML private TableColumn<Gene, HashMap<String, Transcript>> transcriptsCol;
 
-    private final CreateAnalysisParametersController createAnalysisParametersController;
-
     public AnalysisParametersGenesTrancriptsController(CreateAnalysisParametersController createAnalysisParametersController) {
-        this.createAnalysisParametersController = createAnalysisParametersController;
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisParametersGenesTrancripts.fxml"), App.getBundle());
@@ -137,7 +132,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
         });
         // auto adjust the width of the column clonotypesNameCol
         transcriptsCol.prefWidthProperty().bind(
-                genesSetTable.widthProperty()
+                geneTranscriptTable.widthProperty()
                         .subtract(genesCol.widthProperty())
                         .subtract(2));  // a border stroke?
     }

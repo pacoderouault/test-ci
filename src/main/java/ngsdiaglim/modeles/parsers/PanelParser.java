@@ -2,7 +2,6 @@ package ngsdiaglim.modeles.parsers;
 
 import htsjdk.samtools.util.BlockCompressedOutputStream;
 import ngsdiaglim.exceptions.MalformedPanelFile;
-import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.analyse.PanelRegion;
 import ngsdiaglim.utils.IOUtils;
 import ngsdiaglim.utils.NumberUtils;

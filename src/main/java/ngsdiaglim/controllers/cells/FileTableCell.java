@@ -53,8 +53,8 @@ public class FileTableCell<T> extends TableCell<T, File> {
         }
     }
 
-    protected void openFile() {};
+    protected void openFile() {}
 
-    protected void removeFile() {};
+    protected void removeFile() {}
 
 }

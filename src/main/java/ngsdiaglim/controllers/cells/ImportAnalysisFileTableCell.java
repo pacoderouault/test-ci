@@ -2,6 +2,6 @@ package ngsdiaglim.controllers.cells;
 
 public interface ImportAnalysisFileTableCell {
 
-    private void openFile(){};
+    private void openFile(){}
 
 }

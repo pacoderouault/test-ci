@@ -1,7 +1,6 @@
 package ngsdiaglim.modeles;
 
 import javafx.beans.property.SimpleStringProperty;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.StringJoiner;
 

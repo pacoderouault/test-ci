@@ -3,7 +3,6 @@ package ngsdiaglim.cnv.normalization;
 import javafx.collections.ObservableList;
 import ngsdiaglim.App;
 import ngsdiaglim.AppSettings;
-import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.cnv.CovCopRegion;
 import ngsdiaglim.enumerations.FitterMethod;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 public class GCNormalization extends CNVNormalization {
 
     private final LoessInterpolator loessInterpolator = new LoessInterpolator(0.30, 4, 10);
-    private final PolynomialCurveFitter polynomialFitter = PolynomialCurveFitter.create(2);
+//    private final PolynomialCurveFitter polynomialFitter = PolynomialCurveFitter.create(2);
     private FitterMethod fitterMethod = FitterMethod.POLYNOMIAL;
     private final Map<String, Double> gcContentMap = new HashMap<>();
 

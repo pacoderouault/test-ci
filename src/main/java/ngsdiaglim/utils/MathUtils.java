@@ -56,7 +56,6 @@ public class MathUtils {
 
     /**
      * From a list of double return a pair of mean and standard deviation
-     * @param values
      * @return Pair<Mean, Std>
      */
     public static Pair<Double, Double> findDeviation(List<Double> values) {

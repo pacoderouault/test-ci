@@ -1,6 +1,5 @@
 package ngsdiaglim.utils;
 
-import com.sun.source.tree.AssertTree;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -6,7 +6,7 @@ public enum DefaultRolesEnum {
     ADMIN(App.getBundle().getString("roles.default.admin")),
     GUEST(App.getBundle().getString("roles.default.guest"));
 
-    private String roleName;
+    private final String roleName;
 
     DefaultRolesEnum(String roleName) {
         this.roleName = roleName;

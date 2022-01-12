@@ -1,7 +1,6 @@
 package ngsdiaglim.controllers.cells;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
@@ -9,14 +8,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.WorkIndicatorDialog;
 import ngsdiaglim.controllers.dialogs.AnalysisInfoDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.exceptions.NotBiallelicVariant;
 import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.analyse.AnalysisParameters;
-import ngsdiaglim.modeles.parsers.VCFParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.BundleFormatter;
@@ -41,14 +36,11 @@ public class AnalysisActionsTableCell extends TableCell<Analysis, Void> {
     private static final Tooltip analysisDetailTp = new Tooltip(App.getBundle().getString("home.module.analyseslist.tp.analysisInfo"));
     private static final Tooltip deleteAnalysisTp = new Tooltip(App.getBundle().getString("home.module.analyseslist.tp.deleteAnalysis"));
 
-    private final boolean canDelete;
-
     public AnalysisActionsTableCell() {
         this(true);
     }
 
     public AnalysisActionsTableCell(boolean canDelete) {
-        this.canDelete = canDelete;
         box.getStyleClass().add("box-action-cell");
         deleteAnalysisBtn.getStyleClass().add("button-action-cell");
         infoAnalysisBtn.getStyleClass().add("button-action-cell");
@@ -87,31 +79,6 @@ public class AnalysisActionsTableCell extends TableCell<Analysis, Void> {
     private void openAnalysisHandler() {
         Analysis analysis = getTableRow().getItem();
         App.get().getAppController().openAnalysis(analysis);
-//        if (analysis != null) {
-//            Object[] messageArguments = {analysis.getName()};
-//            String message = BundleFormatter.format("home.module.analyseslist.msg.openingAnalysis", messageArguments);
-//            WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), message);
-//            wid.addTaskEndNotification(r -> {
-//                if (r == 0) {
-//                    App.get().getAppController().showAnalysisView(analysis);
-//                }
-//            });
-//            wid.exec("LoadPanels", inputParam -> {
-//                try {
-//                    AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysis.getAnalysisParameters().getId());
-//                    analysis.setAnalysisParameters(params);
-//                    VCFParser vcfParser = new VCFParser(analysis.getVcfFile(), analysis.getAnalysisParameters(), analysis.getRun());
-//                    vcfParser.parseVCF(true);
-//                    analysis.setAnnotations(vcfParser.getAnnotations());
-//                    analysis.loadCoverage();
-//                } catch (Exception e) {
-//                    logger.error(e);
-//                    Platform.runLater(() -> Message.error(e.getMessage(), e));
-//                    return 1;
-//                }
-//                return 0;
-//            });
-//        }
     }
 
     private void showAnalysisInfoDialog() {

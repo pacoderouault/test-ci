@@ -7,7 +7,6 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
-import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.modeles.variants.VariantPathogenicity;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 
 public class ValidateVariantPathogenicityTableCell extends TableCell<VariantPathogenicity, Void> {
 
-    private final Logger logger = LogManager.getLogger(ValidateVariantPathogenicityTableCell.class);
+    private final static Logger logger = LogManager.getLogger(ValidateVariantPathogenicityTableCell.class);
 
     @Override
     protected void updateItem(Void unused, boolean empty) {

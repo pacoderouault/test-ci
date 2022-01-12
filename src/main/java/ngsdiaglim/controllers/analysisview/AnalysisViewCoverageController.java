@@ -1,36 +1,31 @@
 package ngsdiaglim.controllers.analysisview;
 
-import javafx.beans.property.*;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.cells.coverageTableCells.CoverageActionTableCell;
 import ngsdiaglim.controllers.cells.coverageTableCells.CoverageQualityTableCell;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.enumerations.CoverageQuality;
-import ngsdiaglim.exceptions.MalformedCoverageFile;
 import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.analyse.PanelRegion;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
-import ngsdiaglim.modeles.parsers.CoverageFileParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 public class AnalysisViewCoverageController extends HBox {
 
-    private final Logger logger = LogManager.getLogger(AnalysisViewCoverageController.class);
+    private final static Logger logger = LogManager.getLogger(AnalysisViewCoverageController.class);
 
     @FXML private TableView<CoverageRegion> coverageTable;
     @FXML private TableColumn<CoverageRegion, CoverageQuality> qualityCol;
@@ -56,7 +51,6 @@ public class AnalysisViewCoverageController extends HBox {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         initView();
-//        loadCoverage();
     }
 
     private void initView() {
@@ -82,19 +76,4 @@ public class AnalysisViewCoverageController extends HBox {
 
         coverageTable.setItems(analysis.getCoverageRegions());
     }
-
-//    private void loadCoverage() {
-//        File coverageFile = analysis.getCoverageFile();
-//        if (coverageFile != null && coverageFile.exists()) {
-//            ObservableList<CoverageRegion> coverageRegions = null;
-//            try {
-//                coverageRegions = CoverageFileParser.parseCoverageFile(coverageFile, analysis.getAnalysisParameters());
-//
-//            } catch (IOException | MalformedCoverageFile e) {
-//                logger.error(e);
-//                Message.error(e.getMessage(), e);
-//            }
-//            coverageTable.setItems(coverageRegions);
-//        }
-//    }
 }

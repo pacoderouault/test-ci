@@ -6,19 +6,19 @@ import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 
-public class GnomadPopupFilter extends TableColumnPopupFilter2<Annotation, GnomadPopulationFreq> {
+public class GnomadPopupFilter extends TableColumnPopupFilter<Annotation, GnomadPopulationFreq> {
 
     public GnomadPopupFilter(FilterTableColumn<Annotation, GnomadPopulationFreq> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, GnomadPopulationFreq value) {
+    protected void updatePredicate(Operators op, GnomadPopulationFreq value) {
     }
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new GnomadPopupFilterSkin2(this);
+        return new GnomadPopupFilterSkin(this);
     }
 
     public void updatePredicate(Operators op, Number value) {

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class User {
 
-    private final Logger logger = LogManager.getLogger(User.class);
+    private final static Logger logger = LogManager.getLogger(User.class);
     private final long id;
     private final SimpleStringProperty username = new SimpleStringProperty();
     private ObservableSet<Role> roles;

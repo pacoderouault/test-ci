@@ -36,6 +36,7 @@ import ngsdiaglim.modeles.FastaSequenceGetter;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.*;
 import ngsdiaglim.modeles.variants.predictions.PredictionToolsScore;
@@ -119,6 +120,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     @FXML private Button lovdLinkBtn;
     @FXML private Button oncoKbLinkBtn;
     @FXML private Button intogenLinkBtn;
+    @FXML private Button theGenCCBtn;
     @FXML private Button alamutLinkBtn;
 
     @FXML private ListView<VariantCommentary> variantCommentaryLv;
@@ -155,9 +157,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     private FastaSequenceGetter fastaSequenceGetter;
 
     // Event
+    private ChangeListener<Annotation> annotationListener;
     private ChangeListener<Boolean> falsePositiveListener;
     private ChangeListener<Boolean> addToReportListener;
     private ChangeListener<ACMG> pathogenicityListener;
+    private ChangeListener<TranscriptConsequence> transcriptListener;
 
 
     public AnalysisViewVariantDetailController() {
@@ -187,22 +191,22 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         alleleDepthChartAp.getChildren().setAll(vafChart);
         predictionChartAp.getChildren().setAll(predictionsChart);
 
-        annotation.addListener((obs, oldV, newV) -> {
+        annotationListener = (obs, oldV, newV) -> {
             searchVariantResults = null;
             if (oldV != null) {
                 oldV.getVariant().falsePositiveProperty().removeListener(falsePositiveListener);
                 oldV.getVariant().acmgProperty().removeListener(pathogenicityListener);
+                oldV.transcriptConsequenceProperty().removeListener(transcriptListener);
             }
             if (newV != null) {
                 fillAnnotationRelatedFields();
-                annotation.get().transcriptConsequenceProperty().addListener((obs2, oldV2, newV2) -> {
-                    if (newV2 != null) {
-                        fillTranscriptRelatedFields();
-                    }
-                });
-                annotation.get().getVariant().acmgProperty().addListener(((observableValue, acmg, t1) -> fillAnnotationRelatedFields()));
+                annotation.get().transcriptConsequenceProperty().addListener(transcriptListener);
+//                annotation.get().getVariant().acmgProperty().addListener(((observableValue, acmg, t1) -> fillAnnotationRelatedFields()));
             }
-        });
+        };
+
+        annotation.addListener(annotationListener);
+
 
         variantCommentaryLv.setCellFactory(data -> new VariantCommentaryListCell());
         annotationCommentaryLv.setCellFactory(data -> new AnnotationCommentaryListCell());
@@ -211,6 +215,9 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         commentariesTabpane.getSelectionModel().select(variantCommentTab);
 
         hotspotTf.textProperty().addListener(initHotspotStyleListener());
+
+        addVariantCommentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
+        addAnnotationCommentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
     }
 
     private void initalizeTextfields() {
@@ -276,6 +283,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                 annotation.get().setReported(newV);
             }
         };
+        transcriptListener = (obs2, oldV2, newV2) -> {
+            if (newV2 != null) {
+                fillTranscriptRelatedFields();
+            }
+        };
     }
 
 
@@ -307,6 +319,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     logger.error(e);
                 }
                 popover.hide();
+                popover.refresh();
             }
         });
     }
@@ -382,17 +395,19 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     private void fillTranscriptRelatedFields() {
         TranscriptConsequence t = annotation.get().getTranscriptConsequence();
         if (t != null) {
-            geneTf.setText(t.getGeneName());
-            transcriptTf.setText(t.getTranscript().getName());
+            Platform.runLater(() -> {
+                geneTf.setText(t.getGeneName());
+                transcriptTf.setText(t.getTranscript() == null ? "" : t.getTranscript().getName());
 
-            hgvscTf.setText(t.getHgvsc());
-            hgvspTf.setText(t.getHgvsp());
-            consequencesTf.setText(t.getConsequence().getName());
-            if (t.getClinvarSign() != null) {
-                clinvarLb.setText(t.getClinvarSign().replaceAll(";", "\n"));
-            } else {
-                clinvarLb.setText(null);
-            }
+                hgvscTf.setText(t.getHgvsc());
+                hgvspTf.setText(t.getHgvsp());
+                consequencesTf.setText(t.getConsequence().getName());
+                if (t.getClinvarSign() != null) {
+                    clinvarLb.setText(t.getClinvarSign().replaceAll(";", "\n"));
+                } else {
+                    clinvarLb.setText(null);
+                }
+            });
         }
         drawPathogenicChart();
         fillExternalVariations();
@@ -649,11 +664,6 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     annotation.get().setSangerState(DAOController.getSangerStateDAO().getSangerChecks(
                             annotation.get(),
                             ModuleManager.getAnalysisViewController().getAnalysis().getId()));
-                    //                        if (annotation.get().getSangerState().getLastState() != null) {
-                    //                            sangerStateTf.setText(annotation.get().getSangerState().getLastState().getState().getName());
-                    //                        } else {
-                    //                            sangerStateTf.setText(SangerState.NONE.getName());
-                    //                        }
                     Platform.runLater(this::getSangerState);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -734,83 +744,95 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
     @FXML
     private void addVariantCommentary() {
-        AddVariantCommentaryDialog addVariantCommentaryDialog = new AddVariantCommentaryDialog(App.get().getAppController().getDialogPane());
-        Message.showDialog(addVariantCommentaryDialog);
-        Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
-        b.setOnAction(e -> {
-            if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
-                String comment = addVariantCommentaryDialog.getValue().getCommentary();
-                try {
-                    DAOController.getVariantCommentaryDAO().addVariantCommentary(annotation.get().getVariant().getId(), comment);
-                    loadVariantCommentaries();
-                    Message.hideDialog(addVariantCommentaryDialog);
-                } catch (SQLException ex) {
-                    logger.error(ex);
-                    Message.error(ex.getMessage(), ex);
-                }
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+        } else {
+            AddVariantCommentaryDialog addVariantCommentaryDialog = new AddVariantCommentaryDialog(App.get().getAppController().getDialogPane());
+            Message.showDialog(addVariantCommentaryDialog);
+            Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
+            b.setOnAction(e -> {
+                if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
+                    String comment = addVariantCommentaryDialog.getValue().getCommentary();
+                    try {
+                        DAOController.getVariantCommentaryDAO().addVariantCommentary(annotation.get().getVariant().getId(), comment);
+                        loadVariantCommentaries();
+                        Message.hideDialog(addVariantCommentaryDialog);
+                    } catch (SQLException ex) {
+                        logger.error(ex);
+                        Message.error(ex.getMessage(), ex);
+                    }
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @FXML
     private void addAnnotationCommentary() {
-        AddVariantCommentaryDialog addVariantCommentaryDialog = new AddVariantCommentaryDialog(App.get().getAppController().getDialogPane());
-        Message.showDialog(addVariantCommentaryDialog);
-        Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
-        b.setOnAction(e -> {
-            if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
-                String comment = addVariantCommentaryDialog.getValue().getCommentary();
-                try {
-                    DAOController.getAnnotationCommentaryDAO().addAnnotationCommentary(
-                            annotation.get().getVariant().getId(),
-                            ModuleManager.getAnalysisViewController().getAnalysis().getId(),
-                            comment);
-                    loadAnnotationCommentaries();
-                    Message.hideDialog(addVariantCommentaryDialog);
-                } catch (SQLException ex) {
-                    logger.error(ex);
-                    Message.error(ex.getMessage(), ex);
-                }
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+        } else {
+            AddVariantCommentaryDialog addVariantCommentaryDialog = new AddVariantCommentaryDialog(App.get().getAppController().getDialogPane());
+            Message.showDialog(addVariantCommentaryDialog);
+            Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
+            b.setOnAction(e -> {
+                if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
+                    String comment = addVariantCommentaryDialog.getValue().getCommentary();
+                    try {
+                        DAOController.getAnnotationCommentaryDAO().addAnnotationCommentary(
+                                annotation.get().getVariant().getId(),
+                                ModuleManager.getAnalysisViewController().getAnalysis().getId(),
+                                comment);
+                        loadAnnotationCommentaries();
+                        Message.hideDialog(addVariantCommentaryDialog);
+                    } catch (SQLException ex) {
+                        logger.error(ex);
+                        Message.error(ex.getMessage(), ex);
+                    }
 
+                }
+            });
+        }
+    }
+
+
+    private void fillExternalVariations() {
+        Platform.runLater(() -> {
+            externalVariationsContainer.getChildren().clear();
+            if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getExternalVariations() != null) {
+                for (ExternalVariation externalVariation : annotation.get().getTranscriptConsequence().getExternalVariations()) {
+                    Label l = new Label(externalVariation.getId());
+                    l.getStyleClass().add("hyperlink-label");
+                    l.setOnMouseClicked(e -> {
+                        String url = externalVariation.getURL();
+                        if (url != null) {
+                            App.get().getHostServices().showDocument(url);
+                        }
+                    });
+                    externalVariationsContainer.getChildren().add(l);
+                }
             }
         });
     }
 
 
-    private void fillExternalVariations() {
-        externalVariationsContainer.getChildren().clear();
-        if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getExternalVariations() != null) {
-            for (ExternalVariation externalVariation : annotation.get().getTranscriptConsequence().getExternalVariations()) {
-                Label l = new Label(externalVariation.getId());
-                l.getStyleClass().add("hyperlink-label");
-                l.setOnMouseClicked(e -> {
-                    String url = externalVariation.getURL();
-                    if (url != null) {
-                        App.get().getHostServices().showDocument(url);
-                    }
-                });
-                externalVariationsContainer.getChildren().add(l);
-            }
-        }
-    }
-
-
     private void fillPubmedIds() {
-        pubmedIdsContainer.getChildren().clear();
-        if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getPubmedIds() != null) {
-            for (String pubmedId : annotation.get().getTranscriptConsequence().getPubmedIds()) {
-                Label l = new Label(pubmedId);
-                l.getStyleClass().add("hyperlink-label");
-                l.setOnMouseClicked(e -> {
-                    String url = ExternalDatabasesUtils.getPubmedLink(pubmedId);
-                    if (url != null) {
-                        App.get().getHostServices().showDocument(url);
-                    }
-                });
-                pubmedIdsContainer.getChildren().add(l);
+        Platform.runLater(() -> {
+            pubmedIdsContainer.getChildren().clear();
+            if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getPubmedIds() != null) {
+                for (String pubmedId : annotation.get().getTranscriptConsequence().getPubmedIds()) {
+                    Label l = new Label(pubmedId);
+                    l.getStyleClass().add("hyperlink-label");
+                    l.setOnMouseClicked(e -> {
+                        String url = ExternalDatabasesUtils.getPubmedLink(pubmedId);
+                        if (url != null) {
+                            App.get().getHostServices().showDocument(url);
+                        }
+                    });
+                    pubmedIdsContainer.getChildren().add(l);
+                }
             }
-        }
+        });
     }
 
 
@@ -818,9 +840,10 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
         igvLinkBtn.setOnAction(e -> {
             try {
-                App.get().getIgvHandler().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
+//                App.get().getIgvHandler().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
+                App.get().getIgvLinks().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
             } catch (IOException ex) {
-                Message.error(ex.getMessage());
+                Message.error(ex.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
         });
 
@@ -863,6 +886,10 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         String intogenLink = ExternalDatabasesUtils.getIntogenLink(annotation.get());
         intogenLinkBtn.setDisable(intogenLink == null);
         intogenLinkBtn.setOnAction(e -> BrowserUtils.openURL(intogenLink));
+
+        String theGenCCLink = ExternalDatabasesUtils.getThegenccLink(annotation.get());
+        theGenCCBtn.setDisable(theGenCCLink == null);
+        theGenCCBtn.setOnAction(e -> BrowserUtils.openURL(theGenCCLink));
 
         String alamutLink = ExternalDatabasesUtils.getAlamutQuery(annotation.get());
         alamutLinkBtn.setDisable(alamutLink == null);
@@ -949,4 +976,15 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     }
 
     public HBox getTest() {return test;}
+
+    public void clear() {
+        if (annotation.get() != null) {
+            annotation.get().getVariant().falsePositiveProperty().removeListener(falsePositiveListener);
+            annotation.get().getVariant().acmgProperty().removeListener(pathogenicityListener);
+            annotation.get().transcriptConsequenceProperty().removeListener(transcriptListener);
+        }
+        vafChart.vafValueProperty().unbind();
+        addToReportTs.selectedProperty().removeListener(addToReportListener);
+        annotation.removeListener(annotationListener);
+    }
 }

@@ -92,7 +92,6 @@ public class ImportVariants {
                 for (String[] tks : history) {
                     String userName = tks[1];
                     String userNameConfirm = tks[2].equals("null") ? tks[1] : tks[2];
-                    Integer oldPatho = Integer.parseInt(tks[3]);
                     Integer newPatho = Integer.parseInt(tks[4]);
                     LocalDateTime date = LocalDateTime.parse(tks[5]);
                     LocalDateTime dateConf = tks[6].equals("null") ? LocalDateTime.parse(tks[5]) : LocalDateTime.parse(tks[6]);

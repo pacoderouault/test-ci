@@ -21,16 +21,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
 
-    private final Logger logger = LogManager.getLogger(EditVariantPathogenicityDialog.class);
+    private final static Logger logger = LogManager.getLogger(EditVariantPathogenicityDialog.class);
 
     @FXML private VBox dialogContainer;
     @FXML private ListView<ACMG> acmgLv;
     @FXML private TextArea commentaryTa;
+    @FXML private Button updatePathogenicityBtn;
     @FXML private TableView<VariantPathogenicity> historyTable;
     @FXML private TableColumn<VariantPathogenicity, ACMG> pathogenicityCol;
     @FXML private TableColumn<VariantPathogenicity, String> userCol;
@@ -66,6 +66,8 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
             selectACMG();
             commentaryTa.setText(null);
         }));
+
+        updatePathogenicityBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.EDIT_VARIANT_PATHOGENICITY));
     }
 
     private void initACMGListView() {
@@ -100,7 +102,7 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || item == null) {
                     setText(null);
                 } else {
                     setText(DateFormatterUtils.formatLocalDateTime(item));
@@ -177,7 +179,10 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
     }
 
     private String checkError() {
-        if (acmgLv.getSelectionModel().getSelectedItem() == null) {
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.EDIT_VARIANT_PATHOGENICITY)) {
+            return App.getBundle().getString("app.msg.err.nopermit");
+        }
+        else if (acmgLv.getSelectionModel().getSelectedItem() == null) {
             return App.getBundle().getString("editpathogenicitydialog.msg.err.emptyACMG");
         } else if(StringUtils.isBlank(commentaryTa.getText())) {
             return App.getBundle().getString("editpathogenicitydialog.msg.err.emptyComment");

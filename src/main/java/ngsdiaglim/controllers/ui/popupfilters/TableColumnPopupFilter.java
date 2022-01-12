@@ -1,17 +1,18 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.PopupControl;
 import javafx.stage.Window;
-import org.controlsfx.control.tableview2.FilteredTableColumn;
+import ngsdiaglim.controllers.ui.FilterTableColumn;
+import ngsdiaglim.controllers.ui.FilterTableView;
+import ngsdiaglim.enumerations.Operators;
 
 public abstract class TableColumnPopupFilter<S, T> extends PopupControl {
 
     private static final String DEFAULT_STYLE_CLASS = "pop-up-filter";
-    private final FilteredTableColumn<S, T> tableColumn;
+    private final FilterTableColumn<S, T> tableColumn;
 
-    public TableColumnPopupFilter(FilteredTableColumn<S, T> tableColumn) {
+    public TableColumnPopupFilter(FilterTableColumn<S, T> tableColumn) {
         this.tableColumn = tableColumn;
         setAutoHide(true);
         setAutoFix(true);
@@ -40,5 +41,16 @@ public abstract class TableColumnPopupFilter<S, T> extends PopupControl {
 
     }
 
-    public FilteredTableColumn<S, T> getTableColumn() {return tableColumn;}
+    protected void clearPredicate() {
+        tableColumn.setPredicate(null);
+        hide();
+    }
+
+    protected abstract void updatePredicate(Operators op, T value);
+
+    public FilterTableView<S> getTableView() {
+        return tableColumn.getTestTableView();
+    }
+
+    public FilterTableColumn<S, T> getTableColumn() {return tableColumn;}
 }

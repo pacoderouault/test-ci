@@ -18,8 +18,6 @@ public class StringUtils {
 
     /**
      *
-     * @param src
-     * @param what
      * @return True is the param src contains the param what, without case sensitive
      */
     public static boolean containsIgnoreCase(String src, String what) {

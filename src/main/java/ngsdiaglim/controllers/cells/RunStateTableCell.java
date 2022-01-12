@@ -8,10 +8,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
-import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.AnalysisStatus;
-import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.Run;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SegmentedBar;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class RunStateTableCell extends TableCell<Run, Void> {
 
@@ -90,20 +87,6 @@ public class RunStateTableCell extends TableCell<Run, Void> {
             return status;
         }
     }
-
-//    public enum AnalysisStatus {
-//        DONE(App.getBundle().getString("analysisStatus.done")),
-//        INPROGRESS(App.getBundle().getString("analysisStatus.inprogress")),
-//        TODO(App.getBundle().getString("analysisStatus.todo"));
-//
-//        private final String value;
-//
-//        AnalysisStatus(String value) {
-//            this.value = value;
-//        }
-//
-//        public String getValue() {return value;}
-//    }
 
 
     public static class AnalysisStatusSegmentView extends Region {

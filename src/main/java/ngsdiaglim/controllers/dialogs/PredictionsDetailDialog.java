@@ -1,7 +1,6 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +10,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.charts.PredictionGauge;
 import ngsdiaglim.controllers.charts.PredictionGauge3;
 import ngsdiaglim.controllers.charts.PredictionGaugeLabel;
 import ngsdiaglim.enumerations.PredictionTools;
@@ -415,7 +413,6 @@ public class PredictionsDetailDialog extends DialogPane.Dialog<Annotation> {
 
         // dbscSNV
         rowIdx = 1;
-        colIdx = 2;
         dbscSNVGridPane.add(dbscSNVADAGauge, colIdx, rowIdx++);
         dbscSNVGridPane.add(dbscSNVRFGauge, colIdx, rowIdx);
     }

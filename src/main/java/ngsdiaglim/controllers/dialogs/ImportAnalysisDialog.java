@@ -23,8 +23,11 @@ import ngsdiaglim.controllers.ui.RunFileNode;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.exceptions.DuplicateSampleInRun;
 import ngsdiaglim.modeles.analyse.*;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.VCFUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -110,8 +113,8 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                 } else {
                     t.getRowValue().setAnalysisName(t.getNewValue().trim());
                 }
-                checkDuplicateAnalysisNames();
                 analysisTable.refresh();
+                checkDuplicateAnalysisNames();
             }
         });
         colSampleName.setCellValueFactory(data -> data.getValue().sampleNameProperty());
@@ -148,9 +151,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                         .subtract(colActions.widthProperty())
                         .subtract(2));  // a border stroke?
 
-        analysisTable.getItems().addListener((ListChangeListener<AnalysisInputData>) c -> {
-            checkDuplicateAnalysisNames();
-        });
+        analysisTable.getItems().addListener((ListChangeListener<AnalysisInputData>) c -> checkDuplicateAnalysisNames());
     }
 
 
@@ -169,6 +170,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             RunFile runFile = new RunFile(selectedFile, run);
             runFilesFp.getChildren().add(new RunFileNode(runFile));
         }
@@ -191,6 +195,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
         DirectoryChooser dc = FileChooserUtils.getDirectoryChooser();
         File directory = dc.showDialog(App.getPrimaryStage());
         if (directory != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(directory));
+            user.savePreferences();
             WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("importanalysesdialog.msg.parseDirectory"));
             wid.exec("parseDir", inputParam -> {
                 AnalysesInputDirParser analysesInputDirParser = new AnalysesInputDirParser(run, directory);
@@ -198,14 +205,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                     analysesInputDirParser.parseInputDir();
                     HashMap<String, AnalysisInputData> analysesInput = analysesInputDirParser.getAnalysesFiles();
                     List<RunFile> runFiles = analysesInputDirParser.getRunFiles();
-//                    Platform.runLater(() -> analysisTable.getItems().addAll(
-//                            analysesInput.values().stream().sorted((o1, o2) -> naturalSortComparator.compare(o1.getSampleName(), o2.getSampleName()))
-//                    ));
-                    Platform.runLater(() -> {
-                       analysesInput.keySet().stream().sorted(naturalSortComparator).forEach(s -> {
-                           analysisTable.getItems().add(analysesInput.get(s));
-                       });
-                    });
+                    Platform.runLater(() -> analysesInput.keySet().stream().sorted(naturalSortComparator).forEach(s -> analysisTable.getItems().add(analysesInput.get(s))));
                     for (RunFile runFile : runFiles) {
                         Platform.runLater(() -> runFilesFp.getChildren().add(new RunFileNode(runFile)));
                     }
@@ -227,6 +227,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
         fc.setTitle(App.getBundle().getString("importanalysesdialog.lb.importingVCFFile"));
         File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
         if (selectedFile != null) {
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+            user.savePreferences();
             String sampleName = "";
             String analysisName = selectedFile.getName().replaceAll("\\.vcf|\\.gz", "");
             if (VCFUtils.isVCFReadable(selectedFile)) {
@@ -250,11 +253,15 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
             long count = analysisTable.getItems().stream().filter(p -> p.getAnalysisName().equals(aid.getAnalysisName())).count();
             if (count > 1) {
                 aid.setState(AnalysisInputData.AnalysisInputState.DUPLICATE_ANALYSIS);
+            } else {
+                aid.setState(AnalysisInputData.AnalysisInputState.VALID);
+                aid.computeState();
             }
         }
     }
 
     public boolean hasAnalysesInError() {
+        checkDuplicateAnalysisNames();
         return analysisTable.getItems().stream().anyMatch(a -> !a.getState().equals(AnalysisInputData.AnalysisInputState.VALID));
     }
 

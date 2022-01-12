@@ -1,6 +1,5 @@
 package ngsdiaglim.modeles;
 
-import javafx.collections.ObservableSet;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import ngsdiaglim.enumerations.VariantsTableColumns;
@@ -9,17 +8,15 @@ import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.utils.TableViewUtils;
 import org.apache.poi.xssf.usermodel.*;
 
-import java.io.*;
-import java.util.Collection;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class TableExporter {
 
     /**
      * Export the tableview content to a tsv file
-     * @param table
-     * @param outFile
-     * @throws IOException
      */
     public static void exportTableToExcel(Analysis analysis, TableView<Annotation> table, List<TableColumn<Annotation, ?>> columns, File outFile) throws IOException {
 
@@ -28,7 +25,7 @@ public class TableExporter {
 
         /* CreationHelper helps us create instances of various things like DataFormat,
            Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way */
-        XSSFCreationHelper createHelper = workbook.getCreationHelper();
+//        XSSFCreationHelper createHelper = workbook.getCreationHelper();
 
         // Create a Sheet
         XSSFSheet sheet = workbook.createSheet(analysis.getRun().getName() + "-" + analysis.getName() + "-" + analysis.getSampleName());

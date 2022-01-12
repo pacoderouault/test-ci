@@ -14,10 +14,6 @@ public class DatabaseConnection {
 
     private static DatabaseConnection instance = new DatabaseConnection();
     private static Datasource datasource;
-//    private static final String JDBC_DRIVER = "org.h2.Driver";
-//    private static final String DBC_CONNECTION = "jdbc:h2:./database/test";
-//    private static final String USER = "admin";
-//    private static final String PASS = "JWDD;{auEk)p$2[r .:?d5Z6Cce:h8}A";
 
     private JdbcConnectionPool cp;
 

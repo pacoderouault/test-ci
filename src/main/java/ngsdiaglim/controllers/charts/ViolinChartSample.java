@@ -108,19 +108,11 @@ public class ViolinChartSample extends VBox {
                 rectangleClickHandler.setY(valueToPixel(maxValue) - 3);
                 rectangleClickHandler.setWidth(snap(rectangleClickHandler.getX(), boxplotWidth));
                 rectangleClickHandler.setHeight(snap(rectangleClickHandler.getY(), valueToPixel(minValue) - valueToPixel(maxValue) + 6));
-                group.setOnMouseEntered(e -> {
-                    rectangleClickHandler.setFill(Color.valueOf("baded7ff"));
-                });
-                group.setOnMouseExited(e -> {
-                    setSelectionRectangleColor(rectangleClickHandler, poolName);
-                });
-                group.setOnMouseClicked(e -> {
-                    selectedPool.setValue(poolName);
-                });
+                group.setOnMouseEntered(e -> rectangleClickHandler.setFill(Color.valueOf("baded7ff")));
+                group.setOnMouseExited(e -> setSelectionRectangleColor(rectangleClickHandler, poolName));
+                group.setOnMouseClicked(e -> selectedPool.setValue(poolName));
 
-                selectedPoolProperty().addListener((obs, oldV, newV) -> {
-                    setSelectionRectangleColor(rectangleClickHandler, poolName);
-                });
+                selectedPoolProperty().addListener((obs, oldV, newV) -> setSelectionRectangleColor(rectangleClickHandler, poolName));
                 group.getChildren().addAll(rectangleClickHandler);
 
                 // violin

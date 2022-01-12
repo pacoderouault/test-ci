@@ -5,14 +5,14 @@ import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.predictions.VariantPrediction;
 
-public class RevelPopupFilter extends PredictionPopupFilter2{
+public class RevelPopupFilter extends PredictionPopupFilter {
 
     public RevelPopupFilter(FilterTableColumn<Annotation, VariantPrediction> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, VariantPrediction value) {
+    protected void updatePredicate(Operators op, VariantPrediction value) {
     }
 
     @Override

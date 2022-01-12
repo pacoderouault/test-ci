@@ -78,17 +78,13 @@ public class CovCopCNVData {
     public void deletePool(String poolName, CNVSample sample) {
         if (covcopRegions.containsKey(poolName)) {
             int sampleIndex = getSampleIndex(sample.getBarcode());
-            covcopRegions.get(poolName).parallelStream().forEach(a -> {
-                a.setRaw_value(sampleIndex, null);
-            });
+            covcopRegions.get(poolName).parallelStream().forEach(a -> a.setRaw_value(sampleIndex, null));
         }
     }
 
     public void deletePools(CNVSample sample) {
         int sampleIndex = getSampleIndex(sample.getBarcode());
-        covcopRegions.values().forEach(amplicons -> amplicons.parallelStream().forEach(a -> {
-            a.setRaw_value(sampleIndex, null);
-        }));
+        covcopRegions.values().forEach(amplicons -> amplicons.parallelStream().forEach(a -> a.setRaw_value(sampleIndex, null)));
 
     }
 

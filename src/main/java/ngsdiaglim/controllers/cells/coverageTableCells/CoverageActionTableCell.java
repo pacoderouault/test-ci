@@ -5,7 +5,7 @@ import javafx.scene.control.TableCell;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
-import ngsdiaglim.modeles.igv.IGVHandler;
+import ngsdiaglim.modeles.igv.IGVLinks;
 import ngsdiaglim.modules.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,14 +34,15 @@ public class CoverageActionTableCell extends TableCell<CoverageRegion, Void> {
     }
 
     private void viewRegionOnIGV() {
-        IGVHandler igv = App.get().getIgvHandler();
+//        IGVHandler igv = App.get().getIgvHandler();
+        IGVLinks igv = App.get().getIgvLinks();
         CoverageRegion cr = getTableRow().getItem();
         if (cr != null) {
             try {
                 igv.goTo(ModuleManager.getAnalysisViewController().getAnalysis(), cr.getContig(), cr.getStart(), cr.getEnd());
             } catch (IOException e) {
                 logger.error(e);
-                Message.error(e.getMessage());
+                Message.error(e.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
         }
     }

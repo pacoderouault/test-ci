@@ -15,7 +15,7 @@
          <children>
             <HBox spacing="20.0" VBox.vgrow="ALWAYS">
                <children>
-                  <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
+                  <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
                      <children>
                         <HBox styleClass="module-box-header">
                            <children>
@@ -31,7 +31,7 @@
                                   <TableColumn fx:id="runNameCol" minWidth="150.0" prefWidth="-1.0" text="%home.module.runslist.table.runNameCol" />
                                   <TableColumn fx:id="runDateCol" prefWidth="150.0" text="%home.module.runslist.table.runDateCol" />
                                     <TableColumn fx:id="runStateCol" prefWidth="150.0" text="%home.module.runslist.table.runStateCol" />
-                                    <TableColumn fx:id="runActionsCol" prefWidth="70.0" sortable="false" />
+                                    <TableColumn fx:id="runActionsCol" prefWidth="100.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children>

@@ -10,13 +10,10 @@ import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.EditReportCommentDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.reports.bgm.ReportCommentary;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class SelectedCommentActionTableCell extends TableCell<ReportCommentary, Void> {
 
-    private final static Logger logger = LogManager.getLogger(OtherCommentActionTableCell.class);
     private final HBox box = new HBox();
 
     public SelectedCommentActionTableCell() {
@@ -97,9 +94,7 @@ public class SelectedCommentActionTableCell extends TableCell<ReportCommentary, 
             EditReportCommentDialog dialog = new EditReportCommentDialog();
             dialog.setValue(commentary);
             Message.showDialog(dialog);
-            dialog.getButton(ButtonType.OK).setOnAction(event -> {
-                Message.hideDialog(dialog);
-            });
+            dialog.getButton(ButtonType.OK).setOnAction(event -> Message.hideDialog(dialog));
         }
     }
 

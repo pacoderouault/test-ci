@@ -11,7 +11,7 @@ import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modules.ModuleManager;
+import ngsdiaglim.utils.ListSelectionViewUtils;
 import ngsdiaglim.utils.NumberUtils;
 import ngsdiaglim.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,8 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.ListSelectionView;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class ReportSelectVariants extends ReportPane {
 
@@ -49,9 +47,7 @@ public class ReportSelectVariants extends ReportPane {
 
 
         init();
-        reportController.getReportSelectGenes().getGenes().addListener((ListChangeListener<Gene>) change -> {
-            fillListSelection();
-        });
+        reportController.getReportSelectGenes().getGenes().addListener((ListChangeListener<Gene>) change -> fillListSelection());
     }
 
     private void init() {
@@ -64,18 +60,16 @@ public class ReportSelectVariants extends ReportPane {
         intronicCb.selectedProperty().addListener(o -> updatePredicate());
         otherCb.selectedProperty().addListener(o -> updatePredicate());
 
+        ListSelectionViewUtils.rewriteButtons(annotationListSelection);
+
     }
 
 
     private void fillListSelection() {
-//        annotationsList = reportController.getAnalysis().getAnnotations();
-//        filteredAnnotationsList = new FilteredList<>(annotationsList);
-//        annotationListSelection.setSourceItems(filteredAnnotationsList);
 
         annotationsList.forEach(a -> {
             if (a.isReported()) {
                 annotationListSelection.getTargetItems().add(a);
-//                annotationListSelection.getSourceItems().removeIf(ann -> ann.equals(a));
             }
         });
         updatePredicate();

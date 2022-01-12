@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ColumnsExport {
 
-    private final Logger logger = LogManager.getLogger(ColumnsExport.class);
+    private final static Logger logger = LogManager.getLogger(ColumnsExport.class);
     private final Set<VariantsTableColumns> columns = new HashSet<>();
     private static final String tokenSplitter = ";";
 

@@ -3,7 +3,6 @@ package ngsdiaglim.controllers.cells.variantsTableCells;
 import javafx.scene.control.TableCell;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
-import ngsdiaglim.modeles.variants.predictions.GnomADFrequencies;
 
 import java.text.DecimalFormat;
 

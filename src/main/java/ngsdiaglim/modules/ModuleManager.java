@@ -65,6 +65,7 @@ public class ModuleManager {
 
     public static void setAnalysisViewController(AnchorPane box) {
 //        analysisViewController = analysisViewController == null ? new AnalysisViewController() : analysisViewController;
+        if (analysisViewController != null) analysisViewController.setAnalysis(null);
         analysisViewController = new AnalysisViewController();
         config(box, analysisViewController);
     }

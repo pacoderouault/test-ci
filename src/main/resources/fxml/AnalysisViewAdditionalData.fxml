@@ -20,7 +20,7 @@
                      <children>
                         <Label text="%additionaldata.lb.commentaries" />
                         <Region HBox.hgrow="SOMETIMES" />
-                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addCommentaryHandler" text="%additionaldata.btn.addCommentary" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addCommentaryHandler" fx:id="addComentaryBtn" text="%additionaldata.btn.addCommentary" />
                      </children>
                   </HBox>
                   <ListView fx:id="commentariesLv">
@@ -38,7 +38,7 @@
                <children>
                   <Label text="%additionaldata.lb.images" />
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#addImageHandler" text="%additionaldata.btn.importImage" />
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#addImageHandler" fx:id="addImageBtn" text="%additionaldata.btn.importImage" />
                </children>
             </HBox>
             <FlowPane fx:id="imagesFp" hgap="10.0" styleClass="module-box-container" vgap="10.0" />

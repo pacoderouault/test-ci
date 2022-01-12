@@ -47,10 +47,7 @@ public class AnalysisParametersHotspotsController extends HBox {
     @FXML private TableColumn<Hotspot, String> hotspotsProteinMutCol;
     @FXML private TableColumn<Hotspot, HotspotType> hotspotsTypeMutCol;
 
-    private final CreateAnalysisParametersController createAnalysisParametersController;
-
     public AnalysisParametersHotspotsController(CreateAnalysisParametersController createAnalysisParametersController) {
-        this.createAnalysisParametersController = createAnalysisParametersController;
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisParametersHotspots.fxml"), App.getBundle());

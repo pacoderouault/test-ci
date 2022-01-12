@@ -22,6 +22,7 @@ public class TranscriptConsequence {
 
 
     private SimpleStringProperty geneName;
+    private SimpleStringProperty hgncId;
     private SimpleStringProperty proteinName;
     private SimpleStringProperty exon;
     private SimpleStringProperty intron;
@@ -146,6 +147,29 @@ public class TranscriptConsequence {
         }
         else {
             this.geneName.set(geneName);
+        }
+    }
+
+    public String getHgncId() {
+        if (hgncId == null) {
+            return null;
+        }
+        return hgncId.get();
+    }
+
+    public SimpleStringProperty hgncIdProperty() {
+        if (hgncId == null) {
+            hgncId = new SimpleStringProperty();
+        }
+        return hgncId;
+    }
+
+    public void setHgncId(String hgncId) {
+        if (this.hgncId == null) {
+            this.hgncId = new SimpleStringProperty(hgncId);
+        }
+        else {
+            this.hgncId.set(hgncId);
         }
     }
 

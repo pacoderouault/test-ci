@@ -12,6 +12,7 @@ public enum DefaultPreferencesEnum {
     HIDE_NON_CODING_VARIANT("false"),
     HIDE_FALSE_POSITIVE_VARIANT("false"),
     COLOR_UNIQUE_VARIANTS("true"),
+    USE_SMOOTH_SCROLLING("true"),
     VARIANT_TABLE_THEME("THEME2"),
 //    IGV_PATH("D:\\syschu\\app_exe_xen\\IGV_Xen.exe")
     IGV_PATH("/home/paco/Téléchargements/IGV_Linux_2.11.1_WithJava/IGV_Linux_2.11.1/igv.sh"),

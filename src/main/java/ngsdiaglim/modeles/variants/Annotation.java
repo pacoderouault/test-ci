@@ -4,13 +4,14 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import ngsdiaglim.enumerations.SangerState;
 import ngsdiaglim.enumerations.Zygotie;
 import ngsdiaglim.modeles.analyse.AnnotationSangerCheck;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.variants.predictions.GnomADFrequencies;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.StringJoiner;
 
 public class Annotation {
 

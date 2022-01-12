@@ -5,14 +5,14 @@ import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.predictions.VariantPrediction;
 
-public class CaddPopupFilter extends PredictionPopupFilter2{
+public class CaddPopupFilter extends PredictionPopupFilter {
 
     public CaddPopupFilter(FilterTableColumn<Annotation, VariantPrediction> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, VariantPrediction value) {
+    protected void updatePredicate(Operators op, VariantPrediction value) {
     }
 
     @Override

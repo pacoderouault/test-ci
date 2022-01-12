@@ -1,17 +1,16 @@
 package ngsdiaglim.modeles.analyse;
 
-import ngsdiaglim.comparators.NaturalSortComparator;
 import ngsdiaglim.exceptions.DuplicateSampleInRun;
 import ngsdiaglim.utils.BamUtils;
-import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.VCFUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class AnalysesInputDirParser {
 

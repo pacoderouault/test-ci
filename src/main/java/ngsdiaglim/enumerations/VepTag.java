@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum VepTag {
     CONSEQUENCE("Consequence"),
     SYMBOL("SYMBOL"),
+    HGNC_ID("HGNC_ID"),
     Feature("Feature"),
     EXON("EXON"),
     INTRON("INTRON"),

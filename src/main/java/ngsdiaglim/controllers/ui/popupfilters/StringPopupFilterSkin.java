@@ -6,28 +6,26 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
-import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.enumerations.Operators;
-import org.apache.commons.lang3.StringUtils;
 
 public class StringPopupFilterSkin implements Skin<StringPopupFilter> {
 
     private final StringPopupFilter stringPopupFilter;
     private final VBox container = new VBox();
-    private final HBox hbox = new HBox();
     private final ComboBox<Operators> operatorsComboBox = new ComboBox<>();
     private final TextField textfield = new TextField();
-    private final ButtonBar buttonBar = new ButtonBar();
-    private final Button clearBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.cancel"));
-    private final Button filterBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.filter"));
 
     public StringPopupFilterSkin(StringPopupFilter stringPopupFilter) {
         this.stringPopupFilter = stringPopupFilter;
 
+        Button filterBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.filter"));
         filterBtn.setDefaultButton(true);
+        ButtonBar buttonBar = new ButtonBar();
+        Button clearBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.cancel"));
         buttonBar.getButtons().setAll(clearBtn, filterBtn);
 
         initOperatorsCb();
+        HBox hbox = new HBox();
         hbox.getChildren().setAll(operatorsComboBox, textfield);
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.setSpacing(5);
@@ -35,13 +33,10 @@ public class StringPopupFilterSkin implements Skin<StringPopupFilter> {
         container.getChildren().setAll(hbox, buttonBar);
         container.getStyleClass().addAll("module-box", "module-box-container");
         clearBtn.setOnAction(e -> {
-            stringPopupFilter.getTableColumn().setPredicate(null);
-            operatorsComboBox.getSelectionModel().select(null);
-            textfield.setText(null);
+            stringPopupFilter.clearPredicate();
+            resetFields();
         });
-        filterBtn.setOnAction(e -> {
-            updatePredicate();
-        });
+        filterBtn.setOnAction(e -> updatePredicate());
     }
 
     private void initOperatorsCb() {
@@ -54,29 +49,15 @@ public class StringPopupFilterSkin implements Skin<StringPopupFilter> {
         );
     }
 
-    private void updatePredicate() {
+    protected void updatePredicate() {
         Operators op = operatorsComboBox.getValue();
         String value = textfield.getText();
-        if (StringUtils.isBlank(value)) {
-            stringPopupFilter.getTableColumn().setPredicate(null);
-        } else {
-            stringPopupFilter.getTableColumn().setPredicate(s -> {
-                switch (op) {
-                    case EQUALS:
-                        return s.equalsIgnoreCase(value);
-                    case NOT_EQUALS:
-                        return !s.equalsIgnoreCase(value);
-                    case STARTS_WITH:
-                        return s.startsWith(value);
-                    case ENDS_WITH:
-                        return s.endsWith(value);
-                    case CONTAINS:
-                        return s.contains(value);
-                    default:
-                        return false;
-                }
-            });
-        }
+        stringPopupFilter.updatePredicate(op, value);
+    }
+
+    public void resetFields() {
+        operatorsComboBox.getSelectionModel().select(null);
+        textfield.setText(null);
     }
 
     @Override
@@ -93,4 +74,5 @@ public class StringPopupFilterSkin implements Skin<StringPopupFilter> {
     public void dispose() {
 
     }
+
 }

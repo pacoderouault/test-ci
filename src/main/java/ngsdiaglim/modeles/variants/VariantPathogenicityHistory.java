@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 
 import java.util.Collection;
-import java.util.Comparator;
 
 public class VariantPathogenicityHistory {
 
@@ -15,7 +14,6 @@ public class VariantPathogenicityHistory {
 
     public VariantPathogenicityHistory(Variant variant) {
         this.variant = variant;
-//        historySorted.setComparator(Comparator.comparing(VariantPathogenicity::getDateTime).reversed());
     }
 
     public Variant getVariant() {return variant;}

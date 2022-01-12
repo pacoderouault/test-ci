@@ -74,9 +74,7 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
         clearSearchFi.visibleProperty().bind(searchTf.textProperty().isEmpty().not());
         clearSearchFi.setCursor(Cursor.HAND);
         clearSearchFi.setOnMouseClicked(e -> searchTf.setText(""));
-        searchTf.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterTable();
-        });
+        searchTf.textProperty().addListener((observable, oldValue, newValue) -> filterTable());
     }
 
     private void initTable() {

@@ -36,16 +36,17 @@ import ngsdiaglim.modeles.variants.Hotspot;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modeles.variants.predictions.SpliceAIPredictions;
 import ngsdiaglim.modeles.variants.predictions.VariantPrediction;
+import ngsdiaglim.utils.ScrollBarUtil;
+import ngsdiaglim.utils.TableViewUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import org.apache.poi.ss.formula.functions.T;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class VariantTableBuilder {
 
-    private final Logger logger = LogManager.getLogger(VariantTableBuilder.class);
+    private final static Logger logger = LogManager.getLogger(VariantTableBuilder.class);
 
     private final TableView<Annotation> table;
     private final static NaturalSortComparator naturalSortComparator = new NaturalSortComparator();
@@ -80,25 +81,31 @@ public class VariantTableBuilder {
         table.getColumns().setAll(columns);
         if (!basicTable) {
             Platform.runLater(() -> {
-                table.getColumns().addListener((ListChangeListener<TableColumn<?, ?>>) change -> {
+                table.getColumns().addListener((ListChangeListener<TableColumn<Annotation, ?>>) change -> {
                     try {
                         saveColumnsOrder();
                     } catch (SQLException e) {
                         logger.error(e);
                     }
                 });
-                table.getVisibleLeafColumns().addListener((ListChangeListener<TableColumn<Annotation, ?>>) c -> {
+
+                table.getVisibleLeafColumns().addListener((ListChangeListener<TableColumn<Annotation, ?>>) change -> {
                     try {
                         saveColumnsVisible();
                     } catch (SQLException e) {
                         logger.error(e);
                     }
                 });
+
                 addColumnResizeListener();
             });
         }
 
         table.getSelectionModel().setCellSelectionEnabled(true);
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        TableViewUtils.installCopyHandler(table);
+        setContextMenu();
 
     }
 
@@ -133,17 +140,17 @@ public class VariantTableBuilder {
 
         FilterTableColumn<Annotation, Number> posColumn = new FilterTableColumn<>(VariantsTableColumns.POSITION.getName());
         posColumn.setCellValueFactory(data -> data.getValue().getVariant().startProperty());
-        posColumn.setPopupFilter(new PositionPopupFilter(posColumn));
+//        posColumn.setPopupFilter(new PositionPopupFilter(posColumn));
         columnsMap.put(VariantsTableColumns.POSITION, posColumn);
 
         FilterTableColumn<Annotation, String> refColumn = new FilterTableColumn<>(VariantsTableColumns.REF.getName());
         refColumn.setCellValueFactory(data -> data.getValue().getVariant().refProperty());
-        refColumn.setPopupFilter(new RefPopUpFilter(refColumn));
+//        refColumn.setPopupFilter(new RefPopUpFilter(refColumn));
         columnsMap.put(VariantsTableColumns.REF, refColumn);
 
         FilterTableColumn<Annotation, String> altColumn = new FilterTableColumn<>(VariantsTableColumns.ALT.getName());
         altColumn.setCellValueFactory(data -> data.getValue().getVariant().altProperty());
-        altColumn.setPopupFilter(new AltPopupFilter(altColumn));
+//        altColumn.setPopupFilter(new AltPopupFilter(altColumn));
         columnsMap.put(VariantsTableColumns.ALT, altColumn);
 
         FilterTableColumn<Annotation, ACMG> acmgColumn2 = new FilterTableColumn<>(VariantsTableColumns.ACMG.getName());
@@ -226,7 +233,7 @@ public class VariantTableBuilder {
         FilterTableColumn<Annotation, EnsemblConsequence> consequenceColumn = new FilterTableColumn<>(VariantsTableColumns.CONSEQUENCE.getName());
         consequenceColumn.setCellValueFactory(data -> data.getValue().getTranscriptConsequence().consequenceProperty());
         consequenceColumn.setCellFactory(data -> new EnsemblConsequenceTableCell<>());
-        consequenceColumn.setPopupFilter(new ConsequencePopupFilter2(consequenceColumn));
+        consequenceColumn.setPopupFilter(new ConsequencePopupFilter(consequenceColumn));
         columnsMap.put(VariantsTableColumns.CONSEQUENCE, consequenceColumn);
 
         FilterTableColumn<Annotation, String> clinvarSignColumn = new FilterTableColumn<>(VariantsTableColumns.CLIVAR_SIGN.getName());
@@ -513,9 +520,7 @@ public class VariantTableBuilder {
         };
 
 
-        table.getColumns().forEach(c -> {
-            c.widthProperty().addListener(listener);
-        });
+        table.getColumns().forEach(c -> c.widthProperty().addListener(listener));
     }
 
 
@@ -578,6 +583,22 @@ public class VariantTableBuilder {
             }
         } else {
             table.setRowFactory(row -> new Theme2());
+        }
+    }
+
+
+    public void setContextMenu() {
+        ContextMenu menu = new ContextMenu();
+        MenuItem copyMi = new MenuItem(App.getBundle().getString("analysisview.table.contextmenu.copy"));
+        copyMi.setOnAction(e -> TableViewUtils.copySelectionToClipboard(table));
+        menu.getItems().add(copyMi);
+        table.setContextMenu(menu);
+    }
+
+    public void clear() {
+        table.setOnKeyPressed(null);
+        if (table.getContextMenu() != null) {
+            table.getContextMenu().getItems().forEach(e -> e.setOnAction(null));
         }
     }
 }

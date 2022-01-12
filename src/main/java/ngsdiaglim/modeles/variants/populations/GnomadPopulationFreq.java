@@ -1,7 +1,5 @@
 package ngsdiaglim.modeles.variants.populations;
 
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import ngsdiaglim.enumerations.GnomadPopulation;
 import ngsdiaglim.utils.NumberUtils;
 

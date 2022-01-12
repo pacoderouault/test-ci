@@ -1,13 +1,11 @@
 package ngsdiaglim.controllers.analysisview.cnv;
 
-import de.gsi.chart.axes.spi.CategoryAxis;
 import de.gsi.chart.utils.AxisSynchronizer;
-import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ToggleButton;
@@ -17,18 +15,16 @@ import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
-import ngsdiaglim.controllers.cells.CNVTableCellFactory;
 import ngsdiaglim.controllers.dialogs.Message;
-import ngsdiaglim.controllers.ui.DropDownMenu;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.PlatformUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CNVNormalizedMapsViewController extends VBox {
 
@@ -38,12 +34,16 @@ public class CNVNormalizedMapsViewController extends VBox {
     @FXML private ComboBox<Integer> samplesByPageCountCb;
     @FXML private VBox mapsContainer;
     @FXML private HBox visibleSamplesDropMenuContainer;
+    @FXML private Button showVisibleSampleBtn;
     @FXML private ToggleButton loesBtn;
     @FXML private ToggleButton geneAverageBtn;
     @FXML private ToggleButton cusumBtn;
-    private DropDownMenu sampleDropDownMenu;
+//    private DropDownMenu sampleDropDownMenu;
     private final Map<String, CNVMap> drawnMapList = new HashMap<>();
     private final CovCopCNVData covcopCnvData;
+
+    private ChangeListener<Number> paginationPageIndexListener;
+    private ChangeListener<Number> paginationPageCountListener;
 
     public CNVNormalizedMapsViewController(CNVNormalizedViewController cnvNormalizedViewController, CovCopCNVData covcopCnvData) {
         //    private final AxisSynchronizer2 sync2 = new AxisSynchronizer2();
@@ -68,15 +68,21 @@ public class CNVNormalizedMapsViewController extends VBox {
         initVisibleSamplesDropDownMenu();
         intiSamplesPerPageCb();
 
-        covcopCnvData.getVisibleSamples().addListener((ListChangeListener<CNVSample>) change -> {
-            initPagination();
-        });
+        covcopCnvData.getVisibleSamples().addListener((ListChangeListener<CNVSample>) change -> initPagination());
 
         initPagination();
 
-        pagination.currentPageIndexProperty().addListener((obs, old, newV) -> drawMaps());
-        pagination.pageCountProperty().addListener((obs, old, newV) -> drawMaps());
-        covcopCnvData.getVisibleSamples().addListener((ListChangeListener<CNVSample>) change -> drawMaps());
+        paginationPageIndexListener = (obs, old, newV) -> drawMaps();
+        paginationPageCountListener = (obs, old, newV) -> {
+            pagination.currentPageIndexProperty().removeListener(paginationPageIndexListener);
+            drawMaps();
+            pagination.currentPageIndexProperty().addListener(paginationPageIndexListener);
+            User user = App.get().getLoggedUser();
+            user.setPreference(DefaultPreferencesEnum.CNV_NUMBER_SAMPLE_PER_PAGE, String.valueOf(newV));
+            user.savePreferences();
+        };
+        pagination.currentPageIndexProperty().addListener(paginationPageIndexListener);
+        pagination.pageCountProperty().addListener(paginationPageCountListener);
 
         HBox.setHgrow(mapsContainer, Priority.ALWAYS);
 
@@ -107,10 +113,15 @@ public class CNVNormalizedMapsViewController extends VBox {
     }
 
     private void initVisibleSamplesDropDownMenu() {
-        DropDownMenu dropDownMenu = new DropDownMenu(App.getBundle().getString("cnvnormalizedview.btn.visibleSamples"));
+//        DropDownMenu dropDownMenu = new DropDownMenu(App.getBundle().getString("cnvnormalizedview.btn.visibleSamples"));
         CNVVisibleSamplesDropMenuContent content = new CNVVisibleSamplesDropMenuContent(covcopCnvData);
-        dropDownMenu.setContentNode(content);
-        visibleSamplesDropMenuContainer.getChildren().setAll(dropDownMenu);
+//        dropDownMenu.setContentNode(content);
+//        visibleSamplesDropMenuContainer.getChildren().setAll(dropDownMenu);
+        PopOver visibleSamplesPopOver = new PopOver();
+        visibleSamplesPopOver.setContentNode(content);
+        visibleSamplesPopOver.setAnimated(false);
+        visibleSamplesPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        showVisibleSampleBtn.setOnAction(e -> visibleSamplesPopOver.show(showVisibleSampleBtn));
     }
 
 
@@ -134,21 +145,23 @@ public class CNVNormalizedMapsViewController extends VBox {
 
 
     public void forceRedrawMaps() {
+        clear();
         drawMaps(true);
     }
 
-    private void drawMaps() {
+    public void drawMaps() {
         drawMaps(false);
     }
 
     private void drawMaps(boolean forceRedraw) {
-        Platform.runLater(() -> {
+        PlatformUtils.runAndWait(() -> {
             mapsContainer.getChildren().clear();
             AxisSynchronizer synchronizer = new AxisSynchronizer();
-//            sync2.clear();
+
             int firstSampleIndexToDraw = pagination.getCurrentPageIndex() * samplesByPageCountCb.getValue();
             int lastSampleIndexToDraw = Math.min(firstSampleIndexToDraw + samplesByPageCountCb.getValue(), covcopCnvData.getVisibleSamples().size()) - 1;
             Set<String> drawnSamples = new HashSet<>();
+
             for (int i = firstSampleIndexToDraw; i <= lastSampleIndexToDraw; i++) {
 
                 CNVSample sample = covcopCnvData.getVisibleSamples().get(i);
@@ -167,15 +180,41 @@ public class CNVNormalizedMapsViewController extends VBox {
                 mapsContainer.getChildren().add(cnvMap);
                 synchronizer.add(cnvMap.getCnvChart().getXAxis());
             }
-            drawnMapList.keySet().removeIf(key -> !drawnSamples.contains(key));
+
+            Iterator<Map.Entry<String, CNVMap>> iter = drawnMapList.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String,CNVMap> entry = iter.next();
+                if(!drawnSamples.contains(entry.getKey())){
+                    entry.getValue().clear();
+                    iter.remove();
+                }
+            }
+
         });
     }
 
     public void resetZoom() {
         drawnMapList.values().forEach(CNVMap::resetZoom);
     }
-    public void test() {
 
+    public void clear() {
+        for (CNVMap map : drawnMapList.values()) {
+            map.getCnvChart().loessVisibleProperty().unbind();
+            map.getCnvChart().geneAverageVisibleProperty().unbind();
+            map.getCnvChart().cusumVisibleProperty().unbind();
+            map.clear();
+        }
+        mapsContainer.getChildren().forEach(n -> {
+            if (n instanceof CNVMap) {
+                CNVMap map = (CNVMap) n;
+                map.getCnvChart().loessVisibleProperty().unbind();
+                map.getCnvChart().geneAverageVisibleProperty().unbind();
+                map.getCnvChart().cusumVisibleProperty().unbind();
+                map.clear();
+            }
+        });
+        mapsContainer.getChildren().clear();
+        drawnMapList.clear();
     }
 
 }

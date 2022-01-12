@@ -26,6 +26,7 @@ public class AccountController extends Module {
     @FXML private TextField userNameTf;
     @FXML private ComboBox<VariantsTableTheme> themesCb;
     @FXML private CheckBox colorUniqueVariantsCb;
+    @FXML private CheckBox useSmoothScrolling;
     @FXML private ImageView themeIv;
 
     public AccountController() {
@@ -63,6 +64,14 @@ public class AccountController extends Module {
         colorUniqueVariantsCb.selectedProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 App.get().getLoggedUser().setPreference(DefaultPreferencesEnum.COLOR_UNIQUE_VARIANTS, newV);
+                App.get().getLoggedUser().savePreferences();
+            }
+        });
+
+        useSmoothScrolling.setSelected(Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING)));
+        useSmoothScrolling.selectedProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                App.get().getLoggedUser().setPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING, newV);
                 App.get().getLoggedUser().savePreferences();
             }
         });

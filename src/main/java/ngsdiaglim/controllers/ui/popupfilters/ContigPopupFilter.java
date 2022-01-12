@@ -1,18 +1,17 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import ngsdiaglim.controllers.ui.FilterTableColumn;
-import ngsdiaglim.controllers.ui.FilterTableView;
 import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 import org.apache.commons.lang3.StringUtils;
 
-public class ContigPopupFilter extends StringPopupFilter2 {
+public class ContigPopupFilter extends StringPopupFilter {
     public ContigPopupFilter(FilterTableColumn<Annotation, String> tableColumn) {
         super(tableColumn);
     }
 
     @Override
-    protected void updatePredictate(Operators op, String value) {
+    protected void updatePredicate(Operators op, String value) {
         if (StringUtils.isBlank(value)) {
             getTableColumn().setPredicate(null);
         } else {

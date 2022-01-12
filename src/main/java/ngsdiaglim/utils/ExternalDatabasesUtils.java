@@ -2,6 +2,7 @@ package ngsdiaglim.utils;
 
 import ngsdiaglim.modeles.analyse.ExternalVariation;
 import ngsdiaglim.modeles.variants.Annotation;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +30,7 @@ public class ExternalDatabasesUtils {
     private static final String oncoKBURL = "https://www.oncokb.org/gene/";
     private static final String pubmed = "https://pubmed.ncbi.nlm.nih.gov/";
     private static final String intogen = "https://www.intogen.org/search?gene=";
+    private static final String thegencc = "https://search.thegencc.org/genes/HGNC:";
 
     /**
      *
@@ -66,7 +68,6 @@ public class ExternalDatabasesUtils {
 
     /**
      *
-     * @param ann
      * @return An outlink to GnomAD from the Annotation
      */
     public static String getGnomADLink(Annotation ann) {
@@ -97,8 +98,6 @@ public class ExternalDatabasesUtils {
 
     /**
      * /example query : hg19:3:37025319T>G
-     * @param ann
-     * @return
      */
     public static String getAlamutGenomicQuery(Annotation ann) {
         return "hg19:" + ann.getVariant().getContig() + ":" + ann.getVariant().getStart() + ann.getVariant().getRef() + ">" + ann.getVariant().getAlt();
@@ -106,8 +105,6 @@ public class ExternalDatabasesUtils {
 
     /**
      * /example query : PMP22:c.464T>G
-     * @param ann
-     * @return
      */
     public static String getAlamutGeneQuery(Annotation ann) {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
@@ -116,8 +113,6 @@ public class ExternalDatabasesUtils {
 
     /**
      * /example query : NM_000249.3:c.464T>G
-     * @param ann
-     * @return
      */
     public static String getAlamutTranscriptQuery(Annotation ann) {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
@@ -157,17 +152,6 @@ public class ExternalDatabasesUtils {
         return omimURL + ann.getGene().getGeneName();
     }
 
-//    public static String getIGVLink(Analysis analysis, Annotation ann) {
-//        String query = igvURL;
-//        if (analysis.getParameters().containsKey(AnalysisParameterName.BAM_USED.getTitle())) {
-//            File bamFile = new File(analysis.getParameters().get(AnalysisParameterName.BAM_USED.getTitle()));
-//            if (bamFile.exists()) {
-//                query += bamFile.getAbsolutePath();
-//            }
-//        }
-//        return query + "&locus=" + ann.getVariant().getContig() + ":" + ann.getVariant().getStart();
-//    }
-
     public static String getGoogleLink(Annotation ann) {
         StringBuilder sb = new StringBuilder();
         sb.append("\"").append(ann.getGene().getGeneSetId()).append("\" (");
@@ -177,14 +161,12 @@ public class ExternalDatabasesUtils {
         }
         sb.append(")");
 
-        return googleURL + sb.toString();
+        return googleURL + sb;
     }
 
 
     public static String getCosmicLink(String cosmicId) {
         if (cosmicId == null) return null;
-        https://cancer.sanger.ac.uk/cosmic/search?q=COSV62324956
-
         return cosmicSearchURL + cosmicId;
     }
 
@@ -201,10 +183,6 @@ public class ExternalDatabasesUtils {
         return cosmicSearchURL + a.getTranscriptConsequence().getGeneName() + "+" + a.getTranscriptConsequence().getHgvsc();
 
     }
-
-//    public static String getCosmicLink(Hotspot h) {
-//        return cosmicURL + h.getCosmic_id().replace("COSM", "");
-//    }
 
     public static String getCosmicGeneViewLink(Annotation ann) {
         if (ann.getTranscriptConsequence().getHgvsp() != null && !ann.getTranscriptConsequence().getHgvsp().isEmpty()) {
@@ -289,6 +267,13 @@ public class ExternalDatabasesUtils {
             return intogen + a.getGene().getGeneName();
         } else if (a.getTranscriptConsequence() != null) {
             return intogen + a.getTranscriptConsequence().getGeneName();
+        }
+        return null;
+    }
+
+    public static String getThegenccLink(Annotation a) {
+        if (a.getTranscriptConsequence() != null && !StringUtils.isBlank(a.getTranscriptConsequence().getHgncId())) {
+            return thegencc + a.getTranscriptConsequence().getHgncId();
         }
         return null;
     }

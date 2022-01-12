@@ -1,18 +1,33 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import javafx.scene.control.Skin;
-import ngsdiaglim.enumerations.ACMG;
+import ngsdiaglim.controllers.ui.FilterTableColumn;
 import ngsdiaglim.enumerations.EnsemblConsequence;
+import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
-import org.controlsfx.control.tableview2.FilteredTableColumn;
+
+import java.util.Set;
 
 public class ConsequencePopupFilter extends TableColumnPopupFilter<Annotation, EnsemblConsequence> {
 
-    public ConsequencePopupFilter(FilteredTableColumn<Annotation, EnsemblConsequence> tableColumn) {
+    public ConsequencePopupFilter(FilterTableColumn<Annotation, EnsemblConsequence> tableColumn) {
         super(tableColumn);
+    }
+
+    @Override
+    protected void updatePredicate(Operators op, EnsemblConsequence value) {
+
     }
 
     @Override protected Skin<?> createDefaultSkin() {
         return new ConsequencePopupFilterSkin(this);
+    }
+
+    public void updatePredictate(Set<EnsemblConsequence> selectedConsequences) {
+        if (selectedConsequences == null || selectedConsequences.isEmpty()) {
+            getTableColumn().setPredicate(null);
+        } else {
+            getTableColumn().setPredicate(a -> selectedConsequences.contains(a.getTranscriptConsequence().getConsequence()));
+        }
     }
 }

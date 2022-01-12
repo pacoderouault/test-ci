@@ -1,9 +1,7 @@
 package ngsdiaglim.modeles.parsers;
 
-import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.HotspotType;
 import ngsdiaglim.exceptions.MalformedPanelFile;
-import ngsdiaglim.modeles.analyse.PanelRegion;
 import ngsdiaglim.modeles.variants.Hotspot;
 import ngsdiaglim.utils.IOUtils;
 import ngsdiaglim.utils.NumberUtils;
@@ -12,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HotspotsParser {
@@ -39,7 +36,6 @@ public class HotspotsParser {
                 if (!NumberUtils.isInt(tks[2]) || !NumberUtils.isInt(tks[3])) {
                     throw new MalformedPanelFile("Bad numeric columns, line " + i);
                 }
-                int idx = 0;
                 String hotspot_id = tks[0];
                 String contig = tks[1];
                 int start = Integer.parseInt(tks[2]);

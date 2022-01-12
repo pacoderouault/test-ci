@@ -6,8 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.VariantTableBuilder;
-import ngsdiaglim.controllers.dialogs.Message;
-import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.VariantsTableColumns;
 import ngsdiaglim.modeles.users.ColumnsExport;
 import ngsdiaglim.modeles.variants.Annotation;
@@ -16,10 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ColumnsVisivilityDropDownMenuContent2 extends VBox {
 
@@ -48,6 +42,7 @@ public class ColumnsVisivilityDropDownMenuContent2 extends VBox {
     @FXML
     public void initialize() {
         lv.setCellFactory(data -> new VariantsTableColumnsCell());
+        getStyleClass().add("dropdown-menu");
         fillListView();
     }
 

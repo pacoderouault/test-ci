@@ -217,6 +217,18 @@ public class VCFParser {
             annotation.setGeneNames(geneNames);
         }
 
+        // check if annotation has preferred transcript
+        boolean hasPreferredTranscript = false;
+        for (Map.Entry<String, TranscriptConsequence> entry : annotation.getTranscriptConsequences().entrySet()) {
+            if (entry.getValue().getTranscript().isPreferred()) {
+                hasPreferredTranscript = true;
+                break;
+            }
+        }
+        if (hasPreferredTranscript) {
+            annotation.getTranscriptConsequences().entrySet().removeIf(e -> !e.getValue().getTranscript().isPreferred());
+        }
+
         // set visible transcript consequence from preferred transcript
         if (!annotation.getTranscriptConsequences().isEmpty()) {
             for (Map.Entry<String, TranscriptConsequence> entry : annotation.getTranscriptConsequences().entrySet()) {
@@ -306,6 +318,9 @@ public class VCFParser {
 
         String symbol = vepPrediction.getByCol(VepTag.SYMBOL.getColumnName());
         if (symbol != null) transcriptConsequence.setGeneName(symbol);
+
+        String hgnc_id = vepPrediction.getByCol(VepTag.HGNC_ID.getColumnName());
+        if (hgnc_id != null) transcriptConsequence.setHgncId(hgnc_id);
 
         String exon = vepPrediction.getByCol(VepTag.EXON.getColumnName());
         if (exon != null) transcriptConsequence.setExon(exon);

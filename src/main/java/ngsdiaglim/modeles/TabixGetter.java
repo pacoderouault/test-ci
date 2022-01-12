@@ -5,7 +5,6 @@ import htsjdk.tribble.readers.TabixReader;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFCodec;
 import htsjdk.variant.vcf.VCFFileReader;
-import htsjdk.variant.vcf.VCFHeader;
 import htsjdk.variant.vcf.VCFHeaderVersion;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.parsers.VCFParser;

@@ -13,7 +13,6 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.Roles.DefaultRolesEnum;
 import ngsdiaglim.modeles.variants.AnnotationCommentary;
-import ngsdiaglim.modeles.variants.VariantCommentary;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.DateFormatterUtils;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +23,6 @@ import java.sql.SQLException;
 
 public class AnnotationCommentaryListCell extends ListCell<AnnotationCommentary> {
     private final Logger logger = LogManager.getLogger(VariantCommentaryListCell.class);
-    private AnnotationCommentary vc;
     private FXMLLoader mLLoader;
 
     @FXML private Label usernameLb;
@@ -38,7 +36,6 @@ public class AnnotationCommentaryListCell extends ListCell<AnnotationCommentary>
         super.updateItem(item, empty);
         if (item != null && !empty) {
             getStyleClass().add("transparent-list-cell");
-            vc = item;
             if (mLLoader == null) {
                 mLLoader = new FXMLLoader(getClass().getResource("/fxml/VariantCommentaryListCell.fxml"), App.getBundle());
                 mLLoader.setController(this);

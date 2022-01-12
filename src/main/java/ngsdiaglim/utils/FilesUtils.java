@@ -2,7 +2,6 @@ package ngsdiaglim.utils;
 
 import ngsdiaglim.App;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,5 +52,13 @@ public class FilesUtils {
         String hash1 = computesSHA256(file1);
         String hash2 = computesSHA256(file2);
         return hash1 != null && hash1.equals(hash2);
+    }
+
+    public static File getContainerFile(File f) {
+        if (f.isDirectory()) {
+            return f;
+        } else {
+            return f.getParentFile();
+        }
     }
 }

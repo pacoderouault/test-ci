@@ -28,6 +28,7 @@ public class IGVConfig {
 
     public boolean igvIsRunning() {
         if (os != null) {
+//            System.out.println(os);
             if (os.equals(OS.WINDOWS)) {
                 return igvIsRunningOnWindows();
             } else if (os.equals(OS.LINUX)) {
@@ -38,8 +39,15 @@ public class IGVConfig {
     }
 
     private boolean igvIsRunningOnWindows() {
+        ProcessHandle.allProcesses().forEach(p -> {
+            if (p.info().commandLine().isPresent()) {
+                System.out.println(p);
+                System.out.println(p.info());
+                System.out.println(p.info().commandLine());
+            }
+        });
         Optional<ProcessHandle> process = ProcessHandle.allProcesses()
-                .filter(p -> p.info().commandLine().isPresent() && p.info().commandLine().get().endsWith("IGV_Wen.exe")).findAny();
+                .filter(p -> p.info().commandLine().isPresent() && p.info().commandLine().get().endsWith("IGV_Xen.exe")).findAny();
         return process.isPresent();
     }
 

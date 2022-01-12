@@ -1,8 +1,6 @@
 package ngsdiaglim.controllers.charts;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -130,19 +128,11 @@ public class ViolinChartRun extends VBox {
                 rectangleClickHandler.setY(valueToPixel(maxValue) - 3);
                 rectangleClickHandler.setWidth(snap(rectangleClickHandler.getX(), boxplotWidth));
                 rectangleClickHandler.setHeight(snap(rectangleClickHandler.getY(), valueToPixel(minValue) - valueToPixel(maxValue) + 6));
-                group.setOnMouseEntered(e -> {
-                    rectangleClickHandler.setFill(Color.valueOf("baded7ff"));
-                });
-                group.setOnMouseExited(e -> {
-                    setSelectionRectangleColor(rectangleClickHandler, cnvSample);
-                });
-                group.setOnMouseClicked(e -> {
-                    selectedSample.setValue(cnvSample);
-                });
+                group.setOnMouseEntered(e -> rectangleClickHandler.setFill(Color.valueOf("baded7ff")));
+                group.setOnMouseExited(e -> setSelectionRectangleColor(rectangleClickHandler, cnvSample));
+                group.setOnMouseClicked(e -> selectedSample.setValue(cnvSample));
 
-                selectedSampleProperty().addListener((obs, oldV, newV) -> {
-                    setSelectionRectangleColor(rectangleClickHandler, cnvSample);
-                });
+                selectedSampleProperty().addListener((obs, oldV, newV) -> setSelectionRectangleColor(rectangleClickHandler, cnvSample));
                 group.getChildren().addAll(rectangleClickHandler);
 
 

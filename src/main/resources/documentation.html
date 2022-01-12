@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Declared Vars To Go Here -->
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Metadata -->
+    <link rel="icon" href="mysource_files/favicon.ico">
+
+    <!-- Page Name and Site Name -->
+    <title>NGSDiag Documentation</title>
+
+    <!-- CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    h2 {
+        border-left-width: 5px;
+        border-left-style: solid;
+        border-left-color: #5bc0de;
+        text-indent: 10px;
+        padding-top: 5px;
+        margin-top: 50px;
+    }
+    .bs-container{padding:10px}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header clearfix" style="background-color: #ffffff">
+
+
+        <!-- Site Name -->
+        <h1 class="h3 text-muted">NGSDiag Documentation</h1>
+
+    </header>
+
+    <div class="row">
+
+        <div class="col-sm-3">
+            <h4 class="nav_title">Navigation</h4>
+            <!-- Sub Navi	gation -->
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#user_management">Gestion des utilisateurs</a></li>
+                <li><a href="#analysis_params">Paramètres d'analyse</a>
+                    <ul><a href="#analysis_params_panel">Panel</a></ul>
+                    <ul><a href="#analysis_params_genes">Gènes et transcripts</a></ul>
+                    <ul><a href="#analysis_params_hotspots">Hotspots</a></ul>
+                </li>
+                <li><a href="#import_analyses">Importation d'analyses</a>
+                    <ul><a href="#create_run">Créer un run</a></ul>
+                    <ul><a href="#add_analyses">Ajouter des analyses</a></ul>
+                </li>
+                <li><a href="#interpretation">Interprétation d'une analyse</a>
+                    <ul><a href="#variants">Variants</a></ul>
+                    <ul><a href="#coverage">Couverture</a></ul>
+                    <ul><a href="#cnv">CNV</a></ul>
+                    <ul><a href="#additional_data">Informations additionnelles</a></ul>
+                    <ul><a href="#metadata">Meta données</a></ul>
+                    <ul><a href="#run_info">Run info</a></ul>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="col-sm-9">
+
+            <div class="page-contents">
+                <!-- Introduction -->
+                <h2 id="introduction">Introduction</h2>
+                <p>NGSDiag est un outil d'aide à l'interprétation de variants génétiques (SNP/Indels/CNVs)</p>
+
+                <!-- Introduction -->
+                <h2 id="user_management">Gestion des utilisateurs</h2>
+                <p>Le module de gestion des utilisateurs est accessible via le menu <code>Administrateur > Gestion des utilisateurs</code>. Seuls les utilisateurs ayant la permission de gérer les autres utilisateurs ont accès à ce menu.</p>
+                <h3>Groupes d'utilisateurs</h3>
+                <p>Chaque utilisateur appartient à un ou plusieurs groupes. Ces groupes contiennent une liste de permissions, c'est-à-dire d'actions à pouvoir réaliser au sein de NGSDiag.</p>
+                <p>Deux groupes sont initialement créés :</p>
+                <ul>
+                    <li>ADMIN : possède tous les droits</li>
+                    <li>GUEST : ne possède aucun droit (accès en lecture seulement)</li>
+                </ul>
+                <p>Ces deux groupes ne peuvent pas être supprimés</p>
+                <p>L'ajout d'un nouveau groupe se fait en cliquant sur le bouton "Ajouter un groupe" et en lui donnant un nom unique dans la fenêtre qui apparaît.</p>
+                <p>Pour définir les permissions de ce groupe, il suffit de sélectionner le groupe dans le tableau "Liste des groupes" et de choisir ensuite les permissions qui lui seront associées.</p>
+
+                <h3>Ajouter/Editer un utilisateur</h3>
+                <p>Lors de la première initialisation de NGSDiag, un utilisateur administrateur est créé. (login/mot de passe : admin/admin</p>
+                <p class="bs-container bg-danger">Il est très fortement recommandé de désactiver cet utilisateur ou de changer son mot de passe</p>
+
+                <p>Pour ajouter un nouvel utilisateur, cliquer sur le bouton "Ajouter un utilisateur". Une fenêtre apparaît. Renseigner l'identifiant qui doit être unique et son mot de passe. Choisir au moins un groupe auquel rattaché l'utilisateur.</p>
+                <p>Le mot de passe d'un utilisateur peut être réinitialisé en cliquant sur l'icône "reset" dans le tableau "Gestion des comptes utilisateurs".</p>
+                <p>Un utilisateur peut être désactivé, c'est-à-dire qu'il sera impossible de se connecter avec son compte, mais il ne sera pas supprimé de la base de donné. À tout moment un compte désactivé peut être réactivé.</p>
+                <p>Les groupes de chaque utilisateur peuvent aussi être modifiés à tout moment.</p>
+
+                <h2 id="analysis_params">Paramètres d'analyse</h2>
+                <p>Chaque analyse qui sera importée devra être rattaché à certains paramètres. Le module de gestion de ces paramètres est accessible via le menu <code>Administrateur > Gestion des paramètres d'analyse</code>.
+                </p>
+                <h3 id="analysis_params_panel">Panel</h3>
+                <p>Le panel correspond aux régions ciblées lors de la préparation de la librairie (amplicon ou capture). A partir du module de gestion des paramètres d'analyses, sélectionner l'onglet <code>Gestion des panels</code>.
+                    Pour ajouter un panel cliquer sur le bouton "Ajouter un panel". Dans la fenêtre qui s'ouvre, renseigner le nom du panel à rajouter (doit être unique) et cliquer sur le bouton "Ouvrir un fichier bed" pour sélectionner le fichier bed qui contient les régions séquencées.</p>
+                <p>C'est un fichier qui doit contenir au moins les 4 colonnes suivantes :</p>
+                <dl class="dl-horizontal">
+                    <dt>Contig</dt>
+                    <dd>nom du chromosome</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Start</dt>
+                    <dd>Position du début de la région</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>End</dt>
+                    <dd>Position de fin de la région</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Name</dt>
+                    <dd>Nom de la région, par exemple le gène ciblé. Ce nom ne doit pas forcément être unique à chaque région.</dd>
+                </dl>
+
+                <p>Exemple :<br>
+                    <samp>chr1	6557013	6557096	PLEKHG5<br>
+                        chr1	6557374	6557388	PLEKHG5<br>
+                        chr1	6579499	6579576	PLEKHG5<br>
+                        chr1	10292381	10292497	KIF1B<br>
+                        chr1	10316299	10316386	KIF1B<br>
+                        chr1	10318545	10318735	KIF1B</samp></p>
+
+                <p>Une fois un panel ajouté à NGSDiag, il peut être désactivé à partir du tableau "Liste des panels". La désactivation d'un panel rendra son utilisation impossible lors de l'ajout d'analyses. Un panel peut être réactivé à tout moment.</p>
+
+
+                <h3 id="analysis_params_genes">Gènes et transcripts</h3>
+                <p>Les gènes et transcript correspondent aux noms des gènes et aux transcripts à utiliser pour l'annotation des variants. A partir du module de gestion des paramètres d'analyses, sélectionner l'onglet <code>Gènes et Transcripts</code>.
+                    Pour ajouter un ensemble de gènes et leurs transcripts associés, cliquer sur le bouton "Ajouter des gènes/transcripts. Dans la fenêtre qui s'ouvre, renseigner le nom du panel à rajouter (doit être unique) et cliquer sur le bouton "Ouvrir le fichier" pour charger les gènes et transcripts.</p>
+                <p>C'est un fichier qui doit contenir les 2 colonnes suivantes :</p>
+                <dl class="dl-horizontal">
+                    <dt>Gene</dt>
+                    <dd>Nom du chromosome</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Transcripts</dt>
+                    <dd>Liste des transcripts à utiliser. Il peut y avoir plusieurs transcripts pour un gène. Il faut séparer leur id par le caractère : <code>;</code></dd>
+                </dl>
+
+                <p>Exemple :<br>
+                    <samp>ALPL	NM_000478<br>
+                        ANK3	NM_001204403;NM_001204404;NM_020987;NM_001149<br>
+                        AP2S1	NM_001301078;NM_001301076;NM_001301081<br>
+                        ATL1	NM_001127713</samp></p>
+
+                <p>Si un gène possède plusieurs transcripts possible, il est possible de choisir le transcript à utiliser en priorité en cliquant dessus. C'est ce transcript qui sera utilisé par défaut pour l'affichage des variants du gène. Par defaut, si un gène ne possède qu'un seul transcript, il est automatiquement sélectionné comme transcript préféré.</p>
+                <p>Une fois un ensemble de gène et transcripts ajouté à NGSDiag, il peut être désactivé à partir du tableau "Liste des gènes/transcripts". La désactivation rendra son utilisation impossible lors de l'ajout d'analyses. Il peut être réactivé à tout moment.</p>
+
+
+                <h3 id="analysis_params_hotspots">Hotspots</h3>
+                <p>Chaque analyse peut être associée à un sensemble de hotspot. Ce sont une liste de variants ou de position qui seront systématiquement gardées lors de l'importation d'un VCF. Aucun filtre ne sera appiqué sur ces variants.</p>
+                <p>Pour rajouter des hotspots, à partir du module de gestion des paramètres d'analyses, sélectionner l'onglet <code>Hotspots</code>.
+                    Cliquer ensuite sur le bouton "Ajouter des Hotspots". Dans la fenêtre qui s'ouvre, renseigner le nom de l'ensemble de hotspots à rajouter (doit être unique) et cliquer sur le bouton "Ouvrir le fichier" pour sélectionner le fichier qui contient les hotspots à importer.</p>
+                <p>C'est un fichier qui doit contenir les 9 colonnes suivantes :</p>
+                <dl class="dl-horizontal">
+                    <dt>ID</dt>
+                    <dd>Identifiant du hotspot (ex son numéro cosmic)</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Contig</dt>
+                    <dd>Chromosome du hotspot</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Start</dt>
+                    <dd>Position de début du hotspot</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>End</dt>
+                    <dd>Position de fin du hotspot</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Ref</dt>
+                    <dd>Allèle de référence</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Alt</dt>
+                    <dd>Allèle alternatif</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Gene</dt>
+                    <dd>Nom du gène</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>hgvsc</dt>
+                    <dd>Nomenclature hgvsc</dd>
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>hgvsp</dt>
+                    <dd>Nomenclature hgvsp</dd>
+                </dl>
+
+                <p>Les colonnes obligatoires sont contig, start et end. Les autres valeurs puvent-être remplacées par des <code>.</code></p>
+                <p>Exemple :<br>
+                    <samp>
+                        COSV57675673	chr12	133249847	133249847	G	A	POLE	c.1376C>T	p.S459F<br>
+                        COSV57196518	chr5	1295228	1295228	G	A	TERT	.	.<br>
+                        COSV57196695	chr5	1295228	1295228	G	T	TERT	.	.<br>
+                        .	chr2	29443642	29443642	C	T	ALK	c.3575G>A	p.R1192Q<br>
+                        .	chr2	29443639	29443639	A	T	ALK	c.3578T>A	p.F1193Y<br>
+                        .	chr2	29443629	29443631	.	.	ALK	.	.<br>
+                        .	chr2	29443623	29443625	.	.	ALK	.	.<br>
+                        .	chr15	98631837	90631839	.	.	IDH2	.	.<br>
+                        .	chr11	534285	534286	.	.	HRAS	.	.
+                    </samp>
+                </p>
+                <p>Une fois un ensemble de hotspots ajouté à NGSDiag, il peut être désactivé à partir du tableau "Liste des hotspots". La désactivation rendra son utilisation impossible lors de l'ajout d'analyses. Il peut être réactivé à tout moment.</p>
+
+                <h3>Création de paramètres d'analyse</h3>
+                <p>Lorsqu'au moins un panel et un ensemble de gènes et transcripts ont été ajoutés à NGSDiag, la création de paramètres d'analyse peut être effectuée.</p>
+                <p>Il s'agit de définir les paramètres à utiliser pour importer une analyse. A partir du module de gestion des paramètres d'analyses, sélectionner l'onglet <code>Création de paramètres d'analyses</code>.
+                    Donner un nom unique à ces paramètres et sélectionner le génome de référence à utiliser.</p>
+                <p>Choisir une profondeur minium. Toutes les régions en dessous de cette profondeur seront considéré comme non-couverte lors de l'analyse de couverture.</p>
+                <p>Choisir une profondeur d'alerte. Les régions avec une profondeur inférieure à  cette valeur et supérieure à la profondeur minimale seront considérées comme couvertes, mais un warning leur sera appliqué lors de l'analyse de couverture.</p>
+                <p class="bs-container bg-warning">Ces valeurs ne sont pas utilisées pour filtrer les variants. Si un variant est présent dans le vcf à importer avec une profondeur inférieure à la profondeur minimum, il sera quand même visible.</p>
+                <p>Choisir une VAF minimum (VAF = <var>Nombre reads supportant l'allèle alternatif / Profondeur totale</var>).</p>
+                <p class="bs-container bg-danger">La variants dont la VAF est inférieure à cette valeur seront filtrés et ne seront pas importés, sauf s'il correspondent à un hotspot.</p>
+                </p>
+
+                <p>Une fois des paramètres d'analyse ajoutés à NGSDiag, ils peuvent être désactivés à partir du tableau "Liste des paramètres d'analyse". Leur désactivation rendra leur utilisation impossible lors de l'ajout d'analyses. Ils peuvent être réactivés à tout moment.
+                    Des paramètres peuvent aussi être supprimés à la seule condition qu'aucune analyse ne soit importée en utilisant ces paramètres.
+                </p>
+
+
+
+                <h2 id="import_analyses">Importation d'analyses</h2>
+                <h3 id="create_run">Création d'un run</h3>
+                <p>Chaque analyse doit être rattaché à un run. Un run correspond donc à un ensemble d'analyses. Typiquement ce sont les patients qui ont été séquencées en même temps.</p>
+                <p>Pour créer un run, à partir de la page d'accueil, cliquer sur le bouton "Ajouter un run". Dans la fenêtre qui s'ouvre, renseigner le nom du run (doit être unique) et la date du run.</p>
+
+                <h3 id="add_analyses">Ajout d'analyses</h3>
+                <p>Pour ajouter des analyses à un run, depuis la page d'accueil sélectionner le run souhaité dans le tableau "Liste des runs". Ensuite cliquer sur le bouton "Ajouter des analyses" au dessus du tableau "Liste des analyses".</p>
+                <h4>Fichiers d'entrée</h4>
+                <p>Une analyse est au minimum constituée d'un fichier VCF. Ce fichier VCF peut être annoté grâce à Ensembl VEP.</p>
+                <p>Associé à ce vcf, on peut charger un fichier BAM et un fichier appelé "Depth" dont le nom doit se terminer par "_depth.tsv" et qui peut être gzippé. "_depth.tsv.gz"</p>
+                <p>Ce fichier Depth est le résultat de la commande <bkp>samtools depth</bkp> et qui contient pour chaque position ciblée, la profondeur de séquençage. Ce fichier, s'il est présent sera utilisé pour l'analyse de couverture. S'il n'est pas présent, c'est le fichier BAM qui sera utilisé.
+                    Dans le cas de librairie par capture, ce fichier depth sera également utilisé pour la détection de CNVs avec l'algorithme de CovCop.
+                </p>
+                <p>Lors de l'ajout d'analyses dans un run, certains fichiers peuvent être rattachés au run. Les fichiers supportés sont les fichiers pdf et html. Ils peuvent correspondre par exemple les rapports d'analyse ou de séquençage.</p>
+
+                <p>L'ajout d'analyse peut se faire soit en sélectionnant un dossier, GSDiag va détecter les différents fichiers et les associer en analyses séparées automatiquement, soit en sélectionnant chacun des fichiers individuellement. </p>
+
+                <h4 id="remove_analyses">Suppression d'analyses</h4>
+                <p>Les analyses importées peuvent être supprimée en cliquant sur le bouton "Supprimer l'analyse" dans le tableau "Liste des analyses". De la même façon, un run entier peut être supprimer en cliquant sur le bouton "Supprimer le run" dans le tableau "Liste des runs".</p>
+
+
+                <h2 id="interpretation">Interprétation d'une analyse</h2>
+                <p>L'ouverture d'une analyse se réalise en cliquant sur le bouton "Ouvrir l'analyse" dans le tableau "Liste des analyses" ou directement en double-cliquant sur une ligne de ce tableau.</p>
+                <p>Plusieurs modules sont disponibles :</p>
+
+                <h4 id="variants">Variants</h4>
+                <p>C'est le module principal. Il contient la liste des variants (SNP et Indels) qui ont été retrouvés chez le patient durant l'analyse bioinformatique. Il est composé d'un tableau contenant l'ensemble des variants, et d'un panneau en bas de page qui contient le détail du variant sélectionné.</p>
+                <h5><strong>Panel de gènes</strong></h5>
+                <p> Il est possible de définir des panels de gènes "virtuels" qui permettent de ne voir les variants positionné seulement sur une liste de gènes d'intérêt. Pour ça, cliquer sur le bouton "Créer un panel".
+                    Dans la fenêtre qui s'ouvre, donner un nom à ce panel. Il est possible de charger un fichier texte avec le nom des gènes d'intérets, soit de les sélectionner directement dans la liste des gènes proposés.
+                    Une fois créé, le panel est disponible dans le menu déroulant au dessus du tableau des variants.
+                </p>
+                <h5><strong>Colonnes visibles</strong></h5>
+                <p>Le tableau des variants possède un grand nombre de colonnes, certaines visibles par défaut, d'autres non. Il est possible de changer les colonnes visible en cliquant sur le bouton "Colonnes visibles" et en sélectionnant les colonnes d'intéret.
+                    L'ordre des colonnes peut également être redéfini en cliquant sur leur entête et en les faisant glisser tout en maintenant le clic appuyé.
+                </p>
+
+                <h5><strong>Sélection du transcript</strong></h5>
+                <p>
+                    Lorsqu'un variant est annoté sur plusieurs transcripts, il est possible de choisir quel transcript utiliser.
+                    Dans la colonne "Transcript" du tableau des variants, cliquer sur l'icone "menu" devant le nom d'un transcript et sélectionner le transcript à utiliser.
+                    Les transcripts préférés sont identifiés par le suffixe "(pref)".
+                    Si dans le tableau, un variant est visualisé sur un transcript qui n'est pas le transcript préféré, le nom du transcript apparait en jaune.
+                </p>
+
+                <h5><strong>Ajout de commentaires au variant</strong></h5>
+                <p>
+                    Il est possible, à partir du panneau de détail du variant, d'ajouter un commentaire. Ce commentaire peut être général au variant,
+                    c'est-à-dire que si chez une autre analyse le même variant est retrouvé, le commentaire sera visible.
+                    Il est aussi possible de mettre un commentaire sur le variant mais spécifique à l'analyse. Le commentaire n'apparaitra pas dans une analyse tierce.
+                </p>
+
+                <h5><strong>Pathogénicité des variants</strong></h5>
+                <p>
+                    Pour change la pathogénicité d'un variant, cliquer sur l'icône "pathogénicité" dans le panneau de détail du variant.
+                    Une fenêtre s'ouvre, et vous pouvez sélectionner la nouvelle pathogénicité parmi les 5 choix suivant :
+                </p>
+                <ul>
+                    <li>Pathogenic</li>
+                    <li>Likely pathogenic</li>
+                    <li>Uncertain significance</li>
+                    <li>Likely benign</li>
+                    <li>Benign</li>
+                </ul>
+
+                <p>Pour valider la pathogénicité, il est nécessaire de laisser un commentaire.
+                Chaque changement de pathogénicité est sauvegardé et l'historique du variant est disponible depuis cette même fenêtre.</p>
+
+                <h5><strong>Variant Faux-Positif</strong></h5>
+                <p>
+                    Il est possible de définir un variant comme étant "Faux positif". Il apparaitra alors dans les derniers variants visualisés.
+                    Cliquer sur l'icône "Faux positif" dans le panneau de détail du variant.
+                    Une fenêtre s'ouvre, et vous pouvez indiquer si le variant est un faux positif ou non.
+                </p>
+                <p>Comme pour le changement de pathogénicité, il est nécessaire de laisser un commentaire pour valider chaque changement.
+                   L'historique du variant est disponible depuis cette même fenêtre.</p>
+
+                <h5><strong>Vérification Sanger</strong></h5>
+                <p>
+                    NGSDiag permet d'indiquer si un variant est en train ou a été validé par méthode Sanger. Cliquer sur l'icone "confirmation sanger" dans le panneau de détail du variant.
+                    Une fenêtre apparaît et il est possible de changer l'état du variant parmi ces 5 possibilité :
+                </p>
+                <ul>
+                    <li>Aucun</li>
+                    <li>Demandée</li>
+                    <li>En cours</li>
+                    <li>Terminée - négatif</li>
+                    <li>Terminée - positif</li>
+                </ul>
+                <p>Il est nécessaire de laisser un commentaire pour valider chaque changement.
+                    L'historique du variant est disponible depuis cette même fenêtre.</p>
+            </div>
+
+            <h4 id="cnv">CNV</h4>
+            <p>Il est possible de réalyser une analyse de CNV depuis NGDDiag selon l'algorithme de CovCop. Deux algorithmes existent selon la méthode de préparation de la librairie :</p>
+            <strong id="#cnv_amplicon">CovCop Amplicon</strong>
+            <p>Cette méthode demande de charger une matrice de profondeur dont la première colonne correspond au gène. La seconde colonne à l'identifiant de la région.
+                Et ensuite une colonne par patient avec le nombre de reads alignés sur chacune des régions.
+            </p>
+
+            <strong id="#cnv_capture">CovCop Capture</strong>
+            <p>
+                Dans le cas d'une librairie par capture, NGSDiag va utiliser une fenêtre glissante pour analyser les régions séquencées.
+                Il est impératif que les analyses à analyser ont été importées avec un fichier "depth.tsv".
+            </p>
+            <p>Le choix de la taille de la fenêtre glissante peut être modifié et doit être adapté à chaque librairie selon la taille des fragments séquencés et la longueur des reads.
+                Pour une librairie fragmentée à 500pb et des reads 2*300pb, une fenêtre de 150 à 200pb est un bon début pour une première analyse.</p>
+
+            <strong>CovCop Contrôles</strong>
+            <p>
+                Le principe de base de l'algorithme CovCop est de comparer chacun des patients d'un run, aux autres patients du run.
+                Cependant, il est possible de définir soit-même des contrôles à utiliser comme référence.
+                Après avoir chargeé des données (soit une matrice, soit les fichiers depth), cliquer sur le bouton <code>Définir des contrôles</code>.
+            </p>
+            <dl class="dl-horizontal">
+                <dt>Patients du run</dt>
+                <dd>Ce sont des contrôles internes. Sélectionner les patients du run qui seront utilisés comme contrôles.</dd>
+            </dl>
+            <dl class="dl-horizontal">
+                <dt>Groupe de contrôles</dt>
+                <dd><p>Ce sont des contrôles externes, c'est-à-dire des patients qui ont été séquencés dans un autre run, et rassemblés dans un groupe de contrôles. Voir : <a href="#cnv_add_control_group">Ajouter un groupe de contrôles</a></p>
+                </dd>
+            </dl>
+
+            <p class="bs-container bg-warning">Cette matrice doit correspondre au Panel utilisé pour réaliser les analyses.
+                L'identifiant de chaque région de la matrice doit être identique à une région du panel utilisé.</p>
+
+
+
+            <h4 id="coverage">Couverture</h4>
+            <p>Si l'analyse importée contenait un fichier bam ou un fichier depth, l'analyse de couverture a pu être réalisée.
+            C'est une analyse qui détecte les régions non couvertes ou mal couvertes en fonction des paramètres d'analyses.</p>
+            <p>Le résultat est sous la forme d'un tableau qui indique les régions détectées, avec leurs tailles leurs profondeurs moyennes et les gènes impliqués
+            Il est possible de visualiser ces régions directement dans IGV en cliquant sur le bouton "IGV"</p>
+            <p class="bs-container bg-warning">
+                IGV doit absolument être lancé par l'utilisateur pour pouvoir être utilisé.
+            </p>
+
+            <h4 id="additional_data">Informations additionnelles</h4>
+            <p>
+                Chaque utilisateur peut ajouter un commentaire à une analyse ou importer une image.
+                Sélectionner l'onglet "Informations additionnelles" et cliquer sur le bouton "Ajouter un commentaire".
+                Une fenêtre apparait vous permettant d'écrire un texte qui sera rattaché à l'analyse.<br>
+                Le bouton "Importer une image" permet d'attacher une image à l'analyse.
+            </p>
+
+            <h4 id="metadata">Meta données</h4>
+            <p>
+                L'onglet "Meta données" contient toutes les informations sur les conditions de l'analyse.
+                Il est possible de voir quel utilisateur à importé l'analyse, à quelle date, les fichiers qui ont été importés etc...
+            </p>
+            <p>
+                Le détail des paramètres utilisés pour l'analyse est également visible.
+            </p>
+            <p>
+                L'entête du fichier vcf utilisé est affiché. Cet entête peut contenir davantage d'information sur l'analyse bioinformatique qui a été menée.
+                Il est possible de chercher directement un variant dans le fichier vcf grace au formulaire de recherche au-dessus de l'entête.
+            </p>
+
+
+            <h4 id="run_info">Run info</h4>
+            <p>
+                L'onglet "Run info" contient les informations du run. Il est possible de voir quel utilisateur a créé le run et à quelle date.
+            </p>
+            <p>
+                Les fichiers rattachés au run qui ont été importés lors de l'jout d'analyses sont également disponibles depuis cet onglet.
+            </p>
+
+            <h3 id="cnv_add_control_group">Ajouter un groupe de controles</h3>
+            <p>
+                Il est possible de définir des groupes de contrôles pour effectuer les analyses de CNVs.
+                Les patients seront donc comparés à ce groupe au lieu d'être comparés les uns par rapport aux autres..
+            </p>
+            <p>Cliquer sur le menu <code>Administrateur > Gestion des paramètres des CNVs</code>. Cliquer ensuite sur le bouton <code>Ajouter un groupe contrôle</code></p>
+            <p>Donner un nom unique à ce groupe et sélectionner le panel auquel il correspond. Ensuite, deux cas de figure sont possibles :</p>
+            <strong>Amplicon</strong>
+            <p>
+                Il faut sélectionner une matrice de couverture identique à celle utilisée pour une analyse de CNV amplicon (<a href="#cnv_amplicon">CNV amplicon</a>)
+                où chaque colonne de patient correspond à un contrôle.
+            </p>
+            <strong>Capture</strong>
+            <p>
+                Il faut charger un ensemble de fichiers "depth" à utiliser comme contrôles. Les positions présentent dans ces fichiers doivent correspondre aux régions du panel.
+            </p>
+            <h4></h4>
+        </div>
+
+
+
+    </div>
+
+    <footer class="footer">
+        <p class="pull-right">
+            <!-- Last Updated Design Area-->
+            Last Updated: Wednesday, January 6, 2016
+        </p>
+    </footer>
+
+</div> <!-- /container -->
+
+</body>
+</html>

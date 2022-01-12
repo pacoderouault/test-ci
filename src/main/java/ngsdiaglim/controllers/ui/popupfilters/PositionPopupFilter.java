@@ -1,11 +1,10 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import ngsdiaglim.controllers.ui.FilterTableColumn;
-import ngsdiaglim.controllers.ui.FilterTableView;
 import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 
-public class PositionPopupFilter extends NumberPopupFilter2 {
+public class PositionPopupFilter extends NumberPopupFilter {
 
 
     public PositionPopupFilter(FilterTableColumn<Annotation, Number> tableColumn) {
@@ -13,7 +12,7 @@ public class PositionPopupFilter extends NumberPopupFilter2 {
     }
 
     @Override
-    protected void updatePredictate(Operators op, Number value) {
+    protected void updatePredicate(Operators op, Number value) {
 
         if (value == null) {
             getTableColumn().setPredicate(null);

@@ -54,9 +54,7 @@ public class AnalysisInfoDialog extends DialogPane.Dialog<Analysis> {
             setContent(gridPane);
             initView();
 
-            valueProperty().addListener((obs, oldV, newV) -> {
-                fillFields();
-            });
+            valueProperty().addListener((obs, oldV, newV) -> fillFields());
         }
 
         private void initView() {

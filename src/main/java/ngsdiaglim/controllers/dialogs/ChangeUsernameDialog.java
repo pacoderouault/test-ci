@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.utils.BundleFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +17,7 @@ import java.sql.SQLException;
 
 public class ChangeUsernameDialog extends DialogPane.Dialog<ChangeUsernameDialog.ChangeUsernameData> {
 
-    private final Logger logger = LogManager.getLogger(ChangeUsernameDialog.class);
+    private final static Logger logger = LogManager.getLogger(ChangeUsernameDialog.class);
 
     private final GridPane gridPane = new GridPane();
     private final TextField userNameTf = new TextField();
@@ -28,15 +27,12 @@ public class ChangeUsernameDialog extends DialogPane.Dialog<ChangeUsernameDialog
     private final Label errorLabel = new Label();
 
     public ChangeUsernameDialog(DialogPane pane) {
-        super(App.get().getAppController().getDialogPane(), DialogPane.Type.INPUT);
+        super(pane, DialogPane.Type.INPUT);
         setTitle(App.getBundle().getString("changeusernamedialog.title"));
         setContent(gridPane);
         setValue(new ChangeUsernameData());
         initView();
-//
-//        passwordField.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
-//        passwordFieldconfirm.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
-//
+
         userNameTf.textProperty().bindBidirectional(getValue().newUsernameProperty());
         passwordFieldconfirm.textProperty().bindBidirectional(getValue().passwordProperty());
         userNameTf.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
@@ -86,7 +82,7 @@ public class ChangeUsernameDialog extends DialogPane.Dialog<ChangeUsernameDialog
         }
     }
 
-    public class ChangeUsernameData {
+    public static class ChangeUsernameData {
         private final SimpleStringProperty newUsername = new SimpleStringProperty();
         private final SimpleStringProperty password = new SimpleStringProperty();
 

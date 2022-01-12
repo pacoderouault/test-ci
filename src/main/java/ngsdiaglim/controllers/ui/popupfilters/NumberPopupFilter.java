@@ -1,12 +1,12 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import javafx.scene.control.Skin;
+import ngsdiaglim.controllers.ui.FilterTableColumn;
 import ngsdiaglim.modeles.variants.Annotation;
-import org.controlsfx.control.tableview2.FilteredTableColumn;
 
-public class NumberPopupFilter extends TableColumnPopupFilter<Annotation, Number> {
+public abstract class NumberPopupFilter extends TableColumnPopupFilter<Annotation, Number> {
 
-    public NumberPopupFilter(FilteredTableColumn<Annotation, Number> tableColumn) {
+    public NumberPopupFilter(FilterTableColumn<Annotation, Number> tableColumn) {
         super(tableColumn);
     }
 

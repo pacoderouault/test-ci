@@ -117,22 +117,36 @@ public class IGVHandler {
     public void execute(Analysis analysis, String cmd) throws IOException {
 //        launchIgv();
 //        initSocket();
-
-        String rslt = checkConnection();
-        if (rslt != null) {
-            Platform.runLater(() -> {
-                Message.error(rslt);
-            });
-        } else {
-            checkAnalysisChange(analysis);
-            System.out.println(cmd);
-            out.println(cmd);
-            try {
-                System.out.println(in.readLine());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            System.out.println("init socket");
+            initSocket();
+        } catch (IOException e) {
+            Message.error(App.getBundle().getString("app.msg.err.igvnotreponding"));
         }
+
+//        String rslt = checkConnection();
+//        if (rslt != null) {
+//            Platform.runLater(() -> {
+//                Message.error(rslt);
+//            });
+//        } else {
+        System.out.println("checkAnalysisChange");
+            checkAnalysisChange(analysis);
+        System.out.println("end checkAnalysisChange");
+            System.out.println(cmd);
+        System.out.println("out cmd");
+            out.println(cmd);
+        System.out.println("end out cmd");
+//            try {
+//        System.out.println("print in");
+//                System.out.println(in.readLine());
+//        System.out.println("end print in");
+
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Message
+//            }
+//        }
     }
 
 
@@ -170,9 +184,15 @@ public class IGVHandler {
                 igv_port = Integer.parseInt(AppSettings.DefaultAppSettings.IGV_PORT.getValue());
             }
 
+            System.out.println("new socket");
             Socket socket = new Socket(igv_ip, igv_port);
+            System.out.println("new socket done");
+            System.out.println("out");
             out = new PrintWriter(socket.getOutputStream(), true);
+            System.out.println("end out");
+            System.out.println("in");
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            System.out.println("end in");
         }
     }
 }

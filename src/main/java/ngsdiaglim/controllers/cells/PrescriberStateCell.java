@@ -3,7 +3,6 @@ package ngsdiaglim.controllers.cells;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ngsdiaglim.App;
 import ngsdiaglim.modeles.Prescriber;
 
 import java.util.Objects;

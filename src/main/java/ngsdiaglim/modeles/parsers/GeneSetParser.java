@@ -1,6 +1,5 @@
 package ngsdiaglim.modeles.parsers;
 
-import ngsdiaglim.database.DAOController;
 import ngsdiaglim.exceptions.MalformedGeneTranscriptFile;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.Transcript;
@@ -23,9 +22,7 @@ public class GeneSetParser {
         try (BufferedReader reader = IOUtils.getFileReader(file)) {
 
             String line;
-            int i = 0;
             while((line = reader.readLine()) != null) {
-                ++i;
                 if (line.startsWith("#")) continue;
 
                 String[] tks = line.split("\t");

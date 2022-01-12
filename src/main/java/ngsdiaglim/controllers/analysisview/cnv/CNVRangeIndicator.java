@@ -4,7 +4,6 @@ import de.gsi.chart.axes.Axis;
 import de.gsi.chart.plugins.AbstractRangeValueIndicator;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import ngsdiaglim.cnv.CNV;
 import ngsdiaglim.enumerations.CNVTypes;

@@ -1,16 +1,19 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import javafx.scene.control.Skin;
+import ngsdiaglim.controllers.ui.FilterTableColumn;
 import ngsdiaglim.modeles.variants.Annotation;
-import org.controlsfx.control.tableview2.FilteredTableColumn;
 
-public class StringPopupFilter extends TableColumnPopupFilter<Annotation, String> {
+public abstract class StringPopupFilter extends TableColumnPopupFilter<Annotation, String> {
 
-    public StringPopupFilter(FilteredTableColumn<Annotation, String> tableColumn) {
+    public StringPopupFilter(FilterTableColumn<Annotation, String> tableColumn) {
         super(tableColumn);
     }
 
-    @Override protected Skin<?> createDefaultSkin() {
+
+    @Override
+    protected Skin<?> createDefaultSkin() {
         return new StringPopupFilterSkin(this);
     }
+
 }

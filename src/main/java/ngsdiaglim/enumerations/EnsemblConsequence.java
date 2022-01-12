@@ -10,7 +10,7 @@ public enum EnsemblConsequence {
     SPLICE_ACCEPTOR_VARIANT("Splice acceptor variant", Color.web("#FF581A"), "A splice variant that changes the 2 base region at the 3' end of an intron", "HIGH", 2, 1),
     SPLICE_DONOR_VARIANT("Splice donor variant", Color.web("#FF581A"), "A splice variant that changes the 2 base region at the 5' end of an intron", "HIGH", 3 ,1),
     STOP_GAINED("Stop gained", Color.web("#ff0000"), "A sequence variant whereby at least one base of a codon is changed, resulting in a premature stop codon, leading to a shortened transcript", "HIGH", 5, 1),
-    FRAMSHIFT_VARIANT("Framshift variant", Color.web("#9400D3"), "A sequence variant which causes a disruption of the translational reading frame, because the number of nucleotides inserted or deleted is not a multiple of three", "HIGH", 6, 1),
+    FRAMESHIFT_VARIANT("Framshift variant", Color.web("#9400D3"), "A sequence variant which causes a disruption of the translational reading frame, because the number of nucleotides inserted or deleted is not a multiple of three", "HIGH", 6, 1),
     STOP_LOST("Stop lost", Color.web("#ff0000"), "A sequence variant where at least one base of the terminator codon (stop) is changed, resulting in an elongated transcript", "HIGH", 7, 1),
     START_LOST("Start lost", Color.web("#ffd700"), "A codon variant that changes at least one base of the canonical start codon", "HIGH", 8, 1),
     TRANSCRIPT_AMPLIFICATION("Transcript amplification", Color.web("#ff69b4"), "A feature amplification of a region containing a transcript", "HIGH", 9, 1),
@@ -41,7 +41,13 @@ public enum EnsemblConsequence {
     FEATURE_ELONGATION("Feature elongation", Color.web("#7f7f7f"), "A sequence variant that causes the extension of a genomic feature, with regard to the reference sequence", "MODIFIER", 34, 4),
     REGULATORY_REGION_VARIANT("Regulatory region variant", Color.web("#a52a2a"), "A sequence variant located within a regulatory region", "MODIFIER", 35, 4),
     FEATURE_TRUNCATION("Feature truncation", Color.web("#7f7f7f"), "A sequence variant that causes the reduction of a genomic feature, with regard to the reference sequence", "MODIFIER", 36, 4),
-    INTERGENIC_VARIANT("Intergenic variant", Color.web("#636363"), "A sequence variant located in the intergenic region, between genes", "MODIFIER", 37, 4);
+    INTERGENIC_VARIANT("Intergenic variant", Color.web("#636363"), "A sequence variant located in the intergenic region, between genes", "MODIFIER", 37, 4),
+    SPLICE_DONOR_5TH_BASE_VARIANT("splice donor 5th base variant", Color.web("#32cd32"), "A sequence variant that causes a change at the 5th base pair after the start of the intron in the orientation of the transcript.", "MODERATE", 38, 2),
+    SPLICE_DONOR_REGION_VARIANT("Splice donor region variant", Color.web("#32cd32"), "A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron).", "MODERATE", 39, 3),
+    SPLICE_ACCEPTOR_REGION_VARIANT("Splice acceptor region variant", Color.web("#32cd32"), "A sequence variant that falls in the region between the 3rd and 6th base after splice junction (5' end of intron).", "LOW", 40, 3),
+    EXTENDED_INTRONIC_SPLICE_REGION_VARIANT_5PRIME("extended_intronic_splice_region_variant_5prime", Color.web("#32cd32"), "?", "LOW", 41, 3),
+    EXTENDED_INTRONIC_SPLICE_REGION_VARIANT_3PRIME("extended_intronic_splice_region_variant_3prime", Color.web("#32cd32"), "?", "LOW", 42, 3),
+    SPLICE_POLYPYRIMIDINE_TRACT_VARIANT("Splice polypyrimidine tract variant", Color.web("#636363"), "A sequence variant that falls in the polypyrimidine tract at 3' end of intron between 17 and 3 bases from the end (acceptor -3 to acceptor -17).", "HIGH", 43, 3);
 
     private final static Logger logger = LogManager.getLogger(EnsemblConsequence.class);
     private final String name;

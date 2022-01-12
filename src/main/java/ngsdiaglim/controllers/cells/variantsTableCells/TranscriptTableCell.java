@@ -6,15 +6,11 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
-import ngsdiaglim.comparators.NaturalSortComparator;
 import ngsdiaglim.controllers.cells.TranscriptConsequenceListViewCell;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.Transcript;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
-import ngsdiaglim.modeles.users.UserPreferences;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.TranscriptConsequence;
 import ngsdiaglim.modules.ModuleManager;
@@ -37,9 +33,8 @@ public class TranscriptTableCell extends TableCell<Annotation, Transcript> {
     public TranscriptTableCell() {
         btn.getStyleClass().add("hidden-button");
         btn.setGraphic(icon);
-        btn.setOnMouseClicked(e -> {
-            popover.show(icon, -10);
-        });
+        btn.setOnMouseClicked(e -> popover.show(icon, -10));
+
         popover.selectedTranscriptProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 if (popover.setForAllVariants()) {
@@ -134,6 +129,10 @@ public class TranscriptTableCell extends TableCell<Annotation, Transcript> {
                 toCompare.append(":").append(e.getTranscript().getName());
                 return toCompare.toString();
             }));
+        }
+
+        public void refresh() {
+            lv.refresh();
         }
 
         public void clear() {lv.getItems().clear();}

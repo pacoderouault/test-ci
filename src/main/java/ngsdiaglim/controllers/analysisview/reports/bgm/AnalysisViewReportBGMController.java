@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview.reports.bgm;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -15,7 +16,10 @@ import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.reports.bgm.ReportCreator;
 import ngsdiaglim.modeles.reports.bgm.ReportData;
 import ngsdiaglim.modeles.reports.bgm.ReportDataBuilder;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,11 +40,13 @@ public class AnalysisViewReportBGMController extends VBox {
     private final SimpleIntegerProperty paneIdx = new SimpleIntegerProperty(-1);
     private final List<ReportPane> reportPanes = new ArrayList<>();
 
-    private final ReportPersonalInformation reportPersonalInformation;
-    private final ReportSelectGenes reportSelectGenes;
-    private final ReportSelectVariants reportSelectVariants;
+    private ReportPersonalInformation reportPersonalInformation;
+    private ReportSelectGenes reportSelectGenes;
+    private ReportSelectVariants reportSelectVariants;
 //    private final ReportVous reportVous;
-    private final ReportComments reportComments;
+    private ReportComments reportComments;
+
+    private ChangeListener<Number> paneIdxListener;
 
     private final Analysis analysis;
 
@@ -60,13 +66,11 @@ public class AnalysisViewReportBGMController extends VBox {
         reportPersonalInformation = new ReportPersonalInformation(this);
         reportSelectGenes = new ReportSelectGenes(this);
         reportSelectVariants = new ReportSelectVariants(this);
-//        reportVous = new ReportVous(this);
         reportComments = new ReportComments(this);
 
         reportPanes.add(reportPersonalInformation);
         reportPanes.add(reportSelectGenes);
         reportPanes.add(reportSelectVariants);
-//        reportPanes.add(reportVous);
         reportPanes.add(reportComments);
 
         init();
@@ -74,7 +78,7 @@ public class AnalysisViewReportBGMController extends VBox {
 
 
     private void init() {
-        paneIdx.addListener((obs, oldV, newV) -> {
+        paneIdxListener = (obs, oldV, newV) -> {
             if (newV.intValue() >= 0 && newV.intValue() < reportPanes.size()) {
                 reportModuleContainer.getChildren().setAll(reportPanes.get(newV.intValue()));
                 gotToPreviousStepBtn.setDisable(newV.intValue() <= 0);
@@ -82,7 +86,8 @@ public class AnalysisViewReportBGMController extends VBox {
                 createReportBtn.setDisable(newV.intValue() < reportPanes.size() - 1);
             }
 
-        });
+        };
+        paneIdx.addListener(paneIdxListener);
         paneIdx.setValue(0);
     }
 
@@ -148,12 +153,11 @@ public class AnalysisViewReportBGMController extends VBox {
 
     private String setReportInitialName() {
         final String delim = "_";
-        return "test.docx";
-//        return analysis.getRun().getName()test + delim +
-//                reportPersonalInformation.getBarcode() + delim +
-//                reportPersonalInformation.getFirstName() + delim +
-//                reportPersonalInformation.getLastName() +
-//                ".docx";
+        return analysis.getRun().getName() + delim +
+                reportPersonalInformation.getBarcode() + delim +
+                reportPersonalInformation.getFirstName() + delim +
+                reportPersonalInformation.getLastName() +
+                ".docx";
     }
 
 
@@ -166,15 +170,9 @@ public class AnalysisViewReportBGMController extends VBox {
             File reportFile = fc.showSaveDialog(App.getPrimaryStage());
 //            File reportFile = new File("/mnt/Data/dev/IdeaProjects/NGSDiagLim/test.docx");
             if (reportFile != null) {
-//                try {
-//                    ReportData reportData = getReportData();
-//                    ReportCreator reportCreator = new ReportCreator(reportData, reportFile);
-//                    reportCreator.createReport();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    logger.error(e);
-//                    Platform.runLater(() -> Message.error(e.getMessage(), e));
-//                }
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(reportFile));
+                user.savePreferences();
                 WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("analysisviewreports.msg.createReport"));
                 wid.addTaskEndNotification(r -> {
 
@@ -194,5 +192,21 @@ public class AnalysisViewReportBGMController extends VBox {
                 });
             }
         }
+    }
+
+    public void clear() {
+        paneIdx.removeListener(paneIdxListener);
+        reportPersonalInformation.clear();
+        reportSelectGenes.clear();
+        reportSelectVariants.clear();
+        reportComments.clear();
+
+        reportPersonalInformation = null;
+        reportSelectGenes = null;
+        reportSelectVariants = null;
+        reportComments = null;
+
+        reportPanes.clear();
+        reportModuleContainer.getChildren().clear();
     }
 }

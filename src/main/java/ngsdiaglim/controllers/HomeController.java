@@ -16,12 +16,9 @@ import ngsdiaglim.controllers.cells.*;
 import ngsdiaglim.controllers.dialogs.AddRunDialog;
 import ngsdiaglim.controllers.dialogs.ImportAnalysisDialog;
 import ngsdiaglim.controllers.dialogs.Message;
-import ngsdiaglim.controllers.charts.PredictionGaugeOrg;
-import ngsdiaglim.controllers.dialogs.PredictionsDetailDialog;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.RunsStatisticsDAO;
 import ngsdiaglim.enumerations.AnalysisStatus;
-import ngsdiaglim.enumerations.Gender;
 import ngsdiaglim.modeles.analyse.*;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.utils.BundleFormatter;
@@ -31,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeController extends Module {
@@ -54,8 +50,6 @@ public class HomeController extends Module {
     @FXML private HBox statisticsContainer;
 
     private Thread statisticsThread;
-    PredictionGaugeOrg gauje;
-    PredictionGaugeOrg gauje2;
 
     public HomeController() {
         super(App.getBundle().getString("home.title"));
@@ -101,7 +95,7 @@ public class HomeController extends Module {
                         .subtract(runDateCol.widthProperty())
                         .subtract(runStateCol.widthProperty())
                         .subtract(runActionsCol.widthProperty())
-                        .subtract(2)  // a border stroke?
+                        .subtract(17)  // a border stroke?
         );
 
         runsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
@@ -192,9 +186,7 @@ public class HomeController extends Module {
             b.setOnAction(e -> {
                 if (dialog.hasAnalysesInError()) {
                     DialogPane.Dialog<ButtonType> dialog2 = Message.confirm(App.getBundle().getString("importanalysesdialog.msg.conf.importAnalysisError"));
-                    dialog2.getButton(ButtonType.YES).setOnAction(event -> {
-                        importAnalyses(run, dialog);
-                    });
+                    dialog2.getButton(ButtonType.YES).setOnAction(event -> importAnalyses(run, dialog));
 
                 } else {
                     importAnalyses(run, dialog);

@@ -3,26 +3,24 @@ package ngsdiaglim.controllers.analysisview;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.Module;
-import ngsdiaglim.controllers.WorkIndicatorDialog;
 import ngsdiaglim.controllers.analysisview.cnv.AnalysisViewCNVController;
 import ngsdiaglim.controllers.analysisview.reports.bgm.AnalysisViewReportBGMController;
 import ngsdiaglim.controllers.dialogs.ChangeAnalysisStateDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.AnalysisStatus;
-import ngsdiaglim.exceptions.MalformedCoverageFile;
-import ngsdiaglim.exceptions.NotBiallelicVariant;
+import ngsdiaglim.enumerations.Service;
 import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.analyse.AnalysisParameters;
-import ngsdiaglim.modeles.parsers.VCFParser;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
-import ngsdiaglim.utils.BundleFormatter;
+import ngsdiaglim.utils.ScrollBarUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -57,6 +55,8 @@ public class AnalysisViewController extends Module {
     private AnalysisViewReportBGMController reportBGMController;
     private AnalysisViewRunInfoController runInfoController;
 
+    private ChangeListener<AnalysisStatus> analysisStatusChangeListener;
+
     public AnalysisViewController() {
         super(App.getBundle().getString("analysisview.lb.moduletitle"));
 
@@ -77,7 +77,7 @@ public class AnalysisViewController extends Module {
                 }
             }
             else {
-                clearView();
+                clearView(oldV);
             }
         });
     }
@@ -100,16 +100,26 @@ public class AnalysisViewController extends Module {
 
     public AnalysisViewReportBGMController getReportBGMController() {return reportBGMController;}
 
+    public AnalysisViewCNVController getAnalysisViewCNVController() {return analysisViewCNVController;}
+
     private void initView() {
 
         initAnalysisCb();
-
+        if (variantsViewController != null) {
+            variantsViewController.clear();
+        }
         variantsViewController = new AnalysisViewVariantsController2(analysis.get());
         additionalDataController = new AnalysisViewAdditionalData(analysis.get());
         metaDataController = new AnalysisViewMetaDataController(analysis.get());
         coverageController = new AnalysisViewCoverageController(analysis.get());
         analysisViewCNVController = new AnalysisViewCNVController(analysis.get());
-        reportBGMController = new AnalysisViewReportBGMController(analysis.get());
+
+        if (App.get().getService().equals(Service.BGM)) {
+            reportBGMController = new AnalysisViewReportBGMController(analysis.get());
+        } else {
+            reportViewToggleBtn.setVisible(false);
+            reportViewToggleBtn.setManaged(false);
+        }
         runInfoController = new AnalysisViewRunInfoController(analysis.get());
 
         variantsViewToggleBtn.selectedProperty().addListener(((observableValue, oldV, newV) -> {
@@ -171,7 +181,10 @@ public class AnalysisViewController extends Module {
         });
 
         setAnalysisStatus();
-        analysis.get().statusProperty().addListener(o -> setAnalysisStatus());
+
+        analysisStatusChangeListener = (obs, oldV, newV) -> setAnalysisStatus();
+
+        analysis.get().statusProperty().addListener(analysisStatusChangeListener);
 
         Platform.runLater(() -> {
             variantsViewToggleBtn.setSelected(true);
@@ -179,15 +192,24 @@ public class AnalysisViewController extends Module {
             layout();
             variantsViewController.getTableBuilder().setColumnsHeaderEvent();
             variantsViewController.setDividerPosition();
+            System.out.println(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING));
+            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
+                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
+            }
         });
-
-
 
     }
 
-    private void clearView() {
+    private void clearView(Analysis oldV) {
+        oldV.clear();
+        oldV.statusProperty().removeListener(analysisStatusChangeListener);
         analysisCb.setItems(null);
         analysisStatusLb.setText(null);
+        variantsViewController.clear();
+        analysisViewCNVController.clear();
+        if (reportBGMController != null) {
+            reportBGMController.clear();
+        }
     }
 
     private void initAnalysisCb() {
@@ -198,34 +220,7 @@ public class AnalysisViewController extends Module {
             logger.error(e);
         }
 
-        analysisCb.valueProperty().addListener((obs, oldV, newV) -> {
-            App.get().getAppController().openAnalysis(newV);
-//            if (newV != null) {
-//                Object[] messageArguments = {newV.getName()};
-//                String message = BundleFormatter.format("home.module.analyseslist.msg.openingAnalysis", messageArguments);
-//                WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), message);
-//                wid.addTaskEndNotification(r -> {
-//                    if (r == 0) {
-//                        App.get().getAppController().showAnalysisView(newV);
-//                    }
-//                });
-//                wid.exec("LoadPanels", inputParam -> {
-//                    try {
-//                        AnalysisParameters params = DAOController.getAnalysisParametersDAO().getAnalysisParameters(newV.getAnalysisParameters().getId());
-//                        newV.setAnalysisParameters(params);
-//                        VCFParser vcfParser = new VCFParser(newV.getVcfFile(), newV.getAnalysisParameters(), newV.getRun());
-//                        vcfParser.parseVCF(true);
-//                        newV.setAnnotations(vcfParser.getAnnotations());
-//                        newV.loadCoverage();
-//                    } catch (IOException | NotBiallelicVariant | SQLException | MalformedCoverageFile e) {
-//                        logger.error(e);
-//                        Platform.runLater(() -> Message.error(e.getMessage(), e));
-//                        return 1;
-//                    }
-//                    return 0;
-//                });
-//            }
-        });
+        analysisCb.valueProperty().addListener((obs, oldV, newV) -> App.get().getAppController().openAnalysis(newV));
     }
 
     private void setAnalysisStatus() {
@@ -272,9 +267,11 @@ public class AnalysisViewController extends Module {
     }
 
     private void showReportView() {
-        analysisModuleContainer.getChildren().clear();
-        analysisModuleContainer.getChildren().add(reportBGMController);
-        setModuleViewAnchors(reportBGMController);
+        if (App.get().getService().equals(Service.BGM)) {
+            analysisModuleContainer.getChildren().clear();
+            analysisModuleContainer.getChildren().add(reportBGMController);
+            setModuleViewAnchors(reportBGMController);
+        }
     }
 
     private void showRunInfoView() {

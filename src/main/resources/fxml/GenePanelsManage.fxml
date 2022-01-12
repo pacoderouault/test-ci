@@ -20,7 +20,7 @@
                      <children>
                         <Label text="%managegenepanels.lb.panelslist" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addGenePanelHandler" text="%managegenepanels.btn.addgenepanel" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addGenePanelHandler" fx:id="addGenePanelBtn" text="%managegenepanels.btn.addgenepanel" />
                      </children>
                   </HBox>
                   <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">

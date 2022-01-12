@@ -1,28 +1,22 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import ngsdiaglim.App;
-import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.enumerations.EnsemblConsequence;
-import ngsdiaglim.enumerations.Operators;
-import ngsdiaglim.modeles.variants.Annotation;
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.tableview2.FilteredTableColumn;
-import org.controlsfx.control.tableview2.filter.popupfilter.PopupFilter;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConsequencePopupFilterSkin implements Skin<ConsequencePopupFilter> {
@@ -31,16 +25,16 @@ public class ConsequencePopupFilterSkin implements Skin<ConsequencePopupFilter> 
     private final VBox container = new VBox();
     private final CustomTextField textfield = new CustomTextField();
     private final ListView<EnsemblConsequence> lv = new ListView<>();
-    private final ButtonBar buttonBar = new ButtonBar();
-    private final Button clearBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.cancel"));
-    private final Button filterBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.filter"));
     private final Set<EnsemblConsequence> selectedConsequences = new HashSet<>();
     private FilteredList<EnsemblConsequence> filteredConsequences;
-    SortedList<EnsemblConsequence> sortedData;
+
     public ConsequencePopupFilterSkin(ConsequencePopupFilter popupFilter) {
         this.popupFilter = popupFilter;
 
+        Button filterBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.filter"));
         filterBtn.setDefaultButton(true);
+        ButtonBar buttonBar = new ButtonBar();
+        Button clearBtn = new Button(App.getBundle().getString("popupfilter.acmg.btn.cancel"));
         buttonBar.getButtons().setAll(clearBtn, filterBtn);
 
         initListView();
@@ -49,11 +43,10 @@ public class ConsequencePopupFilterSkin implements Skin<ConsequencePopupFilter> 
         container.getChildren().setAll(textfield, lv, buttonBar);
         container.getStyleClass().addAll("module-box", "module-box-container");
         clearBtn.setOnAction(e -> {
-            popupFilter.getTableColumn().setPredicate(null);
+            resetFields();
+            popupFilter.clearPredicate();
         });
-        filterBtn.setOnAction(e -> {
-            updatePredicate();
-        });
+        filterBtn.setOnAction(e -> updatePredicate());
     }
 
     private void initTextField() {
@@ -73,16 +66,21 @@ public class ConsequencePopupFilterSkin implements Skin<ConsequencePopupFilter> 
         ObservableList<EnsemblConsequence> consequences = Arrays.stream(EnsemblConsequence.values())
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
         filteredConsequences = new FilteredList<>(consequences, s -> true);
-        sortedData = new SortedList<>(filteredConsequences);
+        SortedList<EnsemblConsequence> sortedData = new SortedList<>(filteredConsequences);
         sortedData.setComparator(Comparator.comparing(EnsemblConsequence::getWeight));
         lv.setItems(sortedData);
         lv.setCellFactory(list -> new ConsequenceCell());
     }
 
     private void updatePredicate() {
-        FilteredTableColumn<Annotation, EnsemblConsequence> tableColumn = popupFilter.getTableColumn();
-        tableColumn.setPredicate(selectedConsequences::contains);
+        popupFilter.updatePredictate(selectedConsequences);
     }
+
+    public void resetFields() {
+        textfield.setText(null);
+        selectedConsequences.clear();
+    }
+
 
     @Override public ConsequencePopupFilter getSkinnable() {
         return popupFilter;

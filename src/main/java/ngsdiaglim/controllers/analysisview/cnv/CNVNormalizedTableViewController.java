@@ -1,6 +1,5 @@
 package ngsdiaglim.controllers.analysisview.cnv;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,13 +7,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.cnv.CNV;
 import ngsdiaglim.cnv.CNVSample;
@@ -109,7 +106,7 @@ public class CNVNormalizedTableViewController extends VBox {
             TableColumn<CovCopRegion, Double> col = new TableColumn<>(sampleName);
             int finalSampleIdx = sampleIdx;
             col.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNormalized_values().get(finalSampleIdx)));
-            col.setCellFactory(data -> new CNVTableCellFactory());
+            col.setCellFactory(data -> cnvTableCellFactory);
             dataTable.getColumns().add(col);
             sampleIdx++;
         }
@@ -262,7 +259,6 @@ public class CNVNormalizedTableViewController extends VBox {
 
     /**
      * Hide the search UI elements
-     * @param value
      */
     private void setSearchUIVisible(boolean value) {
         nextSearchResultBtn.setVisible(value);

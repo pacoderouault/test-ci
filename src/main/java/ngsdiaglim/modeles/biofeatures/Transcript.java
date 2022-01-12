@@ -69,10 +69,6 @@ public class Transcript {
 
     public Gene getGene() {return gene;}
 
-//    public void setGene(Gene gene) {
-//        this.gene = gene;
-//    }
-
     public boolean isPreferred() {return isPreferred;}
 
     public void setPreferred(boolean preferred) {

@@ -1,7 +1,5 @@
 package ngsdiaglim.cnv.normalization;
 
-import javafx.collections.ObservableList;
-import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.cnv.CovCopRegion;
 import ngsdiaglim.exceptions.FileFormatException;
@@ -11,8 +9,6 @@ import ngsdiaglim.utils.NumberUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ControlGroupNormalization extends CNVNormalization {
 
@@ -24,11 +20,6 @@ public class ControlGroupNormalization extends CNVNormalization {
     }
 
     public void normalize() throws IOException, FileFormatException {
-        normalize(null);
-    }
-
-    public void normalize(Map<String, Set<Integer>> excludedValuesIndex) throws IOException, FileFormatException {
-
 
         for (String poolName : cnvData.getCovcopRegions().keySet()) {
 

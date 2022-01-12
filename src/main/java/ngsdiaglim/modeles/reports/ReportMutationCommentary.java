@@ -1,10 +1,8 @@
 package ngsdiaglim.modeles.reports;
 
-import javafx.beans.property.SimpleStringProperty;
 import ngsdiaglim.enumerations.ReportType;
 import ngsdiaglim.modeles.reports.bgm.ReportCommentary;
 import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modeles.variants.Variant;
 
 public class ReportMutationCommentary extends ReportCommentary {
 

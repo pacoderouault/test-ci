@@ -30,12 +30,10 @@ public class EditMutationReportCommentDialog  extends DialogPane.Dialog<EditMuta
     @FXML private TextField title;
     @FXML private TextArea comment;
     @FXML private Label errorLb;
-    private final List<Annotation> variantList;
     private final SimpleBooleanProperty editable = new SimpleBooleanProperty(false);
 
     public EditMutationReportCommentDialog(List<Annotation> variantList) {
         super(App.get().getAppController().getDialogPane(), DialogPane.Type.INPUT);
-        this.variantList = variantList;
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/EditMutationReportCommentDialog.fxml"), App.getBundle());

@@ -49,8 +49,8 @@
                         </SplitMenuButton>
                         <SplitMenuButton mnemonicParsing="false" text="%menu.helpmenu">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Action 1" />
-                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                            <MenuItem mnemonicParsing="false" onAction="#showAboutDialog" text="%menu.helpmenu.about" />
+                            <MenuItem mnemonicParsing="false" onAction="#showDocumentation" text="%menu.helpmenu.documentation" />
                           </items>
                         </SplitMenuButton>
                      </children>

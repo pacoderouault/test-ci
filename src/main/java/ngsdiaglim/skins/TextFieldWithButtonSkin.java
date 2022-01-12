@@ -23,12 +23,12 @@ import java.util.List;
 public class TextFieldWithButtonSkin extends TextFieldSkin{
     private static final String RIGHT_BUTTON_VISIBLE_PROPERTY_NAME = "-right-button-visible";
 
-    private InvalidationListener textChanged = observable -> onTextChanged();
-    private InvalidationListener focusChanged = observable -> onFocusChanged();
-    private InvalidationListener rightButtonVisibleChanged = observable -> onRightButtonVisibilityChanged();
+    private final InvalidationListener textChanged = observable -> onTextChanged();
+    private final InvalidationListener focusChanged = observable -> onFocusChanged();
+    private final InvalidationListener rightButtonVisibleChanged = observable -> onRightButtonVisibilityChanged();
 
-    private StackPane rightButton;
-    private Region rightButtonGraphic;
+    private final StackPane rightButton;
+    private final Region rightButtonGraphic;
 
     protected TextField textField;
 
@@ -73,7 +73,7 @@ public class TextFieldWithButtonSkin extends TextFieldSkin{
     /*====================== Right Button Visible ===========================*/
 
     private static final CssMetaData<TextField, Boolean> RIGHT_BUTTON_VISIBLE_META_DATA =
-            new CssMetaData<TextField, Boolean>(RIGHT_BUTTON_VISIBLE_PROPERTY_NAME,
+            new CssMetaData<>(RIGHT_BUTTON_VISIBLE_PROPERTY_NAME,
                     BooleanConverter.getInstance(), true) {
 
                 @Override
@@ -89,7 +89,7 @@ public class TextFieldWithButtonSkin extends TextFieldSkin{
                 }
             };
 
-    private BooleanProperty rightButtonVisible = new SimpleStyleableBooleanProperty(RIGHT_BUTTON_VISIBLE_META_DATA, true);
+    private final BooleanProperty rightButtonVisible = new SimpleStyleableBooleanProperty(RIGHT_BUTTON_VISIBLE_META_DATA, true);
 
     private BooleanProperty rightButtonVisibleProperty() { return rightButtonVisible; }
 

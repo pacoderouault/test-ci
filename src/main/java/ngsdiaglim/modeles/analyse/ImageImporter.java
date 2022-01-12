@@ -1,6 +1,5 @@
 package ngsdiaglim.modeles.analyse;
 
-import ngsdiaglim.exceptions.DuplicateAnalysisInRun;
 import ngsdiaglim.utils.ImageUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -12,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ImageImporter {
 

@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.database.dao.DAO;
 import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.modeles.Cytobands;
 import ngsdiaglim.modeles.biofeatures.Region;

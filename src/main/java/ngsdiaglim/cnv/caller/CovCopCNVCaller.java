@@ -24,7 +24,7 @@ public class CovCopCNVCaller {
 
     private final CovCopCNVData cnvData;
     private final ReadNumberNormalization readNumberNormalization;
-    private final LogTransformation logTransformation;
+//    private final LogTransformation logTransformation;
     private final GenderNormalization genderNormalization;
     private final GCNormalization gcNormalization;
     private AmpliconLengthNormalization ampliconLengthNormalization;
@@ -38,7 +38,7 @@ public class CovCopCNVCaller {
     public CovCopCNVCaller(CovCopCNVData cnvData) {
         this.cnvData = cnvData;
         readNumberNormalization = new ReadNumberNormalization(cnvData);
-        logTransformation = new LogTransformation(cnvData);
+//        logTransformation = new LogTransformation(cnvData);
         genderNormalization = new GenderNormalization(cnvData);
         gcNormalization = new GCNormalization(cnvData);
 

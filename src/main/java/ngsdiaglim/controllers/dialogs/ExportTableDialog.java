@@ -12,22 +12,20 @@ import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.VariantTableBuilder;
 import ngsdiaglim.controllers.analysisview.ColumnsVisivilityDropDownMenuContent2;
-import ngsdiaglim.controllers.ui.DropDownMenu;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.enumerations.EnsemblConsequence;
 import ngsdiaglim.enumerations.VariantsTableColumns;
-import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.users.ColumnsExport;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.NumberUtils;
-import ngsdiaglim.utils.PredicateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.kordamp.ikonli.javafx.FontIcon;
+import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -53,21 +51,16 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
     @FXML private ComboBox<ACMG> filterPathogenicityCbx;
     @FXML private TableView<Annotation> previewTable;
     @FXML private HBox columnsDropMenuContainer;
-    private DropDownMenu exportTableDropmenu;
+    @FXML private Button columnsBtn;
+    private PopOver columnsPopOver;
 
-//    private final Analysis analysis;
     private VariantTableBuilder tableBuilder;
-    private final ObservableList<Annotation> annotations;
     private final FilteredList<Annotation> filteredAnnotations;
     private ColumnsExport columnsExport;
     
     public ExportTableDialog(DialogPane pane, ObservableList<Annotation> annotations) {
         super(pane, DialogPane.Type.INPUT);
-//        this.analysis = analysis;
-//        this.variantTableBuilder = variantTableBuilder;
-        this.annotations = annotations;
-        this.filteredAnnotations = new FilteredList<>(this.annotations);
-//        setValue(annotations);
+        this.filteredAnnotations = new FilteredList<>(annotations);
         try {
             // Load main window
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/ExportTableDialog.fxml"), App.getBundle());
@@ -82,7 +75,6 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
         setTitle(App.getBundle().getString("exporttabledialog.title"));
         setContent(dialogContainer);
 
-
         initView();
 
         setValue(new ExportTableData(previewTable, tableBuilder, columnsExport));
@@ -90,9 +82,8 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
 
     private void initView() {
         initTable();
-        initCollunsVisibleDropMenu();
+        initColumnsVisibleDropMenu();
         initFilters();
-
         filterTable();
     }
 
@@ -107,7 +98,7 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
         filterSynonymousCb.setSelected(Boolean.parseBoolean(user.getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_EXPORT_SYNONYMOUS)));
         filterSynonymousCb.selectedProperty().addListener(l -> filterTable());
 
-        filterSynonymousCb.setSelected(Boolean.parseBoolean(user.getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_EXPORT_NON_CODING)));
+        filterNonCodingCb.setSelected(Boolean.parseBoolean(user.getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_EXPORT_NON_CODING)));
         filterNonCodingCb.selectedProperty().addListener(l -> filterTable());
 
         filterVAFCb.setSelected(Boolean.parseBoolean(user.getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_EXPORT_NON_CODING)));
@@ -142,12 +133,19 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
         filterPathogenicityCbx.valueProperty().addListener(l -> filterTable());
     }
 
-    private void initCollunsVisibleDropMenu() {
-        exportTableDropmenu = new DropDownMenu(App.getBundle().getString("exportvariants.lb.colonnes"));
-
+    private void initColumnsVisibleDropMenu() {
         ColumnsVisivilityDropDownMenuContent2 exportColumnsDropDownMenu = new ColumnsVisivilityDropDownMenuContent2(previewTable, columnsExport);
-        exportTableDropmenu.setContentNode(exportColumnsDropDownMenu);
-        columnsDropMenuContainer.getChildren().add(exportTableDropmenu);
+
+        columnsPopOver = new PopOver();
+        columnsPopOver.setAnimated(false);
+        columnsPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        columnsPopOver.setContentNode(exportColumnsDropDownMenu);
+
+    }
+
+    @FXML
+    private void showColumnsPopOver() {
+        columnsPopOver.show(columnsBtn);
     }
 
     private void initTable() {
@@ -155,7 +153,7 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
         tableBuilder = new VariantTableBuilder(previewTable);
 
         try {
-            tableBuilder.buildTable(false);
+            tableBuilder.buildTable(true);
 
             columnsExport = DAOController.getColumnsExportDAO().getColumnsExport(App.get().getLoggedUser().getId());
             if (columnsExport == null) {
@@ -166,12 +164,6 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
                         columnsExport.addColumn(variantsTableColumns);
                     }
                 }
-//                for (VariantsTableColumns variantsTableColumns : tableBuilder.getDefaultColumnsOrder()) {
-//                    if (tableBuilder.getColumn(variantsTableColumns).isVisible()) {
-//                        columnsExport.addColumn(variantsTableColumns);
-//                    }
-//                }
-
             }
             for (VariantsTableColumns column : tableBuilder.getDefaultColumnsOrder()) {
                 TableColumn<Annotation, ? > col = tableBuilder.getColumn(column);
@@ -195,24 +187,45 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
 
 
     private void filterTable() {
+        saveFiltersState();
         filteredAnnotations.setPredicate(computePredicate());
+    }
+
+    private void saveFiltersState() {
+
+        User user = App.get().getLoggedUser();
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_FALSE_POSITIVE, String.valueOf(filterFalsePositiveCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_SYNONYMOUS, String.valueOf(filterSynonymousCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_NON_CODING, String.valueOf(filterNonCodingCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_VAF, String.valueOf(filterVAFCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_VAF_MIN, filterVafTf.getText());
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_DEPTH, String.valueOf(filterDepthCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_DEPTH_MIN, filterDepthTf.getText());
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_GNOMAD, String.valueOf(filterGnomadCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_GNOMAD_MAX, filterGnomadTf.getText());
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_OCC, String.valueOf(filterOccurenceCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_OCC_MAX, filterOccurenceTf.getText());
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_PATHOGENICITY, String.valueOf(filterPathogenicityCb.isSelected()));
+        user.setPreference(DefaultPreferencesEnum.VARIANT_EXPORT_PATHOGENICITY_MIN, String.valueOf(filterPathogenicityCbx.getValue().getPathogenicityValue()));
+
+        user.savePreferences();
     }
 
     private Predicate<Annotation> computePredicate() {
 
-        if (!filterVafTf.getText().isEmpty() && !NumberUtils.isDouble(filterVafTf.getText())) {
+        if (!StringUtils.isBlank(filterVafTf.getText()) && !NumberUtils.isDouble(filterVafTf.getText())) {
             Message.error(App.getBundle().getString("exportvariants.msg.err.invalidVaf"));
             return null;
         }
-        if (!NumberUtils.isDouble(filterOccurenceTf.getText())) {
+        if (!StringUtils.isBlank(filterOccurenceTf.getText()) && !NumberUtils.isDouble(filterOccurenceTf.getText())) {
             Message.error(App.getBundle().getString("exportvariants.msg.err.invalidOccurence"));
             return null;
         }
-        if (!NumberUtils.isDouble(filterDepthTf.getText())) {
+        if (!StringUtils.isBlank(filterDepthTf.getText()) && !NumberUtils.isDouble(filterDepthTf.getText())) {
             Message.error(App.getBundle().getString("exportvariants.msg.err.invalidDepth"));
             return null;
         }
-        if (!NumberUtils.isDouble(filterGnomadTf.getText())) {
+        if (!StringUtils.isBlank(filterGnomadTf.getText()) && !NumberUtils.isDouble(filterGnomadTf.getText())) {
             Message.error(App.getBundle().getString("exportvariants.msg.err.invalidGnomad"));
             return null;
         }
@@ -227,22 +240,42 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
             if (filterFalsePositiveCb.isSelected() && a.getVariant().isFalsePositive()) return false;
 
             if (filterVAFCb.isSelected()) {
-                double minVaf = Double.parseDouble(filterVafTf.getText());
+                double minVaf;
+                if (NumberUtils.isDouble(filterVafTf.getText())) {
+                    minVaf = Double.parseDouble(filterVafTf.getText());
+                } else {
+                    minVaf = 0;
+                }
                 if (a.getVaf() < minVaf) return false;
             }
 
             if (filterOccurenceCb.isSelected()) {
-                double minOcc = Double.parseDouble(filterOccurenceTf.getText());
+                double minOcc;
+                if (NumberUtils.isDouble(filterOccurenceTf.getText())) {
+                    minOcc = Double.parseDouble(filterOccurenceTf.getText());
+                } else {
+                    minOcc = 0;
+                }
                 if (a.getVariant().getOccurrence() > minOcc) return false;
             }
 
             if (filterDepthCb.isSelected()) {
-                double minDepth = Double.parseDouble(filterDepthTf.getText());
+                double minDepth;
+                if (NumberUtils.isDouble(filterDepthTf.getText())) {
+                    minDepth = Double.parseDouble(filterDepthTf.getText());
+                } else {
+                    minDepth = 0;
+                }
                 if (a.getDepth() < minDepth) return false;
             }
 
             if (filterGnomadCb.isSelected() && NumberUtils.isDouble(filterGnomadTf.getText())) {
-                double maxGnomad = Double.parseDouble(filterGnomadTf.getText());
+                double maxGnomad;
+                if (NumberUtils.isDouble(filterGnomadTf.getText())) {
+                    maxGnomad = Double.parseDouble(filterGnomadTf.getText());
+                } else {
+                    maxGnomad = 1;
+                }
                if (a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() > maxGnomad) return false;
             }
             if (!filterSynonymousCb.isSelected()) {
@@ -261,86 +294,11 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
             }
             return true;
         };
-//        if (!filterFalsePositiveCb.isSelected()) {
-//            predicate = PredicateUtils.addPredicates(predicate, a -> !a.getVariant().isFalsePositive());
-//        }
-//        if (filterPathogenicityCb.isSelected() && filterPathogenicityCbx.getValue() != null) {
-//            if (filterPathogenicityCbx.getValue() == null) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidPathogenicity"));
-//                return null;
-//            }
-//            ACMG minPatho = filterPathogenicityCbx.getValue();
-//            PredicateUtils.addPredicates(predicate, a -> a.getVariant().getAcmg().getPathogenicityValue() >= minPatho.getPathogenicityValue());
-////            reportedPredicate = reportedPredicate.or(pathogenicityPredicate);
-//        }
-//        if (filterVAFCb.isSelected()) {
-//            if (!filterVafTf.getText().isEmpty() && !NumberUtils.isDouble(filterVafTf.getText())) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidVaf"));
-//                return null;
-//            }
-//            double minVaf = Double.parseDouble(filterVafTf.getText());
-//            predicate = PredicateUtils.addPredicates(predicate, a -> a.getVaf() >= minVaf);
-//        }
-//        if (filterOccurenceCb.isSelected()) {
-//            if (!NumberUtils.isDouble(filterOccurenceTf.getText())) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidOccurence"));
-//                return null;
-//            }
-//            double minOcc = Double.parseDouble(filterOccurenceTf.getText());
-//            predicate = PredicateUtils.addPredicates(predicate, a -> a.getVariant().getOccurrence() <= minOcc);
-//        }
-//        if (filterDepthCb.isSelected()) {
-//            if (!NumberUtils.isDouble(filterDepthTf.getText())) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidDepth"));
-//                return null;
-//            }
-//            double minDepth = Double.parseDouble(filterDepthTf.getText());
-//            predicate = PredicateUtils.addPredicates(predicate, a -> a.getDepth() >= minDepth);
-//        }
-
-//        if (filterGnomadCb.isSelected() && NumberUtils.isDouble(filterGnomadTf.getText())) {
-//            if (!NumberUtils.isDouble(filterGnomadTf.getText())) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidGnomad"));
-//                return null;
-//            }
-//            double maxGnomad = Double.parseDouble(filterGnomadTf.getText());
-//            predicate = PredicateUtils.addPredicates(predicate, a -> a.getGnomADFrequencies().getMax() == null || a.getGnomADFrequencies().getMax().getAf() <= maxGnomad);
-//        }
-//        if (!filterSynonymousCb.isSelected()) {
-//            predicate = PredicateUtils.addPredicates(predicate, a -> !a.getTranscriptConsequence().getConsequences().contains(EnsemblConsequence.SYNONYMOUS_VARIANT));
-//        }
-//        if (!filterNonCodingCb.isSelected()) {
-//            predicate = PredicateUtils.addPredicates(predicate, a -> {
-//                if (a.getTranscriptConsequence().getExon() == null || a.getTranscriptConsequence().getExon().isEmpty()) {
-//                    for (EnsemblConsequence cons : a.getTranscriptConsequence().getConsequences()) {
-//                        if (cons.equals(EnsemblConsequence.SPLICE_ACCEPTOR_VARIANT) || cons.equals(EnsemblConsequence.SPLICE_DONOR_VARIANT)) {
-//                            return true;
-//                        }
-//                    }
-//                    return false;
-//                }
-//                return true;
-//            });
-//        }
-
-
-//        Predicate<Annotation> reportedPredicate = Annotation::isReported;
-//        if (filterPathogenicityCb.isSelected() && filterPathogenicityCbx.getValue() != null) {
-//            if (filterPathogenicityCbx.getValue() == null) {
-//                Message.error(App.getBundle().getString("exportvariants.msg.err.invalidPathogenicity"));
-//                return null;
-//            }
-//            ACMG minPatho = filterPathogenicityCbx.getValue();
-//            Predicate<Annotation> pathogenicityPredicate = a -> a.getVariant().getAcmg().getPathogenicityValue() >= minPatho.getPathogenicityValue();
-//            reportedPredicate = reportedPredicate.or(pathogenicityPredicate);
-//        }
-//        if (predicate == null) {
-//            return reportedPredicate;
-//        } else {
-//            return reportedPredicate.or(predicate);
-//        }
     }
 
+    public void clear() {
+        tableBuilder.clear();
+    }
 
     public static class ExportTableData {
 

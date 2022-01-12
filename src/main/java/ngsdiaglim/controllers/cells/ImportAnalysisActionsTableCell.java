@@ -29,9 +29,7 @@ public class ImportAnalysisActionsTableCell extends TableCell<AnalysisInputData,
             AnalysisInputData analysisInputData = getTableRow().getItem();
             if (analysisInputData != null) {
                 Button deleteBtn = new Button("", new FontIcon("mdal-delete_forever"));
-                deleteBtn.setOnAction(e -> {
-                    getTableView().getItems().remove(analysisInputData);
-                });
+                deleteBtn.setOnAction(e -> getTableView().getItems().remove(analysisInputData));
                 Tooltip.install(deleteBtn, deleteTp);
                 box.getChildren().setAll(deleteBtn);
 

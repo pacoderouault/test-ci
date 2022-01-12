@@ -6,7 +6,6 @@ public class VariantUtils {
 
     /**
      *
-     * @param vc
      * @return The hash of a variant ex : chr1:123456A>C
      */
     public static String getHashVariant(Variant vc) {

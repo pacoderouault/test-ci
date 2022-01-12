@@ -83,9 +83,7 @@ public class GeneCommentActionTableCell extends TableCell<ReportGeneCommentary, 
             EditGeneReportCommentDialog dialog = new EditGeneReportCommentDialog(targetGenes);
             dialog.setValue(commentary);
             Message.showDialog(dialog);
-            dialog.getButton(ButtonType.OK).setOnAction(event -> {
-                Message.hideDialog(dialog);
-            });
+            dialog.getButton(ButtonType.OK).setOnAction(event -> Message.hideDialog(dialog));
         }
     }
 

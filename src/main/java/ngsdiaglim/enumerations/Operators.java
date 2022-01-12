@@ -1,7 +1,5 @@
 package ngsdiaglim.enumerations;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 public enum Operators {
     EQUALS("="),
     NOT_EQUALS("!="),

@@ -3,13 +3,13 @@ package ngsdiaglim.modeles.variants;
 import java.time.LocalDateTime;
 
 public class AnnotationCommentary {
-    private long id;
-    private long variant_id;
-    private long analysis_id;
-    private long userID;
-    private String username;
-    private String comment;
-    private LocalDateTime datetime;
+    private final long id;
+    private final long variant_id;
+    private final long analysis_id;
+    private final long userID;
+    private final String username;
+    private final String comment;
+    private final LocalDateTime datetime;
 
     public AnnotationCommentary(long id, long variant_id, long analysis_id, long userID, String username, String comment, LocalDateTime datetime) {
         this.id = id;

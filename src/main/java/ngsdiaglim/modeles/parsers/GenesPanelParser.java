@@ -15,9 +15,7 @@ public class GenesPanelParser {
         Set<Gene> genes = new HashSet<>();
         try (BufferedReader reader = IOUtils.getFileReader(file)) {
             String line;
-            int i = 0;
             while ((line = reader.readLine()) != null) {
-                ++i;
                 if (line.startsWith("#")) continue;
                 String geneName = line.trim().toUpperCase();
                 genes.add(new Gene(geneName));

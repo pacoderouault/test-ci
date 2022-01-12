@@ -16,7 +16,7 @@ public class ProteinUtils {
      * init the 1-letter to 3-letter aminoacid code
      */
     private static HashMap<String, String> createOneToThreeMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("A", "Ala");
         map.put("B", "Asx");
         map.put("C", "Cys");
@@ -52,7 +52,7 @@ public class ProteinUtils {
      * init the 3-letter to 1-letter aminoacid code
      */
     private static HashMap<String, String> createThreeToOneMap() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("Ala", "A");
         map.put("Asx", "B");
         map.put("Cys", "C");
@@ -103,8 +103,6 @@ public class ProteinUtils {
     /**
      * Convert a 3 aminoacid mutation to 1 letter code
      * example : Ser332Pro to S332P
-     * @param mut
-     * @return
      */
     public static String mutationOneToThree(String mut) {
         if (mut == null) return null;
@@ -124,8 +122,6 @@ public class ProteinUtils {
     /**
      * Convert a 1 aminoacid mutation to 3 letter code
      * example : S332P to Ser332Pro
-     * @param mut
-     * @return
      */
     public static String mutationThreeToOne(String mut) {
         if (mut == null) return null;
@@ -146,8 +142,6 @@ public class ProteinUtils {
      * Format hgvp mutation with capitalization of the first letter of each aminoacid
      * p.pro352arg => p.Pro352Arg
      * p.PRO352ARG => p.Pro352Arg
-     * @param s
-     * @return
      */
     public static String formatAAChange(String s) {
         if (s == null) return null;
@@ -156,7 +150,10 @@ public class ProteinUtils {
         Pattern p = Pattern.compile("^p\\.([a-zA-Z]+)([0-9]+)([a-zA-Z=]+)$");
         Matcher m = p.matcher(s);
         if (m.find()) {
-            sb.append("p." + StringUtils.capitalizeFirstLetter(m.group(1).toLowerCase()) + m.group(2) + StringUtils.capitalizeFirstLetter(m.group(3).toLowerCase()));
+            sb.append("p.")
+                    .append(StringUtils.capitalizeFirstLetter(m.group(1).toLowerCase()))
+                    .append(m.group(2))
+                    .append(StringUtils.capitalizeFirstLetter(m.group(3).toLowerCase()));
         }
         else {
             sb.append(s);

@@ -4,17 +4,17 @@ import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFEncoder;
 import htsjdk.variant.vcf.VCFFileReader;
-import htsjdk.variant.vcf.VCFReader;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.exceptions.MalformedSearchQuery;
 import ngsdiaglim.modeles.analyse.Analysis;
-import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.utils.DateFormatterUtils;
 import ngsdiaglim.utils.NumberUtils;
 import ngsdiaglim.utils.VCFUtils;
@@ -25,11 +25,12 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.CustomTextField;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class AnalysisViewMetaDataController  extends VBox {
 
-    private Logger logger = LogManager.getLogger(AnalysisViewMetaDataController.class);
+    private static final Logger logger = LogManager.getLogger(AnalysisViewMetaDataController.class);
     @FXML private TextField analysisNameTf;
     @FXML private TextField analysisSampleNameTf;
     @FXML private TextField analysisDateTf;
@@ -50,7 +51,7 @@ public class AnalysisViewMetaDataController  extends VBox {
     @FXML private TextField paramsLibraryTf;
     @FXML private CustomTextField searchInVCFTf;
     @FXML private TextArea vcfHeaderTa;
-
+    @FXML private GridPane parametersGrid;
     private final Analysis analysis;
 
     private VCFFileReader reader;
@@ -101,6 +102,20 @@ public class AnalysisViewMetaDataController  extends VBox {
                 logger.error(e);
                 vcfHeaderTa.setText(null);
                 Message.error(e.getMessage(), e);
+            }
+        }
+
+        Map<String, String> metadata = analysis.getmMetadataAsMap();
+        if (!metadata.isEmpty()) {
+            int rowIdx = 0;
+            for (Map.Entry<String, String> e : metadata.entrySet()) {
+                Label l = new Label(e.getKey() + " :");
+                l.getStyleClass().add("font-medium");
+                TextField tf = new TextField(e.getValue());
+                tf.getStyleClass().add("textfield-label");
+                tf.setEditable(false);
+                parametersGrid.add(l, 2, rowIdx);
+                parametersGrid.add(tf, 3, rowIdx++);
             }
         }
     }

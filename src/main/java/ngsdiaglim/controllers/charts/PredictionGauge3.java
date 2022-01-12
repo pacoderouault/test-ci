@@ -1,18 +1,14 @@
 package ngsdiaglim.controllers.charts;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import ngsdiaglim.utils.NumberUtils;
 
 import java.util.List;
@@ -36,6 +32,7 @@ public class PredictionGauge3 extends Pane {
     private final static String gaugeShapeClass = "predictiongauge-shape";
     private final static String markerLabelClass = "predictiongauge-marker-label";
     private final static String markerArrowClass = "predictiongauge-marker-arrow";
+
     public PredictionGauge3(double min, double max, boolean reverse, List<Double> stopPositions, List<PredictionGaugeLabel> labels) {
         this.min = min;
         this.max = max;

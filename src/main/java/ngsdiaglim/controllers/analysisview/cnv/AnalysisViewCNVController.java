@@ -123,6 +123,8 @@ public class AnalysisViewCNVController extends VBox {
 
     public CNVRawDataController getCnvRawDataController() {return cnvRawDataController;}
 
+    public CNVNormalizedViewController getCnvNormalizedViewController() {return cnvNormalizedViewController;}
+
     public CovCopCNVData getCovcopCNVData() {
         return covcopCNVData.get();
     }
@@ -192,6 +194,12 @@ public class AnalysisViewCNVController extends VBox {
 
     public void callCNVs() {
         caller.callCNVs();
+    }
+
+    public void clear() {
+        if (cnvNormalizedViewController != null) {
+            cnvNormalizedViewController.clear();
+        }
     }
 
 }

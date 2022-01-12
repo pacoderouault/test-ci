@@ -48,7 +48,9 @@ public class CNVNormalizedViewController extends VBox {
 
     public CNVNormalizedViewController(AnalysisViewCNVController analysisViewCNVController, CovCopCNVData covcopCNVData) {
         this.analysisViewCNVController = analysisViewCNVController;
+//        cnvNormalizedTableViewController = null;
         cnvNormalizedTableViewController = new CNVNormalizedTableViewController(this, covcopCNVData);
+//        cnvNormalizedMapsViewController = null;
         cnvNormalizedMapsViewController = new CNVNormalizedMapsViewController(this, covcopCNVData);
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVNormalizedView.fxml"), App.getBundle());
@@ -113,7 +115,7 @@ public class CNVNormalizedViewController extends VBox {
     private void setDelValueLabelPosition() {
         if (delDupThresholdRs.getWidth() == 0) {
             // width is not yet attached, wait until skin is attached to access the scroll bars
-            ChangeListener<Number> widthChangeListener = new ChangeListener<Number>() {
+            ChangeListener<Number> widthChangeListener = new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     delDupThresholdRs.widthProperty().removeListener(this);
@@ -131,7 +133,7 @@ public class CNVNormalizedViewController extends VBox {
     private void setDupValueLabelPosition() {
         if (delDupThresholdRs.getWidth() == 0) {
             // width is not yet attached, wait until skin is attached to access the scroll bars
-            ChangeListener<Number> widthChangeListener = new ChangeListener<Number>() {
+            ChangeListener<Number> widthChangeListener = new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     delDupThresholdRs.widthProperty().removeListener(this);
@@ -216,4 +218,12 @@ public class CNVNormalizedViewController extends VBox {
             return 0;
         });
     }
+
+    public void clear() {
+        cnvNormalizedMapsViewController.clear();
+    }
+
+    public CNVNormalizedTableViewController getCnvNormalizedTableViewController() {return cnvNormalizedTableViewController;}
+
+    public CNVNormalizedMapsViewController getCnvNormalizedMapsViewController() {return cnvNormalizedMapsViewController;}
 }

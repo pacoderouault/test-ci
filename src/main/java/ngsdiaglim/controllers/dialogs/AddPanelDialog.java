@@ -3,14 +3,17 @@ package ngsdiaglim.controllers.dialogs;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.geometry.Orientation;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,30 +23,27 @@ import java.sql.SQLException;
 
 public class AddPanelDialog extends DialogPane.Dialog<AddPanelDialog.PanelCreationData> {
 
-    private final Logger logger = LogManager.getLogger(AddPanelDialog.class);
+    private final static Logger logger = LogManager.getLogger(AddPanelDialog.class);
 
+    private final HBox box = new HBox();
     private final GridPane gridPane = new GridPane();
     private final TextField panelNameTf = new TextField();
     private final Label bedFileLb = new Label();
     private final Button loadBedBtn = new Button(App.getBundle().getString("addpaneldialog.btn.bedfilebtn"));
     private final Label errorLabel = new Label();
-
+    private final Label formatLb = new Label();
 
     public AddPanelDialog(DialogPane pane) {
         super(pane, DialogPane.Type.INPUT);
 
         setTitle(App.getBundle().getString("addpaneldialog.title"));
-        setContent(gridPane);
+        setContent(box);
         initView();
 
         setValue(new PanelCreationData());
         getValue().nameProperty().bind(panelNameTf.textProperty());
-        getValue().nameProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
-        getValue().bedFileProperty().addListener((obs, oldV, newV) -> {
-            changeFormEvent();
-        });
+        getValue().nameProperty().addListener((obs, oldV, newV) -> changeFormEvent());
+        getValue().bedFileProperty().addListener((obs, oldV, newV) -> changeFormEvent());
         setValid(false);
     }
 
@@ -57,20 +57,27 @@ public class AddPanelDialog extends DialogPane.Dialog<AddPanelDialog.PanelCreati
         int rowIdx = 0;
         gridPane.add(panelNameLb, 0, ++rowIdx);
         gridPane.add(panelNameTf, 1, rowIdx);
-        gridPane.add(loadBedBtn, 0, ++rowIdx);
+        gridPane.add(loadBedBtn, 1, ++rowIdx);
         gridPane.add(bedFileLb, 1, rowIdx);
         gridPane.add(errorLabel, 0, ++rowIdx);
         GridPane.setColumnSpan(errorLabel, 2);
 
-//        panelNaleTf.textProperty().addListener((obs, oldV, newV) -> {
-//            getValue().setName(newV);
-//        });
-//        panelNaleTf.textProperty().bind(getV);
+        formatLb.setText(App.getBundle().getString("help.format.bed"));
+        formatLb.setWrapText(false);
+        formatLb.getStyleClass().add("font-mono");
+
+        Separator sep = new Separator();
+        sep.setOrientation(Orientation.VERTICAL);
+        box.getChildren().addAll(gridPane, sep, formatLb);
+        box.setSpacing(20);
 
         loadBedBtn.setOnAction(e -> {
             FileChooser fc = FileChooserUtils.getFileChooser();
             File selectedFile = fc.showOpenDialog(App.getPrimaryStage());
             if (selectedFile != null) {
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+                user.savePreferences();
                 bedFileLb.setText(selectedFile.getName());
                 getValue().setBedFile(selectedFile);
             }

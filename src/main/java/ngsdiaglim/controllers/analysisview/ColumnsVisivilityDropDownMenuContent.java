@@ -9,10 +9,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.VariantTableBuilder;
-import ngsdiaglim.controllers.VariantTableBuilderOrg;
 import ngsdiaglim.enumerations.VariantsTableColumns;
 import ngsdiaglim.modeles.variants.Annotation;
-import org.controlsfx.control.tableview2.TableColumn2;
 
 import java.io.IOException;
 
@@ -35,6 +33,7 @@ public class ColumnsVisivilityDropDownMenuContent extends VBox {
     @FXML
     public void initialize() {
         lv.setCellFactory(data -> new VariantsTableColumnsCell());
+        getStyleClass().add("dropdown-menu");
     }
 
     private void fillListView() {

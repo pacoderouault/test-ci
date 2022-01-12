@@ -20,7 +20,7 @@ public enum ACMG {
     private static final Map<String, ACMG> NAME_ENUM_MAP;
     private static final Map<Integer, ACMG> PATHO_ENUM_MAP;
 
-    private ACMG(String name, int pathoValue) {
+    ACMG(String name, int pathoValue) {
         this.name = name;
         this.pathoValue = pathoValue;
     }

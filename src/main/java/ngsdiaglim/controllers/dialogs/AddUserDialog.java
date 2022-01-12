@@ -1,6 +1,7 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import ngsdiaglim.App;
@@ -17,7 +18,7 @@ import java.util.*;
 
 public class AddUserDialog extends DialogPane.Dialog<AddUserDialog.UserCreation> {
 
-    private final Logger logger = LogManager.getLogger(AddUserDialog.class);
+    private final static Logger logger = LogManager.getLogger(AddUserDialog.class);
 
     private final GridPane gridPane = new GridPane();
     private final TextField usernameTf = new TextField();
@@ -36,7 +37,7 @@ public class AddUserDialog extends DialogPane.Dialog<AddUserDialog.UserCreation>
         usernameTf.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
         passwordField.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
         passwordFieldconfirm.textProperty().addListener((obs, oldV, newV) -> changeFormEvent());
-
+        rolesCb.getCheckModel().getCheckedItems().addListener((ListChangeListener<Role>) change -> changeFormEvent());
         setValid(false);
 
     }
@@ -78,6 +79,9 @@ public class AddUserDialog extends DialogPane.Dialog<AddUserDialog.UserCreation>
         }
         else if (DAOController.getUsersDAO().userExists(usernameTf.getText())) {
             return App.getBundle().getString("adduserdialog.msg.err.usernamesexists");
+        }
+        else if (rolesCb.getCheckModel().getCheckedItems().isEmpty()) {
+            return App.getBundle().getString("adduserdialog.msg.err.emptyrole");
         }
         return null;
     }

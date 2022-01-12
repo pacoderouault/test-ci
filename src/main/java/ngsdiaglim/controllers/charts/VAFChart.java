@@ -18,12 +18,12 @@ public class VAFChart extends Region {
     private final SimpleFloatProperty vafValue = new SimpleFloatProperty();
     private final int size;
     private final int height;
-    private double center;
-    private double width;
-    private double arcWidth;
-    private double textYMargin;
-    private Font robotoMedium;
-    private Font robotoLight;
+    private final double center;
+    private final double width;
+    private final double arcWidth;
+    private final double textYMargin;
+    private final Font robotoMedium;
+    private final Font robotoLight;
 
     public VAFChart() {
         this.size = 120;
@@ -38,9 +38,7 @@ public class VAFChart extends Region {
 
         initGraphics();
 
-        vafValue.addListener((obs, oldV, newV) -> {
-            drawChart();
-        });
+        vafValue.addListener((obs, oldV, newV) -> drawChart());
     }
 
     private void initGraphics() {

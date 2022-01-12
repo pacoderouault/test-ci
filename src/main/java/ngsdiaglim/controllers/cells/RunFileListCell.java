@@ -6,11 +6,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.modeles.analyse.RunFile;
-import ngsdiaglim.utils.BrowserUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class RunFileListCell extends ListCell<RunFile> {

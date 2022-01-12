@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FluentToggleButtonSkin extends ToggleButtonSkin {
-    private ButtonAnimationHelper buttonAnimationHelper;
+    private final ButtonAnimationHelper buttonAnimationHelper;
 
     public FluentToggleButtonSkin(ToggleButton button) {
         super(button);
@@ -42,7 +42,7 @@ public class FluentToggleButtonSkin extends ToggleButtonSkin {
                 }
             };
 
-    private BooleanProperty shrinkAnimateOnPress = new SimpleStyleableBooleanProperty(SHRINK_ANIMATE_ON_PRESS_META_DATA, true);
+    private final BooleanProperty shrinkAnimateOnPress = new SimpleStyleableBooleanProperty(SHRINK_ANIMATE_ON_PRESS_META_DATA, true);
 
     private BooleanProperty shrinkAnimateOnPressProperty() { return shrinkAnimateOnPress; }
 

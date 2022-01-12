@@ -17,20 +17,18 @@ import ngsdiaglim.utils.NumberUtils;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AmpliconMatrixParser {
 
     private final Analysis analysis;
     private final Panel panel;
-    private final File matixFile;
-    private List<Analysis> analysisSharingDesign;
+    private final File matrixFile;
 
     public AmpliconMatrixParser(Analysis analysis, Panel panel, File matixFile) {
         this.analysis = analysis;
         this.panel = panel;
-        this.matixFile = matixFile;
+        this.matrixFile = matixFile;
     }
 
     public CovCopCNVData parseMatrixFile() throws SQLException, FileFormatException {
@@ -44,9 +42,9 @@ public class AmpliconMatrixParser {
         parserSettings.setHeaderExtractionEnabled(true);
         parserSettings.setNullValue("");
         TsvParser parser = new TsvParser(parserSettings);
-        parser.parse(matixFile);
+        parser.parse(matrixFile);
 
-        analysisSharingDesign = analysis.getRun().getAnalyses().stream().filter(p -> p.getAnalysisParameters().getPanel().equals(panel)).collect(Collectors.toList());
+        List<Analysis> analysisSharingDesign = analysis.getRun().getAnalyses().stream().filter(p -> p.getAnalysisParameters().getPanel().equals(panel)).collect(Collectors.toList());
 
         String[] header = rowProcessor.getHeaders();
         LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
@@ -54,8 +52,8 @@ public class AmpliconMatrixParser {
         // get the columns index of the patient to read (patient corresponding to the design
         List<Integer> columnsIndexToRead = new ArrayList<>();
 
-        Pattern barcodePattern = Pattern.compile("(BC(\\d+))");
-        Pattern ionxpressPattern = Pattern.compile("(IonXpress_(\\d+))");
+//        Pattern barcodePattern = Pattern.compile("(BC(\\d+))");
+//        Pattern ionxpressPattern = Pattern.compile("(IonXpress_(\\d+))");
 
         for (int i = LABEL_COLUMNS_NUMBER; i < header.length; i++) {
             int finalI = i;
@@ -118,9 +116,7 @@ public class AmpliconMatrixParser {
 
         //sort each pool amplicons by their genomic position
         RegionComparator regionComparator = new RegionComparator();
-        ampliconsByPool.values().forEach(o -> {
-            o.sort(regionComparator);
-        });
+        ampliconsByPool.values().forEach(o -> o.sort(regionComparator));
 
         CovCopCNVData covCopCNVData = new CovCopCNVData(panel);
         covCopCNVData.setSamples(samples);
@@ -146,7 +142,7 @@ public class AmpliconMatrixParser {
         parser.parse(matrix);
 
         String[] header = rowProcessor.getHeaders();
-        LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
+//        LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
 
         Set<String> sampleNamesSet = new HashSet<>();
         for (int i = LABEL_COLUMNS_NUMBER; i < header.length; i++) {
@@ -205,7 +201,7 @@ public class AmpliconMatrixParser {
         parser.parse(matrix);
 
         String[] header = rowProcessor.getHeaders();
-        LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
+//        LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
 
         Set<String> sampleNamesSet = new HashSet<>();
         for (int i = LABEL_COLUMNS_NUMBER; i < header.length; i++) {
@@ -285,9 +281,7 @@ public class AmpliconMatrixParser {
 
         //sort each pool amplicons by their genomic position
         RegionComparator regionComparator = new RegionComparator();
-        ampliconsByPool.values().forEach(o -> {
-            o.sort(regionComparator);
-        });
+        ampliconsByPool.values().forEach(o -> o.sort(regionComparator));
 
         CovCopCNVData covCopCNVData = new CovCopCNVData(panel);
         covCopCNVData.setSamples(samples);

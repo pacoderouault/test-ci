@@ -9,7 +9,7 @@ import java.util.List;
 public class CovCopRegion extends Region {
 
     private final SimpleStringProperty pool = new SimpleStringProperty();
-    private final SimpleStringProperty gene = new SimpleStringProperty();;
+    private final SimpleStringProperty gene = new SimpleStringProperty();
     private final List<Integer> raw_values = new ArrayList<>();
     private final List<Double> normalized_values = new ArrayList<>();
     private final List<Double> zScores = new ArrayList<>();

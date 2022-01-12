@@ -3,17 +3,17 @@ package ngsdiaglim.controllers.cells;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.text.TextFlow;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.AddVariantCommentaryDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.Roles.DefaultRolesEnum;
-import ngsdiaglim.modeles.users.Roles.Role;
 import ngsdiaglim.modeles.variants.VariantCommentary;
 import ngsdiaglim.modules.ModuleManager;
-import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.DateFormatterUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +23,7 @@ import java.sql.SQLException;
 
 public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
 
-    private final Logger logger = LogManager.getLogger(VariantCommentaryListCell.class);
-    private VariantCommentary vc;
+    private final static Logger logger = LogManager.getLogger(VariantCommentaryListCell.class);
     private FXMLLoader mLLoader;
 
     @FXML private Label usernameLb;
@@ -38,7 +37,6 @@ public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
         super.updateItem(item, empty);
         if (item != null && !empty) {
             getStyleClass().add("transparent-list-cell");
-            vc = item;
             if (mLLoader == null) {
                 mLLoader = new FXMLLoader(getClass().getResource("/fxml/VariantCommentaryListCell.fxml"), App.getBundle());
                 mLLoader.setController(this);

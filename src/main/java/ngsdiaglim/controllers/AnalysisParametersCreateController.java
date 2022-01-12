@@ -123,24 +123,27 @@ public class AnalysisParametersCreateController extends VBox {
     }
 
     private void initPanelsCombobox() {
-        panelsCb.setItems(createAnalysisParametersController.getAnalysisParametersPanelsController().getPanelsTable().getItems().filtered(Panel::isActive));
+        panelsCb.setItems(createAnalysisParametersController
+                .getAnalysisParametersPanelsController().getPanelsTable().getItems().filtered(Panel::isActive));
     }
 
     private void initGeneSetsCombobox() {
-        geneSetsCb.setItems(createAnalysisParametersController.getAnalysisParametersGenesTrancriptsController().getGenesSetTable().getItems().filtered(GeneSet::isActive));
+        geneSetsCb.setItems(createAnalysisParametersController
+                .getAnalysisParametersGenesTrancriptsController().getGenesSetTable().getItems().filtered(GeneSet::isActive));
     }
 
     private void initHotspotsSetCombobox() {
         fillHotspotsSetCombobox();
-        createAnalysisParametersController.getAnalysisParametersHotspotsController().getHotspotsSetTable().getItems().addListener((ListChangeListener<HotspotsSet>) change -> {
-            fillHotspotsSetCombobox();
-        });
+        createAnalysisParametersController
+                .getAnalysisParametersHotspotsController()
+                .getHotspotsSetTable().getItems().addListener((ListChangeListener<HotspotsSet>) change -> fillHotspotsSetCombobox());
     }
 
     private void fillHotspotsSetCombobox() {
         hotspotsCb.getItems().clear();
         hotspotsCb.getItems().add(null);
-        hotspotsCb.getItems().addAll(createAnalysisParametersController.getAnalysisParametersHotspotsController().getHotspotsSetTable().getItems().filtered(HotspotsSet::isActive));
+        hotspotsCb.getItems().addAll(
+                createAnalysisParametersController.getAnalysisParametersHotspotsController().getHotspotsSetTable().getItems().filtered(HotspotsSet::isActive));
     }
 
     private String checkPanelName(String name) {

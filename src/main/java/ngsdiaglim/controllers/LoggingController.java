@@ -9,7 +9,6 @@ import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.User;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoggingController {
@@ -18,6 +17,7 @@ public class LoggingController {
     @FXML private TextField loginTf;
     @FXML private PasswordField passwordField;
     private final DialogPane dialogPane = new DialogPane();
+
     @FXML
     public void initialize(){
         dialogPaneContainer.getChildren().add(dialogPane);

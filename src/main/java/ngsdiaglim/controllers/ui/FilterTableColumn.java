@@ -4,14 +4,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import ngsdiaglim.controllers.ui.popupfilters.TableColumnPopupFilter2;
+import ngsdiaglim.controllers.ui.popupfilters.TableColumnPopupFilter;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.function.Predicate;
 
 public class FilterTableColumn<S, T> extends TableColumn<S, T> {
 
-    private TableColumnPopupFilter2<S, T> popupFilter;
+    private TableColumnPopupFilter<S, T> popupFilter;
     private final SimpleObjectProperty<Predicate<S>> predicate = new SimpleObjectProperty<>();
     private final FontIcon filterIcon = new FontIcon("mdal-filter_alt");
 
@@ -37,9 +37,9 @@ public class FilterTableColumn<S, T> extends TableColumn<S, T> {
         }
     }
 
-    public TableColumnPopupFilter2<S, T> getPopupFilter() {return popupFilter;}
+    public TableColumnPopupFilter<S, T> getPopupFilter() {return popupFilter;}
 
-    public void setPopupFilter(TableColumnPopupFilter2<S, T> popupFilter) {
+    public void setPopupFilter(TableColumnPopupFilter<S, T> popupFilter) {
         this.popupFilter = popupFilter;
     }
 

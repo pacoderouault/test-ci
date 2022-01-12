@@ -27,8 +27,6 @@ public class CoverageRegion extends Region {
         depthValues.add(d);
     }
 
-//    public Double getMeanDepth() {return meanDepth;}
-
     public void setMeanDepth(Double meanDepth) {
         this.meanDepth = meanDepth;
     }
@@ -75,13 +73,7 @@ public class CoverageRegion extends Region {
 
     @Override
     public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof CoverageRegion)) return false;
-//        if (!super.equals(o)) return false;
-//
-//        CoverageRegion that = (CoverageRegion) o;
         return super.equals(o);
-//        return meanDepth != null ? meanDepth.equals(that.meanDepth) : that.meanDepth == null;
     }
 
     @Override

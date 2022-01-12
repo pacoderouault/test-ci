@@ -8,17 +8,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import ngsdiaglim.App;
-import ngsdiaglim.controllers.dialogs.EditGeneReportCommentDialog;
 import ngsdiaglim.controllers.dialogs.EditMutationReportCommentDialog;
-import ngsdiaglim.controllers.dialogs.EditReportCommentDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.modeles.reports.ReportGeneCommentary;
 import ngsdiaglim.modeles.reports.ReportMutationCommentary;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.modules.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +22,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MutationCommentActionTableCell  extends TableCell<ReportMutationCommentary, Void> {
 
@@ -90,9 +84,7 @@ public class MutationCommentActionTableCell  extends TableCell<ReportMutationCom
             EditMutationReportCommentDialog dialog = new EditMutationReportCommentDialog(variantList);
             dialog.setValue(commentary);
             Message.showDialog(dialog);
-            dialog.getButton(ButtonType.OK).setOnAction(event -> {
-                Message.hideDialog(dialog);
-            });
+            dialog.getButton(ButtonType.OK).setOnAction(event -> Message.hideDialog(dialog));
         }
     }
 

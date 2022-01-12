@@ -1,6 +1,5 @@
 package ngsdiaglim.comparators;
 
-import ngsdiaglim.modeles.variants.predictions.SiftPrediction;
 import ngsdiaglim.modeles.variants.predictions.VariantPrediction;
 
 import java.util.Comparator;

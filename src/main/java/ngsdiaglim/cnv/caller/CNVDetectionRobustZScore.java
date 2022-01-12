@@ -18,13 +18,10 @@ import java.util.ListIterator;
 
 public class CNVDetectionRobustZScore extends CNVDetection {
 
-//    private CNVData cnvData;
-    private static NormalDistribution nd = new NormalDistribution(0, 1);
+//    private static final NormalDistribution nd = new NormalDistribution(0, 1);
     private double alpha = 0.99;
     private int minConsecutiveAmplicons = 3;
     private boolean mergeCNV = true;
-//    public static final double delThreshold = nd.inverseCumulativeProbability(1 - 0.99);
-//    public static final double dupThreshold = nd.inverseCumulativeProbability(0.99);
     public static final double delThreshold = -2.5;
     public static final double dupThreshold = 2.5;
 
@@ -46,8 +43,7 @@ public class CNVDetectionRobustZScore extends CNVDetection {
     private void computeZScores() {
 
         int sampleIndex = 0;
-        for (String sampleName : cnvData.getSamples().keySet()) {
-            CNVSample sample = cnvData.getSamples().get(sampleName);
+        for (String ignored : cnvData.getSamples().keySet()) {
 
             List<Double> sampleValues = new ArrayList<>();
 
@@ -229,7 +225,7 @@ public class CNVDetectionRobustZScore extends CNVDetection {
 
 
     public static final class Builder {
-        private CovCopCNVData cnvData;
+        private final CovCopCNVData cnvData;
         private double alpha;
         private int minConsecutiveAmplicons;
         private boolean mergeCNV;

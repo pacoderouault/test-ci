@@ -5,7 +5,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-//import org.apache.poi.ss.formula.functions.T;
 
 import java.util.function.Predicate;
 
@@ -54,10 +53,6 @@ public class FilterTableView<S> extends TableView<S> {
         }
     }
 
-//    public void addFilterColumn(FilterTableColumn<S, ?> col) {
-//        col.predicateProperty().addListener(p -> updatePredicates());
-//        getColumns().add(col);
-//    }
 
     private void updatePredicates() {
         Predicate<S> p = null;

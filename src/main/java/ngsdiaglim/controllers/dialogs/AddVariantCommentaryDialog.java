@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
-import ngsdiaglim.modeles.variants.Annotation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,7 @@ import java.io.IOException;
 
 public class AddVariantCommentaryDialog extends DialogPane.Dialog<AddVariantCommentaryDialog.VariantCommentaryData> {
 
-    private final Logger logger = LogManager.getLogger(AddVariantCommentaryDialog.class);
+    private final static Logger logger = LogManager.getLogger(AddVariantCommentaryDialog.class);
     @FXML private VBox dialogContainer;
     @FXML private Label variantLb;
     @FXML private Label errorLb;
@@ -44,9 +43,7 @@ public class AddVariantCommentaryDialog extends DialogPane.Dialog<AddVariantComm
 
         initView();
 
-        commentTa.textProperty().addListener((obs,oldV, newV) -> {
-            validComment();
-        });
+        commentTa.textProperty().addListener((obs,oldV, newV) -> validComment());
     }
 
     private void validComment() {
@@ -71,7 +68,7 @@ public class AddVariantCommentaryDialog extends DialogPane.Dialog<AddVariantComm
         return null;
     }
 
-    public class VariantCommentaryData {
+    public static class VariantCommentaryData {
         private long id;
         private final SimpleStringProperty commentary = new SimpleStringProperty();
 

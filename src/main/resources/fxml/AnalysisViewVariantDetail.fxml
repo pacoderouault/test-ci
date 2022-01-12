@@ -373,7 +373,7 @@
                   </HBox>
                </children>
             </VBox>
-            <VBox minWidth="125.0" spacing="3.0" HBox.hgrow="SOMETIMES">
+            <VBox minWidth="125.0" spacing="1.0" HBox.hgrow="SOMETIMES">
                <styleClass>
                   <String fx:value="module-box" />
                   <String fx:value="module-box-container" />
@@ -441,6 +441,12 @@
                      </styleClass>
                   </Button>
                   <Button fx:id="intogenLinkBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.intogen">
+                     <styleClass>
+                        <String fx:value="button-link" />
+                        <String fx:value="button-action-cell" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="theGenCCBtn" mnemonicParsing="false" text="%analysisview.variantdetail.btn.thegencc">
                      <styleClass>
                         <String fx:value="button-link" />
                         <String fx:value="button-action-cell" />

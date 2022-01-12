@@ -25,11 +25,12 @@ import java.time.LocalDateTime;
 
 public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> {
 
-    private final Logger logger = LogManager.getLogger(EditVariantPathogenicityDialog.class);
+    private final static Logger logger = LogManager.getLogger(EditVariantPathogenicityDialog.class);
 
     @FXML private VBox dialogContainer;
     @FXML private ComboBox<FalsePositiveVariantEnum> falsePositiveCb;
     @FXML private TextArea commentaryTa;
+    @FXML private Button editFalsePositiveBtn;
     @FXML private TableView<VariantFalsePositive> historyTable;
     @FXML private TableColumn<VariantFalsePositive, Boolean> falsePositiveCol;
     @FXML private TableColumn<VariantFalsePositive, String> userCol;
@@ -66,6 +67,8 @@ public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> 
             selectFalsePositive();
             commentaryTa.setText(null);
         }));
+
+        editFalsePositiveBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.EDIT_VARIANT_PATHOGENICITY));
     }
 
 
@@ -193,7 +196,10 @@ public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> 
     }
 
     private String checkError() {
-        if (falsePositiveCb.getSelectionModel().getSelectedItem() == null) {
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.EDIT_VARIANT_PATHOGENICITY)) {
+            return App.getBundle().getString("app.msg.err.nopermit");
+        }
+        else if (falsePositiveCb.getSelectionModel().getSelectedItem() == null) {
             return App.getBundle().getString("editfalsepositivedialog.msg.err.emptyFp");
         } else if(StringUtils.isBlank(commentaryTa.getText())) {
             return App.getBundle().getString("editfalsepositivedialog.msg.err.emptyComment");

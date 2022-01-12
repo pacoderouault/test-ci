@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class AnalysisInputData {
 
-    private Logger logger = LogManager.getLogger(AnalysisInputData.class);
+    private final static Logger logger = LogManager.getLogger(AnalysisInputData.class);
 
     private final SimpleStringProperty analysisName = new SimpleStringProperty();
     private final SimpleStringProperty sampleName = new SimpleStringProperty();
@@ -137,12 +137,15 @@ public class AnalysisInputData {
     }
 
     private boolean invalidCharacterInAnalysisName() {
-        String[] invalidCharacters = new String[]{"/", "\\", ":", ">", "<", "\"", "|", "?", "*"};
-        return !Pattern.matches("[^\\.][\\dA-Za-z_\\-\\.]+[^\\.]", getAnalysisName());
+//        String[] invalidCharacters = new String[]{"/", "\\", ":", ">", "<", "\"", "|", "?", "*"};
+        return !Pattern.matches("[^.][\\dA-Za-z_\\-.]+[^.]", getAnalysisName());
 //        return ngsdiaglim.utils.StringUtils.stringContainsItemFromList(getAnalysisName(), invalidCharacters);
     }
 
     public void computeState() {
+        if (state.getValue() != null && state.getValue().equals(AnalysisInputState.DUPLICATE_ANALYSIS)) {
+            return;
+        }
         if (getAnalysisParameters() == null) state.setValue(AnalysisInputState.PARAMETERS_NULL);
         else if (getRun() == null) state.setValue(AnalysisInputState.RUN_NULL);
         else if (StringUtils.isBlank(getAnalysisName())) state.setValue(AnalysisInputState.NAME_NULL);
@@ -151,10 +154,12 @@ public class AnalysisInputData {
         else if (StringUtils.isBlank(getSampleName())) state.setValue(AnalysisInputState.SAMPLENAME_NULL);
         else if (getVcfFile() == null || !getVcfFile().exists()) state.setValue(AnalysisInputState.VCF_NULL);
         else if (!VCFUtils.isVCFReadable(getVcfFile())) state.setValue(AnalysisInputState.VCF_INVALID);
-        else if (getBamFile() != null && !BamUtils.isBamFile(getBamFile())) state.setValue(AnalysisInputState.BAM_INVALID);
+        else if (getBamFile() != null && !BamUtils.isBamFile(getBamFile()))
+            state.setValue(AnalysisInputState.BAM_INVALID);
         else {
             try {
-                if (getDepthFile() != null && !SamtoolsDepthParser.isDepthFile(getDepthFile())) state.setValue(AnalysisInputState.DEPTH_INVALID);
+                if (getDepthFile() != null && !SamtoolsDepthParser.isDepthFile(getDepthFile()))
+                    state.setValue(AnalysisInputState.DEPTH_INVALID);
                 else state.setValue(AnalysisInputState.VALID);
             } catch (IOException e) {
                 logger.error("Error when check samtools depth", e);
@@ -162,6 +167,7 @@ public class AnalysisInputData {
                 state.setValue(AnalysisInputState.INVALID);
             }
         }
+
     }
 
     public enum AnalysisInputState {

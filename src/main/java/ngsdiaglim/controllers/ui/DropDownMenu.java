@@ -1,6 +1,5 @@
 package ngsdiaglim.controllers.ui;
 
-import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuButton;
@@ -23,8 +22,8 @@ public class DropDownMenu extends MenuButton {
 //        item.setOnAction(Event::consume);
 //        this.setMouseTransparent(true);
 //        contentPane.setOnMouseMoved(e -> e.consume());
-        this.setOnMouseMoved(Event::consume);
-        this.setOnMouseDragEntered(Event::consume);
+//        this.setOnMouseMoved(Event::consume);
+//        this.setOnMouseDragEntered(Event::consume);
         getItems().add(item);
     }
 

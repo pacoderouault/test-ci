@@ -20,7 +20,6 @@ public class AnalysisNameTableCell extends TableCell<Analysis, String>  {
     public AnalysisNameTableCell() {
         tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.ZERO);
-
     }
 
     @Override
@@ -80,9 +79,10 @@ public class AnalysisNameTableCell extends TableCell<Analysis, String>  {
                 }
             }
         }
+
     }
 
     private enum State {
-        VALID, WARNING, ERROR;
+        VALID, WARNING, ERROR
     }
 }

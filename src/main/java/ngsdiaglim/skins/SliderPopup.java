@@ -19,7 +19,7 @@ class SliderPopup extends PopupControl {
     }
 
 
-    private DoubleProperty value = new SimpleDoubleProperty();
+    private final DoubleProperty value = new SimpleDoubleProperty();
 
     DoubleProperty valueProperty() { return value; }
 
@@ -34,7 +34,7 @@ class SliderPopup extends PopupControl {
         return new SliderPopupSkin(this);
     }
 
-    private class SliderPopupSkin implements Skin<SliderPopup> {
+    private static class SliderPopupSkin implements Skin<SliderPopup> {
 
         SliderPopup skinnable;
         Label valueText;

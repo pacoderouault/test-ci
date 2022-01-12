@@ -13,7 +13,7 @@ import java.util.*;
 
 public class VepPredictionParser {
 
-    private final Logger logger = LogManager.getLogger(VepPredictionParser.class);
+    private final static Logger logger = LogManager.getLogger(VepPredictionParser.class);
     public static final String INDEL_SYMBOL_STR = "<indel>";
     private final Map<String, Integer> col2colidx = new HashMap<>();
     private final String pipe = "\\|";
@@ -41,7 +41,8 @@ public class VepPredictionParser {
             logger.warn("Cannot find "+chunck+ " in "+description);
             return;
         }
-        description=description.substring(i+chunck.length()).replaceAll("[ \'\\.\\(\\)]+","").trim();
+//        description=description.substring(i+chunck.length()).replaceAll("[ \'\\.\\(\\)]+","").trim();
+        description=description.substring(i+chunck.length()).replaceAll("[ '.()]+","").trim();
         final List<String> tokens = Arrays.asList(StringUtils.splitPreserveAllTokens(description, this.pipe));
         for(i = 0; i < tokens.size(); ++i) {
             final String token= tokens.get(i);
@@ -66,7 +67,7 @@ public class VepPredictionParser {
     public List<VepPrediction> getPredictions(final VariantContext ctx)
     {
         if(!isValid() || this.col2colidx.isEmpty()) return Collections.emptyList();
-        final List<? extends Object> L = ctx.getAttributeAsList(this.tag);
+        final List<?> L = ctx.getAttributeAsList(this.tag);
         ArrayList<VepPrediction> preds = new ArrayList<>(L.size());
         for(final Object o2 : L)  _predictions(preds, o2, ctx);
         return preds;
@@ -167,12 +168,6 @@ public class VepPredictionParser {
                         /* 'cannot find allele G in [T*, TG]' */
                         a = Allele.create( this.alleles.get(0).getDisplayString()+s, false);
                     }
-					/*
-					if(!this.alleles.contains(a))
-						{
-						//LOG.warn("cannot find allele "+s+" / "+a+" in "+this.alleles);
-						}
-						*/
                 }
                 return a;
             }
@@ -285,28 +280,7 @@ public class VepPredictionParser {
             final String EFF = getSOTermsString();
             if(EFF==null || EFF.isEmpty()) return Collections.emptyList();
             return Arrays.asList(StringUtils.splitPreserveAllTokens(EFF, VepPredictionParser.this.ampRegex));
-//            return VepPredictionParser.this.ampRegex.splitAsStringList(EFF);
         }
-
-//        /** convert the list of getConsequences() to a list of SequenceOntology Terms */
-//        public Set<SequenceOntologyTree.Term> getSOTerms()
-//        {
-//            final List<String> effects = getSOTermsStrings();
-//            if(effects.isEmpty()) return Collections.emptySet();
-//            final Set<SequenceOntologyTree.Term> set=new HashSet<>(effects.size());
-//            for(final String label:effects) {
-//                if(label.isEmpty()) continue;
-//                final SequenceOntologyTree.Term t =VepPredictionParser.this.soTree.getTermByLabel(label);
-//                if(t==null) {
-//                    LOG.warning("Current Sequence Ontology Tree doesn't contain "+ label);
-//                }
-//                else
-//                {
-//                    set.add(t);
-//                }
-//            }
-//            return set;
-//        }
 
         public Integer getPositionInCDna() {
             final String s = getByCol("cDNA_position");

@@ -3,7 +3,6 @@ package ngsdiaglim.controllers.cells;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 import ngsdiaglim.modeles.analyse.AnalysisInputData;
 import org.kordamp.ikonli.javafx.FontIcon;

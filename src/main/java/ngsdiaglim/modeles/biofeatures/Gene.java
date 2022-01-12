@@ -3,8 +3,6 @@ package ngsdiaglim.modeles.biofeatures;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.StringJoiner;
 
 public class Gene {

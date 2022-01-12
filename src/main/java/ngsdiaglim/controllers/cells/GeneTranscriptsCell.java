@@ -1,10 +1,8 @@
 package ngsdiaglim.controllers.cells;
 
-import javafx.application.Platform;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
@@ -43,6 +41,7 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
                     ToggleButton tb = new ToggleButton(transcript.getNameWithoutVersion());
                     tb.setToggleGroup(group);
                     tb.setUserData(transcript);
+                    tb.setMinWidth(USE_COMPUTED_SIZE);
                     if (gene.getTranscriptPreferred() != null && gene.getTranscriptPreferred().equals(transcript)) {
                         tb.setSelected(true);
                     }
@@ -80,8 +79,4 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
         }
     }
 
-
-    private void setPreferredTranscriptHandler() {
-
-    }
 }

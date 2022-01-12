@@ -1,24 +1,16 @@
 package ngsdiaglim.controllers.dialogs;
 
 import com.dlsc.gemsfx.DialogPane;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
 import ngsdiaglim.App;
-import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.sql.SQLException;
 
 public class ResetPasswordDialog extends DialogPane.Dialog<String> {
-
-    private final Logger logger = LogManager.getLogger(ResetPasswordDialog.class);
 
     private final GridPane gridPane = new GridPane();
     private final PasswordField passwordField = new PasswordField();

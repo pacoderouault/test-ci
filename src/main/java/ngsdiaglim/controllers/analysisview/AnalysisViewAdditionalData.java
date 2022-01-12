@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -26,20 +25,21 @@ import ngsdiaglim.modeles.analyse.AdditionalImage;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.AnalysisCommentary;
 import ngsdiaglim.modeles.analyse.ImageImporter;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.FileChooserUtils;
+import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.ImageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.dlsc.gemsfx.DialogPane.Type.INFORMATION;
 
 public class AnalysisViewAdditionalData extends HBox {
 
@@ -47,6 +47,8 @@ public class AnalysisViewAdditionalData extends HBox {
 
     @FXML private ListView<AnalysisCommentary> commentariesLv;
     @FXML private FlowPane imagesFp;
+    @FXML private Button addComentaryBtn;
+    @FXML private Button addImageBtn;
     private final Analysis analysis;
     private final ImageImporter imageImporter;
 
@@ -67,44 +69,58 @@ public class AnalysisViewAdditionalData extends HBox {
 
         loadAnalysisCommentaries();
         loadAnalysisImages();
+
+        addComentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
+        addImageBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES));
     }
 
     @FXML
     private void addCommentaryHandler() {
-        AddAnalysisCommentaryDialog addVariantCommentaryDialog = new AddAnalysisCommentaryDialog(App.get().getAppController().getDialogPane());
-        Message.showDialog(addVariantCommentaryDialog);
-        Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
-        b.setOnAction(e -> {
-            if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
-                String comment = addVariantCommentaryDialog.getValue().getCommentary();
-                try {
-                    DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment);
-                    loadAnalysisCommentaries();
-                    Message.hideDialog(addVariantCommentaryDialog);
-                } catch (SQLException ex) {
-                    logger.error(ex);
-                    Message.error(ex.getMessage(), ex);
-                }
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+        } else {
+            AddAnalysisCommentaryDialog addVariantCommentaryDialog = new AddAnalysisCommentaryDialog(App.get().getAppController().getDialogPane());
+            Message.showDialog(addVariantCommentaryDialog);
+            Button b = addVariantCommentaryDialog.getButton(ButtonType.OK);
+            b.setOnAction(e -> {
+                if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
+                    String comment = addVariantCommentaryDialog.getValue().getCommentary();
+                    try {
+                        DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment);
+                        loadAnalysisCommentaries();
+                        Message.hideDialog(addVariantCommentaryDialog);
+                    } catch (SQLException ex) {
+                        logger.error(ex);
+                        Message.error(ex.getMessage(), ex);
+                    }
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @FXML
     private void addImageHandler() {
-        FileChooser fc = FileChooserUtils.getFileChooser();
-        List<File> selectedFiles = fc.showOpenMultipleDialog(App.getPrimaryStage());
-        if (selectedFiles != null && !selectedFiles.isEmpty()) {
-            List<String> notImageFiles = new ArrayList<>();
-            for (File selectedFile : selectedFiles) {
-                if (ImageUtils.isImage(selectedFile)) {
-                    addImage(selectedFile);
-                } else {
-                    notImageFiles.add(selectedFile.getName());
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+        } else {
+            FileChooser fc = FileChooserUtils.getFileChooser();
+            List<File> selectedFiles = fc.showOpenMultipleDialog(App.getPrimaryStage());
+            if (selectedFiles != null && !selectedFiles.isEmpty()) {
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFiles.get(0)));
+                user.savePreferences();
+                List<String> notImageFiles = new ArrayList<>();
+                for (File selectedFile : selectedFiles) {
+                    if (ImageUtils.isImage(selectedFile)) {
+                        addImage(selectedFile);
+                    } else {
+                        notImageFiles.add(selectedFile.getName());
+                    }
                 }
-            }
-            if (!notImageFiles.isEmpty()) {
-                Message.error(String.join("\n", notImageFiles), "The following files are not images :");
+                if (!notImageFiles.isEmpty()) {
+                    Message.error(String.join("\n", notImageFiles), "The following files are not images :");
+                }
             }
         }
     }
@@ -122,7 +138,6 @@ public class AnalysisViewAdditionalData extends HBox {
     public void loadAnalysisImages() {
         imagesFp.getChildren().clear();
         try {
-//            List<AdditionalImage> images = DAOController.getAnalysisImagesDAO().getAdditionalImages(analysis.getId());
             List<AdditionalImage> images = imageImporter.loadImages();
             for (AdditionalImage ai : images) {
                 imagesFp.getChildren().add(buildImageContainer(ai));
@@ -135,7 +150,6 @@ public class AnalysisViewAdditionalData extends HBox {
 
     /**
      * Add an image to this node container in the view and the database
-     * @param imageFile
      */
     private void addImage(File imageFile) {
         if (imageFile.exists() && imageFile.isFile()) {
@@ -153,8 +167,6 @@ public class AnalysisViewAdditionalData extends HBox {
 
     /**
      * Create the node  containing the image
-     * @param ai
-     * @return
      */
     private HBox buildImageContainer(AdditionalImage ai) {
         int IMAGES_HEIGHT = 180;
@@ -194,6 +206,9 @@ public class AnalysisViewAdditionalData extends HBox {
             fc.setInitialFileName(analysis.getName() + "_image.png");
             File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
             if (selectedFile != null) {
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+                user.savePreferences();
                 ImageUtils.saveImageToFile(ai.getImage(), selectedFile);
             }
         });
@@ -204,23 +219,6 @@ public class AnalysisViewAdditionalData extends HBox {
             DisplayImageDialog dialog = new DisplayImageDialog(App.get().getAppController().getDialogPane());
             dialog.setValue(imgView.getImage());
             Message.showDialog(dialog);
-//            ImageView imageView = new ImageView(ai.getImage());
-//
-//            // resize image
-//            double maxHeight = App.getPrimaryStage().getHeight() - 300;
-//            double maxWidth = App.getPrimaryStage().getWidth() - 200;
-//            if(imageView.maxHeight(ai.getImage().getHeight()) > maxHeight ){
-//                imageView.setFitHeight(maxHeight);
-//            }
-//            if(imageView.maxWidth(ai.getImage().getWidth()) > maxWidth ){
-//                imageView.setFitWidth(maxWidth);
-//            }
-//            imageView.setPreserveRatio(true);
-//            imageView.setSmooth(true);
-//            imageView.setCache(true);
-//
-//            DialogPane.Dialog<Object> dialog = App.get().getAppController().getDialogPane()
-//                    .showNode(INFORMATION, "", imageView);
         });
         return container;
     }
@@ -228,8 +226,6 @@ public class AnalysisViewAdditionalData extends HBox {
 
     /**
      * Remove an image from the view and the ddb
-     * @param ai
-     * @throws SQLException
      */
     public void deleteImage(AdditionalImage ai) {
         DialogPane.Dialog<ButtonType> dialog =  Message.confirm(App.getBundle().getString(""));

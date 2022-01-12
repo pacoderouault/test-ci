@@ -1,15 +1,13 @@
 package ngsdiaglim.controllers.ui.popupfilters;
 
 import javafx.scene.control.Skin;
-import javafx.scene.control.TableColumn;
 import ngsdiaglim.controllers.ui.FilterTableColumn;
-import ngsdiaglim.controllers.ui.FilterTableView;
 import ngsdiaglim.enumerations.ACMG;
 import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
 
 
-public class ACMGPopupFilter extends TableColumnPopupFilter2<Annotation, ACMG> {
+public class ACMGPopupFilter extends TableColumnPopupFilter<Annotation, ACMG> {
 
 
     public ACMGPopupFilter(FilterTableColumn<Annotation, ACMG> tableColumn) {
@@ -17,7 +15,7 @@ public class ACMGPopupFilter extends TableColumnPopupFilter2<Annotation, ACMG> {
     }
 
     @Override
-    protected void updatePredictate(Operators op, ACMG acmg) {
+    protected void updatePredicate(Operators op, ACMG acmg) {
         if (acmg == null) {
             getTableColumn().setPredicate(null);
         }
@@ -45,6 +43,6 @@ public class ACMGPopupFilter extends TableColumnPopupFilter2<Annotation, ACMG> {
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new ACMGPopupFilterSkin2(this);
+        return new ACMGPopupFilterSkin(this);
     }
 }

@@ -26,7 +26,6 @@ public class QuartilesCalculator {
 
     /**
      * values must be sorted ascending
-     * @param values
      */
     public static double getFirstQuartile(List<Integer> values) {
         double index = (values.size() + 3) / 4.0 - 1;
@@ -52,7 +51,6 @@ public class QuartilesCalculator {
 
     /**
      * values must be sorted ascending
-     * @param values
      */
     public static double getThirdQuartile(List<Integer> values) {
         double index = (values.size() * 3 + 1) / 4.0 - 1;
@@ -77,7 +75,6 @@ public class QuartilesCalculator {
 
     /**
      * values must be sorted ascending
-     * @param values
      */
     public static double getMedian(List<Integer> values) {
         double index = (values.size() + 1) / 2.0 - 1;

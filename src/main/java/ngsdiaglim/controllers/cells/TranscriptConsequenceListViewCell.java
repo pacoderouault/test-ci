@@ -2,15 +2,9 @@ package ngsdiaglim.controllers.cells;
 
 import javafx.scene.control.ListCell;
 import ngsdiaglim.modeles.variants.TranscriptConsequence;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 
 public class TranscriptConsequenceListViewCell extends ListCell<TranscriptConsequence> {
-
-//    public TranscriptConsequenceListViewCell() {
-//        setContentDisplay(ContentDisplay.RIGHT);
-
-//    }
 
     @Override
     protected void updateItem(TranscriptConsequence item, boolean empty) {
@@ -37,20 +31,9 @@ public class TranscriptConsequenceListViewCell extends ListCell<TranscriptConseq
                 }
                 setText(sb.toString());
                 if (item.getAnnotation().getTranscriptConsequence().getTranscript().equals(item.getTranscript())) {
-                    setGraphic(new FontIcon("mdomz-star"));
                     getStyleClass().add("selected-transcript");
                 }
             }
-//            Analysis analysis = ModuleManager.getAnalysisViewController().getAnalysis();
-//            String geneName = item.getGeneName();
-//            if (geneName != null) {
-//                Gene gene = analysis.getAnalysisParameters().getGeneSet().getGene(item.getGeneName());
-//                if (gene != null) {
-//                    if (gene.getTranscriptPreferred().equals(item.getTranscript())) {
-//                        setGraphic(new FontIcon("mdomz-star_rate"));
-//                    }
-//                }
-//            }
         }
     }
 }

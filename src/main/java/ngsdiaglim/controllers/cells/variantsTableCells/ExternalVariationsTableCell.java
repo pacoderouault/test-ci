@@ -1,18 +1,15 @@
 package ngsdiaglim.controllers.cells.variantsTableCells;
 
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.App;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
-import org.controlsfx.control.HyperlinkLabel;
 
 import java.util.List;
 
-public class ExternalVariationsTableCell<S, T> extends TableCell<S, List<ExternalVariation>> {
+public class ExternalVariationsTableCell<S> extends TableCell<S, List<ExternalVariation>> {
 
     private final HBox box = new HBox();
 

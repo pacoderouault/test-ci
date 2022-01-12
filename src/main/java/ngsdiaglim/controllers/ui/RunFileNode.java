@@ -1,13 +1,10 @@
 package ngsdiaglim.controllers.ui;
 
-import com.dlsc.gemsfx.DialogPane;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.analyse.RunFile;
@@ -60,8 +57,8 @@ public class RunFileNode extends Label {
     }
 
     private void deleteFileHandler() {
-        DialogPane.Dialog<ButtonType> dialog = Message.confirm(App.getBundle().getString("importanalysesdialog.msg.conf.deleteRunFile"));
-        dialog.getButton(ButtonType.YES).setOnAction(event -> {
+//        DialogPane.Dialog<ButtonType> dialog = Message.confirm(App.getBundle().getString("importanalysesdialog.msg.conf.deleteRunFile"));
+//        dialog.getButton(ButtonType.YES).setOnAction(event -> {
             try {
                 DAOController.getRunFilesDAO().removeRunFile(runFile.getId());
                 if (getParent() instanceof Pane) {
@@ -69,12 +66,12 @@ public class RunFileNode extends Label {
                     pane.getChildren().remove(this);
                 }
 
-                Message.hideDialog(dialog);
+//                Message.hideDialog(dialog);
             } catch (SQLException e) {
-                logger.error("Error when deleting run", e);
+                logger.error(e);
                 Message.error(e.getMessage(), e);
             }
-        });
+//        });
     }
 
     public RunFile getRunFile() {return runFile;}
