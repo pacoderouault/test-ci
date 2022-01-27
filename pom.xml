@@ -11,9 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
+        <java.version>17</java.version>
         <javafx.version>17.0.1</javafx.version>
         <charm.version>6.1.0</charm.version>
         <glisten.afterburner.version>2.0.5</glisten.afterburner.version>
@@ -397,6 +396,7 @@
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <version>${gluonfx.maven.plugin.version}</version>
                 <configuration>
+                    <nativeImageArgs>--allow-incomplete-classpath</nativeImageArgs>
                     <verbose>true</verbose>
                     <target>${gluonfx.target}</target>
                     <mainClass>${main.class}</mainClass>
