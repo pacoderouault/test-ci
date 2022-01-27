@@ -44,11 +44,10 @@ public class CNVImportDataController extends VBox {
 
     private SimpleObjectProperty<File> matrixFile = new SimpleObjectProperty<>();
 
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
-    public CNVImportDataController(AnalysisViewCNVController analysisViewCNVController, Analysis analysis) {
+    public CNVImportDataController(AnalysisViewCNVController analysisViewCNVController) {
         this.analysisViewCNVController = analysisViewCNVController;
-        this.analysis = analysis;
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVImportData.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -60,8 +59,26 @@ public class CNVImportDataController extends VBox {
         }
 
         initViews();
+
+        analysis.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
     }
 
+
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
+    }
 
     private void initViews() {
         matrixFile.addListener((obs, oldV, newV) -> {
@@ -71,18 +88,27 @@ public class CNVImportDataController extends VBox {
                 captureMatrixPathTf.setText(newV.getPath());
             }
         });
-        matrixFile.set(new File("/mnt/Data/dev/IdeaProjects/NGSDiagLim/dev_data/RunProton/Auto_BGM-CMT-021219_s5-torrent-server-vm_219.bcmatrix.xls"));
-        initPanelsCombobox();
+//        matrixFile.set(new File("/mnt/Data/dev/IdeaProjects/NGSDiagLim/dev_data/RunProton/Auto_BGM-CMT-021219_s5-torrent-server-vm_219.bcmatrix.xls"));
+//        initPanelsCombobox();
         initWindowSizeSpinner();
 
+//        // set default algo from library enrichment
+//        if (analysis.getAnalysisParameters().getTargetEnrichment().equals(TargetEnrichment.CAPTURE)) {
+//            algoTabPane.getSelectionModel().select(captureTab);
+//        } else {
+//            algoTabPane.getSelectionModel().select(ampliconTab);
+//        }
+    }
+
+    private void updateView() {
+        initPanelsCombobox();
         // set default algo from library enrichment
-        if (analysis.getAnalysisParameters().getTargetEnrichment().equals(TargetEnrichment.CAPTURE)) {
+        if (analysis.get().getAnalysisParameters().getTargetEnrichment().equals(TargetEnrichment.CAPTURE)) {
             algoTabPane.getSelectionModel().select(captureTab);
         } else {
             algoTabPane.getSelectionModel().select(ampliconTab);
         }
     }
-
 
     private void initPanelsCombobox() {
         try {
@@ -94,8 +120,8 @@ public class CNVImportDataController extends VBox {
             Message.error(e.getMessage(), e);
         }
 
-        capturePanelCb.getSelectionModel().select(analysis.getAnalysisParameters().getPanel());
-        ampliconPanelCb.getSelectionModel().select(analysis.getAnalysisParameters().getPanel());
+        capturePanelCb.getSelectionModel().select(analysis.get().getAnalysisParameters().getPanel());
+        ampliconPanelCb.getSelectionModel().select(analysis.get().getAnalysisParameters().getPanel());
     }
 
     private void initWindowSizeSpinner() {
@@ -120,7 +146,7 @@ public class CNVImportDataController extends VBox {
     private void importAmpliconDataHandler() {
         WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("cnv.importdata.lb.importingMatrix"));
         wid.exec("loadMatrix", inputParams -> {
-            AmpliconMatrixParser ampliconMatrixParser = new AmpliconMatrixParser(analysis, ampliconPanelCb.getValue(), matrixFile.get());
+            AmpliconMatrixParser ampliconMatrixParser = new AmpliconMatrixParser(analysis.get(), ampliconPanelCb.getValue(), matrixFile.get());
             try {
                 CovCopCNVData cnvData = ampliconMatrixParser.parseMatrixFile();
                 cnvData.setAlgorithm(TargetEnrichment.AMPLICON);
@@ -139,7 +165,7 @@ public class CNVImportDataController extends VBox {
     private void importCaptureDataHandler() {
         WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("cnv.importdata.lb.importingDepth"));
         wid.exec("loadMatrix", inputParams -> {
-            CaptureDepthParser captureDepthParser = new CaptureDepthParser(analysis, capturePanelCb.getValue(), windowSizeSpinner.getValue());
+            CaptureDepthParser captureDepthParser = new CaptureDepthParser(analysis.get(), capturePanelCb.getValue(), windowSizeSpinner.getValue());
             try {
                 CovCopCNVData cnvData = captureDepthParser.parseDepthFiles();
                 cnvData.setAlgorithm(TargetEnrichment.CAPTURE);

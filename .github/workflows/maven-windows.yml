@@ -18,16 +18,23 @@ jobs:
       - name: Visual Studio shell
         uses: egor-tensin/vs-shell@v1
 
-      - name: Setup GraalVM environment
-        uses: gluonhq/setup-graalvm@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # GraalVM GitHub Actions image
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.0.0.2'
+          java-version: '11'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Make staging directory
         run: mkdir staging
 
       - name: Gluon Build
         run: mvn -Pdesktop gluonfx:build gluonfx:package
+
+      # List the created files so we know which one to copy in the next step
+      - name: Show created files
+        run: ls -l target/gluonfx/x86_64-windows/
 
       - name: Copy native image to staging
         run: cp -r target/gluonfx/x86_64-windows/*.exe staging

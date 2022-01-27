@@ -179,6 +179,62 @@ public class AnalysisDAO extends DAO {
     }
 
 
+    public Analysis getAnalysis(long id) throws SQLException {
+        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, creation_datetime, " +
+                "creation_user, sample_name, run_id, analysisParameters_id, status, metadata" +
+                " FROM analysis WHERE id=?;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setLong(1, id);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                String path = rs.getString("path");
+                String vcf_path = rs.getString("vcf_path");
+                String bam_path = rs.getString("bam_path");
+                String depth_path = rs.getString("depth_path");
+                String coverage = rs.getString("coverage_path");
+                LocalDateTime creationDate = rs.getTimestamp("creation_datetime").toLocalDateTime();
+                String creationUser = rs.getString("creation_user");
+                String sampleName = rs.getString("sample_name");
+                long runID = rs.getLong("run_id");
+                long analysisParametersId = rs.getLong("analysisParameters_id");
+                String metadata = rs.getString("metadata");
+                AnalysisStatus status;
+                try {
+                    status = AnalysisStatus.valueOf(rs.getString("status"));
+                } catch (Exception e) {
+                    logger.error(e);
+                    status = AnalysisStatus.INPROGRESS;
+                }
+
+                AnalysisParameters analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysisParametersId);
+
+                Run run = DAOController.getRunsDAO().getRun(runID);
+
+                return new Analysis(
+                        id,
+                        name,
+                        path,
+                        vcf_path,
+                        bam_path,
+                        depth_path,
+                        coverage,
+                        run,
+                        creationDate,
+                        creationUser,
+                        sampleName,
+                        analysisParameters,
+                        status,
+                        metadata
+                );
+
+            }
+        }
+
+        return null;
+    }
+
+
     public Tuple<Integer, Integer> getAnalysisCount(long runId) throws SQLException {
         final String sql = "SELECT status FROM analysis WHERE run_id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {

@@ -49,7 +49,7 @@
 
     cell_selected_unfocused_color: cell_hover_color;
 
-    cell_selected_color: derive(accent_color, 90%);
+    cell_selected_color: derive(accent_color, 60%);
     cell_selected_hover_color: derive(accent_color, 70%);
     cell_selected_pressed_color: derive(accent_color, 60%);
 }
@@ -891,6 +891,7 @@ Text {
 .box-action-cell {
     -fx-spacing: 5;
     -fx-background-color: transparent;
+    -fx-alignment: center-left;
 }
 
 .button-action-cell, .box-action-cell .button {
@@ -1171,9 +1172,9 @@ Text {
 .tabletheme1-other {
     -fx-background-color: #ffe4f7ff !important;
 }
-.tabletheme1-other .table-cell:hover{
+/*.tabletheme1-other .table-cell:hover{
     -fx-background-color: #efd1e6ff !important;
-}
+}*/
 
 .tabletheme2-patho {
     -fx-background-color: #ff9d8bff !important;
@@ -1351,6 +1352,11 @@ Text {
     -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f99e1cff, #e24545ff);
 }
 
+.chart-settings-popover {
+    -fx-padding: 10px;
+}
+
+
 .pagination {
     -fx-page-information-visible: false;
 }
@@ -1370,8 +1376,8 @@ Text {
 }
 
 .chart-major-horizontal-lines {
-   -fx-fill: red !important;
-   -fx-stroke : red !important;
+   -fx-fill: grey !important;
+   -fx-stroke : grey !important;
    -fx-stroke-width: 2 !important;
 }
 
@@ -1498,4 +1504,44 @@ Text {
     -fx-opacity: 0.6;
     -fx-alignment: center;
     -fx-min-height:40px;
+}
+
+.variants-table .cell {
+    -fx-font-size: 12px;
+}
+
+.variants-table  .table-cell {
+    -fx-padding: 8 5 4 10;
+}
+
+.index-column.table-cell {
+    -fx-background-color: #f3f3f3;
+    -fx-font-family: 'Ubuntu medium';
+}
+
+.index-column.table-cell .text {
+    -fx-fill: #afafaf;
+}
+
+.ciq-record-cell-accepted ComboBox  {
+    -fx-background-color: YELLOWGREEN;
+}
+
+.ciq-record-cell-notaccepted ComboBox {
+    -fx-background-color: TOMATO;
+}
+
+.mean-value-indicator-line {
+  -fx-stroke-width: 2;
+  -fx-stroke: YELLOWGREEN;
+}
+
+.sd-low-value-indicator-line {
+  -fx-stroke-width: 2;
+  -fx-stroke:  	STEELBLUE;
+}
+
+.sd-high-value-indicator-line {
+  -fx-stroke-width: 2;
+  -fx-stroke: TOMATO;
 }

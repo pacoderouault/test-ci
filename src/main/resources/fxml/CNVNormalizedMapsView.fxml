@@ -34,7 +34,15 @@
             <ToggleButton fx:id="loesBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.loess" />
             <ToggleButton fx:id="geneAverageBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.geneAverage" />
             <ToggleButton fx:id="cusumBtn" mnemonicParsing="false" text="%cnvnormalizedview.btn.cusum" />
+            <Button fx:id="chartSettings" mnemonicParsing="false" onAction="#showChartSettingsPopover">
+               <graphic>
+                  <FontIcon iconLiteral="mdmz-settings" iconSize="14" />
+               </graphic>
+            </Button>
          </children>
+         <padding>
+            <Insets right="5.0" />
+         </padding>
       </HBox>
       <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
         <content>

@@ -20,6 +20,7 @@ import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GeneSet;
 import ngsdiaglim.modeles.biofeatures.Transcript;
+import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.modeles.variants.HotspotsSet;
 import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.NumberUtils;
@@ -91,6 +92,7 @@ public class AnalysisParametersCreateController extends VBox {
         initPanelsCombobox();
         initGeneSetsCombobox();
         initHotspotsSetCombobox();
+//        initCIQCombobox();
         initAnalysisParametersTable();
 
         try {
@@ -145,6 +147,21 @@ public class AnalysisParametersCreateController extends VBox {
         hotspotsCb.getItems().addAll(
                 createAnalysisParametersController.getAnalysisParametersHotspotsController().getHotspotsSetTable().getItems().filtered(HotspotsSet::isActive));
     }
+
+//    private void initCIQCombobox() {
+//        fillCIQCombobox();
+//        createAnalysisParametersController.getAnalysisParametersCIQController()
+//                .getCiqModelTableView().getItems().addListener((ListChangeListener<CIQModel>) change -> fillCIQCombobox());
+//    }
+//
+//    private void fillCIQCombobox() {
+//        ciqCb.getItems().clear();
+//        ciqCb.getItems().add(null);
+//        System.out.println(createAnalysisParametersController);
+//        System.out.println(createAnalysisParametersController.getAnalysisParametersCIQController());
+//        ciqCb.getItems().addAll(
+//                createAnalysisParametersController.getAnalysisParametersCIQController().getCiqModelTableView().getItems().filtered(CIQModel::isActive));
+//    }
 
     private String checkPanelName(String name) {
         if (StringUtils.isBlank(analysisNameTf.getText())) {

@@ -32,7 +32,10 @@ public enum PermissionsEnum {
     MANAGE_CNVS_PARAMETERS(App.getBundle().getString("permissions.runs_management.managecnvparmeters")),
     CREATE_REPORT(App.getBundle().getString("permissions.runs_management.createReports")),
     CREATE_REPORT_COMMENT(App.getBundle().getString("permissions.runs_management.createReportComments")),
-    EDIT_REPORT_COMMENT(App.getBundle().getString("permissions.runs_management.editReportComments"))
+    EDIT_REPORT_COMMENT(App.getBundle().getString("permissions.runs_management.editReportComments")),
+    MANAGE_CIQ(App.getBundle().getString("permissions.runs_management.manageCIQs")),
+    ADD_EDIT_CIQ(App.getBundle().getString("permissions.runs_management.addEditCiq")),
+    VALIDATE_CIQ(App.getBundle().getString("permissions.runs_management.validateCiq"))
     ;
 
     private final String permissionName;

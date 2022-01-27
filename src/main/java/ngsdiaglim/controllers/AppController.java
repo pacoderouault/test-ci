@@ -121,7 +121,7 @@ public class AppController {
 
     public void showAnalysisView(Analysis analysis) {
         ModuleManager.setAnalysisViewController(moduleContainer);
-        ModuleManager.getAnalysisViewController().setAnalysis(analysis);
+
     }
 
     @FXML
@@ -145,14 +145,17 @@ public class AppController {
 
 
     public void openAnalysis(Analysis analysis) {
+        App.get().getAppController().showAnalysisView(analysis);
         if (analysis != null) {
             Object[] messageArguments = {analysis.getName()};
             String message = BundleFormatter.format("home.module.analyseslist.msg.openingAnalysis", messageArguments);
             WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), message);
             wid.addTaskEndNotification(r -> {
-                if (r == 0) {
-                    App.get().getAppController().showAnalysisView(analysis);
-                }
+//                if (r == 0) {
+//                    App.get().getAppController().showAnalysisView(analysis);
+//                }
+                ModuleManager.getAnalysisViewController().setAnalysis(analysis);
+//                ModuleManager.getAnalysisViewController().getVariantsViewController().setDividerPosition();
             });
             wid.exec("LoadPanels", inputParam -> {
                 try {

@@ -1,5 +1,6 @@
 package ngsdiaglim.controllers.analysisview;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListView;
@@ -28,10 +29,9 @@ public class AnalysisViewRunInfoController extends HBox {
     @FXML private TextField runCreationUserTf;
     @FXML private ListView<RunFile> runFilesLv;
 
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
-    public AnalysisViewRunInfoController(Analysis analysis) {
-        this.analysis = analysis;
+    public AnalysisViewRunInfoController() {
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewRunInfo.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -41,24 +41,42 @@ public class AnalysisViewRunInfoController extends HBox {
             logger.error(e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
-        initView();
+        analysis.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                initView();
+            } else {
+                clearFields();
+            }
+        });
+    }
+
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
     }
 
     private void initView() {
         runFilesLv.setCellFactory(data -> new RunFileListCell());
-        if (analysis != null) {
-            analysis.getRun().loadRunFiles();
-            runNameTf.setText(analysis.getRun().getName());
-            runDateTf.setText(DateFormatterUtils.formatLocalDate(analysis.getRun().getDate()));
-            runCreationDateTf.setText(DateFormatterUtils.formatLocalDate(analysis.getRun().getCreationDate()));
-            runCreationUserTf.setText(analysis.getRun().getCreationUser());
+        if (analysis.get() != null) {
+            analysis.get().getRun().loadRunFiles();
+            runNameTf.setText(analysis.get().getRun().getName());
+            runDateTf.setText(DateFormatterUtils.formatLocalDate(analysis.get().getRun().getDate()));
+            runCreationDateTf.setText(DateFormatterUtils.formatLocalDate(analysis.get().getRun().getCreationDate()));
+            runCreationUserTf.setText(analysis.get().getRun().getCreationUser());
             try {
-                analysesNbTf.setText(String.valueOf(analysis.getRun().getAnalyses().size()));
+                analysesNbTf.setText(String.valueOf(analysis.get().getRun().getAnalyses().size()));
             } catch (SQLException e) {
                 analysesNbTf.setText("NA");
                 logger.error(e);
             }
-            runFilesLv.getItems().setAll(analysis.getRun().getRunFiles());
+            runFilesLv.getItems().setAll(analysis.get().getRun().getRunFiles());
         } else {
             clearFields();
         }

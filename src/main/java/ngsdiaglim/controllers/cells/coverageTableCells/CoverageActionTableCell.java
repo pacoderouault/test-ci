@@ -6,6 +6,7 @@ import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
 import ngsdiaglim.modeles.igv.IGVLinks;
+import ngsdiaglim.modeles.igv.IGVLinks2;
 import ngsdiaglim.modules.ModuleManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ public class CoverageActionTableCell extends TableCell<CoverageRegion, Void> {
 
     private void viewRegionOnIGV() {
 //        IGVHandler igv = App.get().getIgvHandler();
-        IGVLinks igv = App.get().getIgvLinks();
+        IGVLinks2 igv = App.get().getIgvLinks2();
         CoverageRegion cr = getTableRow().getItem();
         if (cr != null) {
             try {

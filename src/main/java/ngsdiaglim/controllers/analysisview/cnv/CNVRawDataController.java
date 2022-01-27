@@ -45,24 +45,24 @@ public class CNVRawDataController extends VBox {
     @FXML private TableColumn<CovCopRegion, Integer> endCol;
     @FXML private TableColumn<CovCopRegion, String> geneCol;
     @FXML private TableColumn<CovCopRegion, String> nameCol;
+    private final int defaultColumnsCount = 5;
     private final FontIcon searchIcon = new FontIcon("mdmz-search");
 
     private final AnalysisViewCNVController analysisViewCNVController;
-    private final Analysis analysis;
+//    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<CovCopCNVData> covcopCnvData = new SimpleObjectProperty<>();
 
     private final Tooltip genderBtnTooltip = new Tooltip(App.getBundle().getString("cnv.rawdata.tp.switchgender"));
     private final Tooltip setControlBtnTooltip = new Tooltip(App.getBundle().getString("cnv.rawdata.tp.setcontrol"));
     private final Tooltip unsetControlBtnTooltip = new Tooltip(App.getBundle().getString("cnv.rawdata.tp.unsetcontrol"));
 
-    private ObservableList<Integer> searchRsltRowIndex = FXCollections.observableArrayList();
+    private final ObservableList<Integer> searchRsltRowIndex = FXCollections.observableArrayList();
     private int searchRsltCursor = 0;
     private String lastQuery = "";
+    private final String allRegionsPool = "All regions";
 
-
-    public CNVRawDataController(AnalysisViewCNVController analysisViewCNVController, Analysis analysis, CovCopCNVData covCopCNVData) {
+    public CNVRawDataController(AnalysisViewCNVController analysisViewCNVController) {
         this.analysisViewCNVController = analysisViewCNVController;
-        this.analysis = analysis;
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVRawData.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -72,10 +72,27 @@ public class CNVRawDataController extends VBox {
             logger.error(e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
-        this.covcopCnvData.set(covCopCNVData);
+//        this.covcopCnvData.set(covCopCNVData);
         initView();
+
+        covcopCnvData.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
     }
 
+    public CovCopCNVData getCovcopCnvData() {
+        return covcopCnvData.get();
+    }
+
+    public SimpleObjectProperty<CovCopCNVData> covcopCnvDataProperty() {
+        return covcopCnvData;
+    }
+
+    public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(covcopCnvData);
+    }
 
     private void initView() {
         initRawDataTable();
@@ -86,11 +103,18 @@ public class CNVRawDataController extends VBox {
         unsetControlBtnTooltip.setShowDelay(Duration.ZERO);
 
         searchTf.setLeft(searchIcon);
+    }
+
+
+    private void updateView() {
+        fillPoolCb();
 
         // select first pool
         poolCb.getSelectionModel().select(0);
-    }
 
+        initSampleColumns();
+        rawdataTable.getColumns().forEach(c -> c.setReorderable(false));
+    }
 
     private void initRawDataTable() {
 
@@ -99,13 +123,18 @@ public class CNVRawDataController extends VBox {
         endCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getEnd()).asObject());
         geneCol.setCellValueFactory(data -> data.getValue().geneProperty());
         nameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
-        initSampleColumns();
 
-        rawdataTable.getColumns().forEach(c -> c.setReorderable(false));
     }
 
 
     private void initSampleColumns() {
+
+        // delete old sample columns
+        if (rawdataTable.getColumns().size() > defaultColumnsCount) {
+            rawdataTable.getColumns().remove(defaultColumnsCount, rawdataTable.getColumns().size());
+        }
+
+
         int sampleIdx = 0;
         for (String sampleName : covcopCnvData.get().getSamples().keySet()) {
             CNVSample sample = covcopCnvData.get().getSamples().get(sampleName);
@@ -142,13 +171,9 @@ public class CNVRawDataController extends VBox {
 
 
     private void initPoolCb() {
-        String allRegions = "All regions";
-        poolCb.getItems().setAll(covcopCnvData.get().getCovcopRegions().keySet());
-        poolCb.getItems().add(allRegions);
-
         poolCb.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             closeSearch();
-            if (newV.equals(allRegions)) {
+            if (newV == null || newV.equals(allRegionsPool)) {
                 rawdataTable.setItems(covcopCnvData.get().getAllCovcopRegionsAsList());
             } else {
                 if (covcopCnvData.get().getCovcopRegions().containsKey(newV)) {
@@ -156,7 +181,12 @@ public class CNVRawDataController extends VBox {
                 }
             }
         });
+    }
 
+
+    private void fillPoolCb() {
+        poolCb.getItems().setAll(covcopCnvData.get().getCovcopRegions().keySet());
+        poolCb.getItems().add(allRegionsPool);
     }
 
 

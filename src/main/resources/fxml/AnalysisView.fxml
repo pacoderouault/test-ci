@@ -36,6 +36,7 @@
                   <ToggleButton fx:id="metaDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.analysisInfo" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="reportViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.report" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="runinfoViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.runinfo" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="ciqViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.ciq" toggleGroup="$analysisViewsToggleGroup" />
                </children>
                <HBox.margin>
                   <Insets top="5.0" />

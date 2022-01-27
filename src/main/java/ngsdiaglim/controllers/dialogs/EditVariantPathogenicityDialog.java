@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.cells.ValidateVariantPathogenicityTableCell;
 import ngsdiaglim.database.DAOController;
@@ -108,6 +109,16 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
                     setText(DateFormatterUtils.formatLocalDateTime(item));
                 }
             }
+        });
+
+        commentaryCol.setCellFactory(tc -> {
+            TableCell<VariantPathogenicity, String> cell = new TableCell<>();
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(commentaryCol.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+            return cell ;
         });
         commentaryCol.setCellValueFactory(data -> data.getValue().commentaryProperty());
 

@@ -57,6 +57,7 @@
                   <TableColumn fx:id="colBamFile" prefWidth="200.0" text="%importanalysesdialog.table.colBam" />
                   <TableColumn fx:id="colDepth" prefWidth="200.0" text="%importanalysesdialog.table.colDepth" />
                   <TableColumn fx:id="colAnalysisParameters" prefWidth="200.0" sortable="false" text="%importanalysesdialog.table.colPanel" />
+                  <TableColumn fx:id="colCIQ" prefWidth="75.0" text="%importanalysesdialog.table.colCIQ" />
                   <TableColumn fx:id="colActions" prefWidth="50.0" sortable="false" />
               </columns>
                <columnResizePolicy>

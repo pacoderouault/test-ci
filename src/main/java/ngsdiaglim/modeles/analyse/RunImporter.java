@@ -7,6 +7,8 @@ import ngsdiaglim.App;
 import ngsdiaglim.controllers.WorkIndicatorDialog;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.exceptions.DuplicateAnalysisInRun;
+import ngsdiaglim.modeles.ciq.CIQHotspot;
+import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.modeles.parsers.BamParser;
 import ngsdiaglim.modeles.parsers.SamtoolsDepthParser;
 import ngsdiaglim.modeles.parsers.VCFParser;
@@ -86,7 +88,8 @@ public class RunImporter {
             File depthFile = analysisInputData.getDepthFile();
             File targetDepthFile = null;
             AnalysisParameters analysisParameters = analysisInputData.getAnalysisParameters();
-
+            CIQModel ciqModel = analysisInputData.getCiqModel();
+            System.out.println(ciqModel.getName());
             // create analysis directory in the analysis dir of the run
             File analysisDirectory = Paths.get(targetDirectory.toString(), analysisName).toFile();
             if (analysisDirectory.exists()) {
@@ -175,6 +178,11 @@ public class RunImporter {
                     VCFParser vcfParser = new VCFParser(targetVCFFile, analysisParameters, run);
                     vcfParser.parseVCF(true);
 
+                    // set analysis as CIQ
+                    if (ciqModel != null) {
+                        DAOController.getCiqAnalysisDAO().addAnalysisCIQ(analysis_id, ciqModel.getId());
+                    }
+
                     for (Annotation annotation : vcfParser.getAnnotations()) {
                         DAOController.getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
 
@@ -183,7 +191,26 @@ public class RunImporter {
                             analysisIds[i] = (int) run.getAnalyses().get(i).getId();
                         }
                         annotation.getVariant().setOccurrenceInRun(DAOController.getVariantAnalysisDAO().countRunOccurrence(annotation.getVariant().getId(), analysisIds));
+
+                        // check for CIQ hotspots variants
+                        if (ciqModel != null) {
+                            CIQHotspot hotspot = ciqModel.getHotspot(annotation.getVariant());
+                            if (hotspot != null) {
+                                DAOController.getCiqRecordDAO().addCIQRecord(
+                                        ciqModel,
+                                        hotspot,
+                                        analysis_id,
+                                        annotation.getDepth(),
+                                        annotation.getAlleleDepth(),
+                                        annotation.getVaf());
+                            }
+                        }
                     }
+
+//                    // set analysis as CIQ
+//                    if (ciqModel != null) {
+//                        DAOController.getCiqAnalysisDAO().addAnalysisCIQ(analysis_id, ciqModel.getId());
+//                    }
                 }
 
                 // force reloading analyses of the run

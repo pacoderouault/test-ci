@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root styleClass="module-box" type="VBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox styleClass="module-box-header">
+         <children>
+            <Label text="%ciq.title" />
+         </children>
+      </HBox>
+      <VBox spacing="5.0" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label text="%ciq.lb.name" />
+                  <TextField fx:id="ciqNameTf" editable="false" />
+                  <Label text="%ciq.lb.barcode" />
+                  <TextField fx:id="ciqBarcodeTf" editable="false" />
+               </children>
+            </HBox>
+            <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox styleClass="module-box">
+                     <children>
+                        <HBox styleClass="module-box-header">
+                           <children>
+                              <Label text="%ciq.lb.hotspotList" />
+                           </children>
+                        </HBox>
+                        <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                           <children>
+                              <ListView fx:id="ciqHotspotLv" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
+                     <children>
+                        <HBox styleClass="module-box-header">
+                           <children>
+                              <Label text="%ciq.lb.recordDetail">
+                                 <HBox.margin>
+                                    <Insets right="30.0" />
+                                 </HBox.margin></Label>
+                              <HBox alignment="BOTTOM_LEFT" spacing="5.0">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <Label styleClass="font-medium" text="%ciq.lb.mutation">
+                                             <VBox.margin>
+                                                <Insets right="30.0" />
+                                             </VBox.margin></Label>
+                                          <TextField fx:id="mutationTf" editable="false" prefWidth="300.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label styleClass="font-medium" text="%ciq.lb.vaftarget" />
+                                          <TextField fx:id="vafTargetTf" editable="false" prefWidth="100.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label styleClass="font-medium" text="%ciq.lb.mean" />
+                                          <TextField fx:id="meanTf" editable="false" prefWidth="100.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label styleClass="font-medium" text="%ciq.lb.sd" />
+                                          <TextField fx:id="sdTf" editable="false" prefWidth="100.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                        <VBox spacing="10.0" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox fx:id="chartContainer" VBox.vgrow="SOMETIMES" />
+                              <TableView fx:id="ciqRecordTable" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="runCol" prefWidth="130.0" text="%ciq.lb.recordTable.runCol" />
+                                    <TableColumn fx:id="analyseCol" prefWidth="130.0" text="%ciq.lb.recordTable.analyseCol" />
+                                    <TableColumn fx:id="datetimeCol" prefWidth="200.0" text="%ciq.lb.recordTable.dateCol" />
+                                    <TableColumn fx:id="vafCol" prefWidth="75.0" text="%ciq.lb.recordTable.vafCol" />
+                                    <TableColumn fx:id="dpCol" prefWidth="75.0" text="%ciq.lb.recordTable.dpCol" />
+                                    <TableColumn fx:id="aoCol" prefWidth="75.0" text="%ciq.lb.recordTable.aoCol" />
+                                    <TableColumn fx:id="acceptedCol" prefWidth="150.0" text="%ciq.lb.recordTable.acceptCol" />
+                                    <TableColumn fx:id="commentCol" prefWidth="250.0" text="%ciq.lb.recordTable.commentCol" />
+                                    <TableColumn fx:id="validatorCol" prefWidth="130.0" text="%ciq.lb.recordTable.validateurCol" />
+                                    <TableColumn fx:id="actionsCol" prefWidth="75.0" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</fx:root>

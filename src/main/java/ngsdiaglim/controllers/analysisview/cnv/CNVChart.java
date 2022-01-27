@@ -30,17 +30,23 @@ import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.cnv.CovCopRegion;
 import ngsdiaglim.cnv.caller.CNVDetectionRobustZScore;
 import ngsdiaglim.controllers.charts.ColorsList;
+import ngsdiaglim.enumerations.CNVChartHeight;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.stats.ZTest;
 import ngsdiaglim.utils.MathUtils;
 import ngsdiaglim.utils.NumberUtils;
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CNVChart extends XYChart {
+
+    private final static Logger logger = LogManager.getLogger(CNVChart.class);
 
     private final CovCopCNVData cnvData;
     private final CNVSample sample;
@@ -60,12 +66,12 @@ public class CNVChart extends XYChart {
     private DoubleDataSet geneAverageDataSet;
     private final List<DefaultErrorDataSet> loessDataSets = new ArrayList<>();
     private int visibleMarkersCount;
-    private static final double maxYValue = 2.9;
+    private static final double maxYValue = 2.5;
     private final boolean autoMode = Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_AUTO_DETECTION));
     private final double delThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DEL_THRESHOLD));
     private final double dupThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DUP_THRESHOLD));
     private final static LoessInterpolator loessInterpolator = new LoessInterpolator(0.25, 4, 1);
-    private final static double height = 200;
+    private static double height;
     public final static Color deletionColor = Color.valueOf("#ffdcaaff");
     public final static Color duplicationColor = Color.valueOf("#e08e8eff");
     public final static Color cusumPosColor = Color.valueOf("#87008731");
@@ -92,7 +98,6 @@ public class CNVChart extends XYChart {
         this.xAxis = (CategoryAxis) getXAxis();
         this.yAxis = (DefaultNumericAxis) getYAxis();
         init();
-
     }
 
 //    public XYChart getChart() {return chart;}
@@ -184,6 +189,7 @@ public class CNVChart extends XYChart {
 
 
     private void initChart() {
+        setChartHeight();
         setLegendVisible(false);
         setHorizontalGridLinesVisible(true);
         setVerticalGridLinesVisible(false);
@@ -192,9 +198,25 @@ public class CNVChart extends XYChart {
         setMinHeight(height);
         setMaxHeight(height);
         getGridRenderer().getHorizontalMajorGrid().setStroke(Color.LIGHTGREY);
-        getGridRenderer().getHorizontalMinorGrid().setVisible(true);
         // disable toolbar
         setTriggerDistance(0);
+    }
+
+    private void setChartHeight() {
+        User user = App.get().getLoggedUser();
+        String chartHeightString = user.getPreferences().getPreference(DefaultPreferencesEnum.CNV_CHART_HEIGHT);
+        CNVChartHeight chartHeight;
+        if (chartHeightString != null) {
+            try {
+                chartHeight = CNVChartHeight.valueOf(chartHeightString);
+            } catch (Exception e) {
+                logger.warn(e);
+                chartHeight = CNVChartHeight.MEDIUM;
+            }
+        } else {
+            chartHeight = CNVChartHeight.MEDIUM;
+        }
+        height = chartHeight.getHeight();
     }
 
 
@@ -205,12 +227,13 @@ public class CNVChart extends XYChart {
         xAxis.setTickLabelsVisible(false);
         xAxis.setAutoRanging(true);
         xAxis.setCategories(categories);
+        xAxis.setUnit(null);
     }
 
 
     private void initYAxis() {
-        yAxis.set(-0.5, 3.5);
-        yAxis.setAutoUnitScaling(false);
+//        yAxis.set(-0.5, 3.5);
+        yAxis.set(-0.3, maxYValue + 0.3);
         yAxis.setAutoRanging(false);
         yAxis.setAutoRangeRounding(false);
         yAxis.setAutoGrowRanging(false);
@@ -227,6 +250,7 @@ public class CNVChart extends XYChart {
             }
         });
         yAxis.setPadding(new Insets(0, 0, 0, 0));
+        yAxis.setUnit(null);
     }
 
 

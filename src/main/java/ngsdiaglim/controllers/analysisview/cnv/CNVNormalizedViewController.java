@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview.cnv;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -45,13 +46,13 @@ public class CNVNormalizedViewController extends VBox {
     private final CNVNormalizedTableViewController cnvNormalizedTableViewController;
     private final CNVNormalizedMapsViewController cnvNormalizedMapsViewController;
 
+    private final SimpleObjectProperty<CovCopCNVData> covcopCnvData = new SimpleObjectProperty<>();
 
-    public CNVNormalizedViewController(AnalysisViewCNVController analysisViewCNVController, CovCopCNVData covcopCNVData) {
+    public CNVNormalizedViewController(AnalysisViewCNVController analysisViewCNVController) {
         this.analysisViewCNVController = analysisViewCNVController;
 //        cnvNormalizedTableViewController = null;
-        cnvNormalizedTableViewController = new CNVNormalizedTableViewController(this, covcopCNVData);
-//        cnvNormalizedMapsViewController = null;
-        cnvNormalizedMapsViewController = new CNVNormalizedMapsViewController(this, covcopCNVData);
+        cnvNormalizedTableViewController = new CNVNormalizedTableViewController();
+        cnvNormalizedMapsViewController = new CNVNormalizedMapsViewController();
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVNormalizedView.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -63,12 +64,37 @@ public class CNVNormalizedViewController extends VBox {
         }
 
         initView();
+
+        covcopCnvData.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
+    }
+
+
+    public CovCopCNVData getCovcopCnvData() {
+        return covcopCnvData.get();
+    }
+
+    public SimpleObjectProperty<CovCopCNVData> covcopCnvDataProperty() {
+        return covcopCnvData;
+    }
+
+    public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(covcopCnvData);
     }
 
     private void initView() {
         initRangeSlider();
         initAutoModeMode();
         initCNVSizeSpinner();
+    }
+
+    private void updateView() {
+        cnvNormalizedTableViewController.setCovcopCnvData(covcopCnvData.get());
+//        cnvNormalizedMapsViewController = null;
+        cnvNormalizedMapsViewController.setCovcopCnvData(covcopCnvData.get());
     }
 
     private void initRangeSlider() {

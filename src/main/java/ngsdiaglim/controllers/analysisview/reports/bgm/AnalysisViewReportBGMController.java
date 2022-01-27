@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview.reports.bgm;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,10 +49,9 @@ public class AnalysisViewReportBGMController extends VBox {
 
     private ChangeListener<Number> paneIdxListener;
 
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
-    public AnalysisViewReportBGMController(Analysis analysis) {
-        this.analysis = analysis;
+    public AnalysisViewReportBGMController() {
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewReportBGM.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -63,15 +63,11 @@ public class AnalysisViewReportBGMController extends VBox {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
-        reportPersonalInformation = new ReportPersonalInformation(this);
-        reportSelectGenes = new ReportSelectGenes(this);
-        reportSelectVariants = new ReportSelectVariants(this);
-        reportComments = new ReportComments(this);
+        analysis.addListener((obs, oldV, newV) -> {
+            clear();
+            updateView();
+        });
 
-        reportPanes.add(reportPersonalInformation);
-        reportPanes.add(reportSelectGenes);
-        reportPanes.add(reportSelectVariants);
-        reportPanes.add(reportComments);
 
         init();
     }
@@ -85,12 +81,25 @@ public class AnalysisViewReportBGMController extends VBox {
                 gotToNextStepBtn.setDisable(newV.intValue() >= reportPanes.size() - 1);
                 createReportBtn.setDisable(newV.intValue() < reportPanes.size() - 1);
             }
-
         };
         paneIdx.addListener(paneIdxListener);
-        paneIdx.setValue(0);
+        paneIdx.set(0);
     }
 
+    private void updateView() {
+        reportPersonalInformation = new ReportPersonalInformation(this);
+        reportSelectGenes = new ReportSelectGenes(this);
+        reportSelectVariants = new ReportSelectVariants(this);
+        reportComments = new ReportComments(this);
+
+        reportPanes.add(reportPersonalInformation);
+        reportPanes.add(reportSelectGenes);
+        reportPanes.add(reportSelectVariants);
+        reportPanes.add(reportComments);
+
+        paneIdx.set(-1);
+        paneIdx.setValue(0);
+    }
 
     @FXML
     private void gotToPreviousStep() {
@@ -104,7 +113,17 @@ public class AnalysisViewReportBGMController extends VBox {
     }
 
 
-    public Analysis getAnalysis() {return analysis;}
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
+    }
 
     public ReportPersonalInformation getReportPersonalInformation() {return reportPersonalInformation;}
 
@@ -118,8 +137,8 @@ public class AnalysisViewReportBGMController extends VBox {
 
     public ReportData getReportData() {
         return new ReportDataBuilder()
-                .setAnalysis(analysis)
-                .setRun(analysis.getRun())
+                .setAnalysis(analysis.get())
+                .setRun(analysis.get().getRun())
                 .setGender(reportPersonalInformation.getGender())
                 .setFirstName(reportPersonalInformation.getFirstName())
                 .setLastName(reportPersonalInformation.getLastName())
@@ -153,7 +172,7 @@ public class AnalysisViewReportBGMController extends VBox {
 
     private String setReportInitialName() {
         final String delim = "_";
-        return analysis.getRun().getName() + delim +
+        return analysis.get().getRun().getName() + delim +
                 reportPersonalInformation.getBarcode() + delim +
                 reportPersonalInformation.getFirstName() + delim +
                 reportPersonalInformation.getLastName() +
@@ -195,11 +214,11 @@ public class AnalysisViewReportBGMController extends VBox {
     }
 
     public void clear() {
-        paneIdx.removeListener(paneIdxListener);
-        reportPersonalInformation.clear();
-        reportSelectGenes.clear();
-        reportSelectVariants.clear();
-        reportComments.clear();
+//        paneIdx.removeListener(paneIdxListener);
+        if (reportPersonalInformation != null) reportPersonalInformation.clear();
+        if (reportSelectGenes != null) reportSelectGenes.clear();
+        if (reportSelectVariants != null) reportSelectVariants.clear();
+        if (reportComments != null) reportComments.clear();
 
         reportPersonalInformation = null;
         reportSelectGenes = null;

@@ -12,12 +12,15 @@ import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.analyse.AnalysisInputData;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.sql.SQLException;
 
 public class ImportAnalysisAnalysisParametersTableCell extends TableCell<AnalysisInputData, AnalysisParameters> {
 
+    private static final Logger logger = LogManager.getLogger(ImportAnalysisAnalysisParametersTableCell.class);
     private static ObservableList<AnalysisParameters> analysisParametersList;
     private final static Tooltip expendTp = new Tooltip(App.getBundle().getString("importanalysesdialog.tp.expandPanels"));
 
@@ -25,7 +28,7 @@ public class ImportAnalysisAnalysisParametersTableCell extends TableCell<Analysi
         try {
             analysisParametersList = DAOController.getAnalysisParametersDAO().getActiveAnalysisParameters();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         expendTp.setShowDelay(Duration.ZERO);
     }

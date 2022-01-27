@@ -11,10 +11,10 @@ import ngsdiaglim.stats.ZTest;
 
 public class CNVTableCellFactory extends TableCell<CovCopRegion, Double> {
 
-    private static final String[] cssClasses = new String[]{"delCell", "delCellLight", "dupCell", "dupCellLight"};
-    private static final boolean autoModeEnabled = Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_AUTO_DETECTION));
-    private static final double delThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DEL_THRESHOLD));
-    private static final double dupThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DUP_THRESHOLD));
+    private final String[] cssClasses = new String[]{"delCell", "delCellLight", "dupCell", "dupCellLight"};
+    private final boolean autoModeEnabled = Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_AUTO_DETECTION));
+    private final double delThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DEL_THRESHOLD));
+    private final double dupThreshold = Double.parseDouble(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.CNV_DUP_THRESHOLD));
 
     @Override
     protected void updateItem(Double item, boolean empty) {
@@ -23,7 +23,8 @@ public class CNVTableCellFactory extends TableCell<CovCopRegion, Double> {
         // calling super here is very important - don't skip this!
         getStyleClass().removeAll(cssClasses);
         getStyleClass().add("allCells");
-        if (item == null) {
+        setGraphic(null);
+        if (item == null || empty) {
             setText("");
             getStyleClass().add("allCells");
         } else {
@@ -45,9 +46,7 @@ public class CNVTableCellFactory extends TableCell<CovCopRegion, Double> {
                         }
                     }
                 } else {
-//
                     if (item <= delThreshold) {
-//                    Platform.runLater(() -> getStyleClass().add("delCell"));
                         getStyleClass().add("delCell");
                     } else if (item <= (delThreshold + 0.1) &&
                             hasValidNeighboard(this, CNVTypes.DELETION, delThreshold)) {

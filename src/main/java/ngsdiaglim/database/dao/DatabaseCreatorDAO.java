@@ -60,6 +60,11 @@ public class DatabaseCreatorDAO extends DAO {
         createReportGeneCommentary();
         createReportMutationCommentary();
         createReportOtherCommentary();
+        createCIQModelTable();
+        createCIQHotspotTable();
+        createCIQAnalysisTable();
+        createCIQRecordTable();
+        createCIQRecordHistoryTable();
     }
 
     private void createUsersTable() throws SQLException {
@@ -706,6 +711,83 @@ public class DatabaseCreatorDAO extends DAO {
                 "title VARCHAR(MAX), " +
                 "commentary VARCHAR(MAX));";
         try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+
+    private void createCIQModelTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS CIQModel ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "name VARCHAR(MAX), " +
+                "barcode VARCHAR(MAX), " +
+                "is_active BOOLEAN DEFAULT True, " +
+                "UNIQUE (barcode));";
+        try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+
+    private void createCIQHotspotTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS CIQHotspot ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "ciq_id INT, " +
+                "name VARCHAR(MAX), " +
+                "contig VARCHAR_IGNORECASE(10), " +
+                "position INT, " +
+                "ref VARCHAR_IGNORECASE, " +
+                "alt VARCHAR_IGNORECASE, " +
+                "targetVaf FLOAT, " +
+                "FOREIGN KEY (ciq_id) REFERENCES CIQModel(id) ON DELETE CASCADE);";
+        try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+    private void createCIQAnalysisTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS CIQAnalysis ( " +
+                "ciq_id INT NOT NULL, " +
+                "analysis_id INT NOT NULL, " +
+                "PRIMARY KEY(ciq_id, analysis_id), " +
+                "FOREIGN KEY (ciq_id) REFERENCES CIQModel(id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (analysis_id) REFERENCES analysis(id) ON DELETE CASCADE);";
+        try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+    private void createCIQRecordTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS CIQRecord ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "ciqModel_id INT NOT NULL, " +
+                "ciqHotspot_id INT NOT NULL, " +
+                "analysis_id INT NOT NULL, " +
+                "dp INT, " +
+                "ao INT, " +
+                "vaf FLOAT, " +
+                "FOREIGN KEY (ciqModel_id) REFERENCES CIQModel(id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (analysis_id) REFERENCES analysis(id) ON DELETE CASCADE);";
+        try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+    private void createCIQRecordHistoryTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS CIQRecordHistory ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "ciqRecord_id INT NOT NULL, " +
+                "user_id INT, " +
+                "user_name VARCHAR(255), " +
+                "accepted_before VARCHAR, " +
+                "accepted_after VARCHAR, " +
+                "mean FLOAT, " +
+                "sd FLOAT, " +
+                "datetime TIMESTAMP, " +
+                "comment VARCHAR(MAX), " +
+                "foreign key (ciqRecord_id) references CIQRecord(id) ON DELETE CASCADE);";
+
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)){
             stm.executeUpdate();
         }
     }

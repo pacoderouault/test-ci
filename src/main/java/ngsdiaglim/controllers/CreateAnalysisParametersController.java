@@ -19,11 +19,13 @@ public class CreateAnalysisParametersController extends Module {
     @FXML private Tab panelsTab;
     @FXML private Tab genesTranscriptsTab;
     @FXML private Tab hotspotsTab;
+    @FXML private Tab ciqsTab;
 
     private AnalysisParametersCreateController analysisParametersCreateController;
     private AnalysisParametersPanelsController analysisParametersPanelsController;
     private AnalysisParametersGenesTrancriptsController analysisParametersGenesTrancriptsController;
     private AnalysisParametersHotspotsController analysisParametersHotspotsController;
+    private AnalysisParametersCIQController analysisParametersCIQController;
 
 //    private final Tooltip inactivePanelTooltip = new Tooltip(App.getBundle().getString("createAnalasisParameters.tooltip.inactivePanel"));
 
@@ -43,10 +45,6 @@ public class CreateAnalysisParametersController extends Module {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
             logger.error("Problem when loading the create analysis panel", e);
         }
-    }
-
-    @FXML
-    private void initialize() {
         analysisParametersPanelsController = new AnalysisParametersPanelsController(this);
         panelsTab.setContent(analysisParametersPanelsController);
 
@@ -58,6 +56,14 @@ public class CreateAnalysisParametersController extends Module {
 
         analysisParametersCreateController = new AnalysisParametersCreateController(this);
         analysisParamsTab.setContent(analysisParametersCreateController);
+
+        analysisParametersCIQController = new AnalysisParametersCIQController(this);
+        ciqsTab.setContent(analysisParametersCIQController);
+    }
+
+    @FXML
+    private void initialize() {
+
     }
 
     public AnalysisParametersCreateController getAnalysisParametersCreateController() {return analysisParametersCreateController;}
@@ -67,4 +73,6 @@ public class CreateAnalysisParametersController extends Module {
     public AnalysisParametersGenesTrancriptsController getAnalysisParametersGenesTrancriptsController() {return analysisParametersGenesTrancriptsController;}
 
     public AnalysisParametersHotspotsController getAnalysisParametersHotspotsController() {return analysisParametersHotspotsController;}
+
+    public AnalysisParametersCIQController getAnalysisParametersCIQController() {return analysisParametersCIQController;}
 }

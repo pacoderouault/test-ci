@@ -48,6 +48,8 @@ public class HomeController extends Module {
     @FXML private Button addRunBtn;
     @FXML private Button addAnalysesBtn;
     @FXML private HBox statisticsContainer;
+    private final ProgressIndicator progressIndicator = new ProgressIndicator();
+    private final Label analysesTablePlaceholderLb = new Label(App.getBundle().getString("home.module.analyseslist.table.msg.emptyAnalyses"));
 
     private Thread statisticsThread;
 
@@ -233,7 +235,22 @@ public class HomeController extends Module {
     public void fillAnalysesTable() throws SQLException {
         Run selectedRun = runsTable.getSelectionModel().getSelectedItem();
         if (selectedRun != null) {
-            analysesTable.setItems(DAOController.getAnalysisDAO().getAnalysis(selectedRun));
+            analysesTable.setItems(null);
+            analysesTable.setPlaceholder(progressIndicator);
+            new Thread(() -> {
+                try {
+                    ObservableList<Analysis> analyses = DAOController.getAnalysisDAO().getAnalysis(selectedRun);
+                    Platform.runLater(() -> {
+                        analysesTable.setItems(analyses);
+                        analysesTable.setPlaceholder(analysesTablePlaceholderLb);
+                    });
+                } catch (SQLException e) {
+                    logger.error(e);
+                    Platform.runLater(() -> Message.error(e.getMessage(), e));
+                }
+            }).start();
+
+
         }
         else {
             analysesTable.getItems().clear();

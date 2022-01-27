@@ -37,10 +37,10 @@ public class AnalysisViewCoverageController extends HBox {
     @FXML private TableColumn<CoverageRegion, String> genesCol;
     @FXML private TableColumn<CoverageRegion, Void> actionsCol;
 
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
-    public AnalysisViewCoverageController(Analysis analysis) {
-        this.analysis = analysis;
+    public AnalysisViewCoverageController() {
+
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewCoverage.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -51,6 +51,24 @@ public class AnalysisViewCoverageController extends HBox {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         initView();
+
+        analysis.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
+    }
+
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
     }
 
     private void initView() {
@@ -64,9 +82,11 @@ public class AnalysisViewCoverageController extends HBox {
         genesCol.setCellValueFactory(data -> {
             StringJoiner sj = new StringJoiner(";");
             try {
-                analysis.getAnalysisParameters().getPanel().getRegions().stream()
-                        .filter(r -> r.overlaps(data.getValue()))
-                        .forEach(r -> sj.add(r.getName()));
+                if (analysis.get() != null) {
+                    analysis.get().getAnalysisParameters().getPanel().getRegions().stream()
+                            .filter(r -> r.overlaps(data.getValue()))
+                            .forEach(r -> sj.add(r.getName()));
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -74,6 +94,9 @@ public class AnalysisViewCoverageController extends HBox {
         });
         actionsCol.setCellFactory(data -> new CoverageActionTableCell());
 
-        coverageTable.setItems(analysis.getCoverageRegions());
+    }
+
+    private void updateView() {
+        coverageTable.setItems(analysis.get().getCoverageRegions());
     }
 }

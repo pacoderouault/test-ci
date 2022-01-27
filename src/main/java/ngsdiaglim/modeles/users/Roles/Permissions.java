@@ -72,6 +72,12 @@ public class Permissions {
         createReportsParameters.addPermission(new Permission(PermissionsEnum.CREATE_REPORT_COMMENT));
         createReportsParameters.addPermission(new Permission(PermissionsEnum.EDIT_REPORT_COMMENT));
         permissionsList.add(createReportsParameters);
+
+        // CIQ
+        Permission manageCIQ = new Permission(PermissionsEnum.MANAGE_CIQ);
+        manageCIQ.addPermission(new Permission(PermissionsEnum.ADD_EDIT_CIQ));
+        manageCIQ.addPermission(new Permission(PermissionsEnum.VALIDATE_CIQ));
+
     }
 
 }

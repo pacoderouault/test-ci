@@ -1,6 +1,7 @@
 package ngsdiaglim.database;
 
 import ngsdiaglim.database.dao.*;
+import ngsdiaglim.modeles.ciq.CIQVariantRecord;
 
 public class DAOController {
 
@@ -39,7 +40,13 @@ public class DAOController {
     private static final ReportCommentaryDAO reportCommentaryDAO = new ReportCommentaryDAO();
     private static final ReportGeneCommentaryDAO reportGeneCommentaryDAO = new ReportGeneCommentaryDAO();
     private static final ReportMutationCommentaryDAO reportMutationCommentaryDAO = new ReportMutationCommentaryDAO();
-    
+    private static final CIQModelDAO ciqModelDAO = new CIQModelDAO();
+    private static final CIQAnalysisDAO ciqAnalysisDAO = new CIQAnalysisDAO();
+    private static final CIQHotspotDAO ciqHotspotDAO = new CIQHotspotDAO();
+    private static final CIQRecordDAO ciqRecordDAO = new CIQRecordDAO();
+    private static final CIQRecordHistoryDAO ciqRecordHistoryDAO = new CIQRecordHistoryDAO();
+
+
     public static DatabaseCreatorDAO getDatabaseCreatorDAO() { return databaseCreatorDAO; }
 
     public static UsersDAO getUsersDAO() { return usersDAO; }
@@ -109,4 +116,16 @@ public class DAOController {
     public static ReportGeneCommentaryDAO getReportGeneCommentaryDAO() {return reportGeneCommentaryDAO;}
 
     public static ReportMutationCommentaryDAO getReportMutationCommentaryDAO() {return reportMutationCommentaryDAO;}
+
+    public static CIQModelDAO getCiqModelDAO() {return ciqModelDAO;}
+
+    public static CIQAnalysisDAO getCiqAnalysisDAO() {return ciqAnalysisDAO;}
+
+    public static CIQHotspotDAO getCiqHotspotDAO() {return  ciqHotspotDAO;}
+
+    public static CIQRecordDAO getCiqRecordDAO() {return  ciqRecordDAO;}
+
+    public static CIQRecordHistoryDAO getCiqRecordHistoryDAO() {return  ciqRecordHistoryDAO;}
+
+
 }

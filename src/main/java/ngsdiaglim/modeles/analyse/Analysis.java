@@ -179,7 +179,9 @@ public class Analysis {
 
     public void clear() {
         annotations.clear();
-        coverageRegions.clear();
+        if (coverageRegions != null) {
+            coverageRegions.clear();
+        }
     }
 
 

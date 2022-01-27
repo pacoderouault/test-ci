@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.modeles.parsers.SamtoolsDepthParser;
 import ngsdiaglim.utils.BamUtils;
 import ngsdiaglim.utils.VCFUtils;
@@ -27,6 +28,7 @@ public class AnalysisInputData {
     private final SimpleObjectProperty<Run> run = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<AnalysisParameters> analysisParameters = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<AnalysisInputState> state = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<CIQModel> ciqModel = new SimpleObjectProperty<>();
 
     public AnalysisInputData(Run run, String analysisName, String sampleName) {
         this.sampleName.setValue(sampleName);
@@ -134,6 +136,18 @@ public class AnalysisInputData {
 
     public void setState(AnalysisInputState state) {
         this.state.set(state);
+    }
+
+    public CIQModel getCiqModel() {
+        return ciqModel.get();
+    }
+
+    public SimpleObjectProperty<CIQModel> ciqModelProperty() {
+        return ciqModel;
+    }
+
+    public void setCiqModel(CIQModel ciqModel) {
+        this.ciqModel.set(ciqModel);
     }
 
     private boolean invalidCharacterInAnalysisName() {

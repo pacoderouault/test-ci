@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview.cnv;
 
 import com.dlsc.gemsfx.DialogPane;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -15,17 +16,15 @@ import ngsdiaglim.controllers.charts.ViolinChartRun;
 import ngsdiaglim.controllers.charts.ViolinChartSample;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.enumerations.Gender;
-import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.utils.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class CNVQualityControl extends VBox {
 
-    private final Logger logger = LogManager.getLogger(CNVQualityControl.class);
+    private final static Logger logger = LogManager.getLogger(CNVQualityControl.class);
 
     @FXML private HBox runBoxplotContainer;
     @FXML private HBox sampleDetailContainer;
@@ -38,14 +37,16 @@ public class CNVQualityControl extends VBox {
     @FXML private Button deleteAllPoolsBtn;
 
     private final AnalysisViewCNVController analysisViewCNVController;
-    private final Analysis analysis;
     private final SimpleObjectProperty<CovCopCNVData> covcopCnvData = new SimpleObjectProperty<>();
 
     private ViolinChartRun chartRun;
 
-    public CNVQualityControl(AnalysisViewCNVController analysisViewCNVController, Analysis analysis, CovCopCNVData covCopCNVData) {
+    private final ChangeListener<CNVSample> CNVSampleListener;
+    private final ChangeListener<Gender> genderListener;
+    private final ChangeListener<Boolean> maleRbListener;
+
+    public CNVQualityControl(AnalysisViewCNVController analysisViewCNVController) {
         this.analysisViewCNVController = analysisViewCNVController;
-        this.analysis = analysis;
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVQualityControl.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -55,34 +56,81 @@ public class CNVQualityControl extends VBox {
             logger.error(e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
-        this.covcopCnvData.set(covCopCNVData);
-        initView();
+
+        CNVSampleListener = (obs, oldV, newV) -> {
+            if (newV != null) {
+                loadSampleDetail(newV);
+            }
+        };
+
+        maleRbListener = (obs, oldV, newV) -> {
+            if (chartRun.getSelectedSample() != null) {
+                if (newV) {
+                    chartRun.getSelectedSample().setGender(Gender.MALE);
+                } else {
+                    chartRun.getSelectedSample().setGender(Gender.FEMALE);
+                }
+            }
+        };
+
+        genderListener =  (obs, oldV, newV) -> {
+            if (chartRun.getSelectedSample() != null) {
+                maleRb.selectedProperty().removeListener(maleRbListener);
+                if (newV.equals(Gender.MALE)) {
+                    maleRb.setSelected(true);
+                } else {
+                    femaleRb.setSelected(true);
+                }
+                maleRb.selectedProperty().addListener(maleRbListener);
+            }
+        };
+
+
+
+        covcopCnvData.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                clearView(oldV);
+                initView();
+            }
+        });
     }
 
+    public CovCopCNVData getCovcopCnvData() {
+        return covcopCnvData.get();
+    }
+
+    public SimpleObjectProperty<CovCopCNVData> covcopCnvDataProperty() {
+        return covcopCnvData;
+    }
+
+    public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(covcopCnvData);
+    }
 
     private void initView() {
         initChartRun();
+        maleRb.selectedProperty().addListener(maleRbListener);
+    }
+
+    private void clearView(CovCopCNVData oldCovcopCnvData) {
+//        maleRb.selectedProperty().removeListener(maleRbListener);
+        if (chartRun != null) {
+            chartRun.selectedSampleProperty().removeListener(CNVSampleListener);
+        }
+        if (oldCovcopCnvData != null) {
+            for (CNVSample sample : oldCovcopCnvData.getSamples().values()) {
+                sample.genderProperty().removeListener(genderListener);
+            }
+        }
     }
 
     private void initChartRun() {
         chartRun = new ViolinChartRun(covcopCnvData.get().getSamples(), 200);
         chartRun.drawBoxPlot();
         runBoxplotContainer.getChildren().setAll(chartRun);
-        chartRun.selectedSampleProperty().addListener((obs, oldV, newV) -> {
-            if (newV != null) {
-                loadSampleDetail(newV);
-            }
-        });
+        chartRun.selectedSampleProperty().addListener(CNVSampleListener);
         for (CNVSample sample : covcopCnvData.get().getSamples().values()) {
-            sample.genderProperty().addListener((obs, oldV, newV) -> {
-                if (sample.equals(chartRun.getSelectedSample())) {
-                    if (newV.equals(Gender.MALE)) {
-                        maleRb.setSelected(true);
-                    } else {
-                        femaleRb.setSelected(true);
-                    }
-                }
-            });
+            sample.genderProperty().addListener(genderListener);
         }
         chartRun.selectSample(0);
     }
@@ -102,18 +150,10 @@ public class CNVQualityControl extends VBox {
             totalLowAmpliconsTf.setText(String.valueOf(sample.getBoxplotData().getLowAmpliconsNb()));
         }
 
+        maleRb.selectedProperty().removeListener(maleRbListener);
         maleRb.setSelected(sample.getGender().equals(Gender.MALE));
         femaleRb.setSelected(sample.getGender().equals(Gender.FEMALE));
-
-        maleRb.selectedProperty().addListener((obs, oldV, newV) -> {
-            if (sample.equals(chartRun.getSelectedSample())) {
-                if (newV) {
-                    sample.setGender(Gender.MALE);
-                } else {
-                    sample.setGender(Gender.FEMALE);
-                }
-            }
-        });
+        maleRb.selectedProperty().addListener(maleRbListener);
 
 
         contructPoolsDetail(sample);
@@ -121,7 +161,7 @@ public class CNVQualityControl extends VBox {
 
     private void contructPoolsDetail(CNVSample sample) {
         poolsDetailContainer.getChildren().clear();
-        for (String poolName : sample.getBoxplotDatabyPool().keySet().stream().sorted().collect(Collectors.toList())) {
+        for (String poolName : sample.getBoxplotDatabyPool().keySet().stream().sorted().toList()) {
 
             BoxplotData boxplotData = sample.getBoxplotDatabyPool().get(poolName);
 

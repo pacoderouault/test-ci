@@ -43,6 +43,7 @@ public class AnalysisViewController extends Module {
     @FXML private ToggleButton coverageViewToggleBtn;
     @FXML private ToggleButton reportViewToggleBtn;
     @FXML private ToggleButton runinfoViewToggleBtn;
+    @FXML private ToggleButton ciqViewToggleBtn;
     @FXML private AnchorPane analysisModuleContainer;
 
     private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
@@ -54,7 +55,9 @@ public class AnalysisViewController extends Module {
     private AnalysisViewCNVController analysisViewCNVController;
     private AnalysisViewReportBGMController reportBGMController;
     private AnalysisViewRunInfoController runInfoController;
+    private AnalysisViewCIQController ciqViewController;
 
+    private ChangeListener<Analysis> analysisCbValueListener;
     private ChangeListener<AnalysisStatus> analysisStatusChangeListener;
 
     public AnalysisViewController() {
@@ -70,15 +73,20 @@ public class AnalysisViewController extends Module {
             logger.error(e);
         }
 
+        initView();
+
         analysis.addListener((obs, oldV, newV) -> {
-            if (newV != null) {
-                if (!newV.equals(oldV)) {
-                    initView();
-                }
-            }
-            else {
+            if (oldV != null) {
                 clearView(oldV);
             }
+            if (newV != null) {
+                if (!newV.equals(oldV)) {
+                    updateView();
+                }
+            }
+//            else {
+//                clearView(oldV);
+//            }
         });
     }
 
@@ -102,25 +110,28 @@ public class AnalysisViewController extends Module {
 
     public AnalysisViewCNVController getAnalysisViewCNVController() {return analysisViewCNVController;}
 
-    private void initView() {
+    public AnalysisViewCIQController getCiqViewController() {return ciqViewController;}
 
-        initAnalysisCb();
+    private void initView() {
+        analysisCbValueListener = (obs, oldV, newV) -> App.get().getAppController().openAnalysis(newV);
+        analysisCb.valueProperty().addListener(analysisCbValueListener);
         if (variantsViewController != null) {
             variantsViewController.clear();
         }
-        variantsViewController = new AnalysisViewVariantsController2(analysis.get());
-        additionalDataController = new AnalysisViewAdditionalData(analysis.get());
-        metaDataController = new AnalysisViewMetaDataController(analysis.get());
-        coverageController = new AnalysisViewCoverageController(analysis.get());
-        analysisViewCNVController = new AnalysisViewCNVController(analysis.get());
+        variantsViewController = new AnalysisViewVariantsController2();
+        additionalDataController = new AnalysisViewAdditionalData();
+        metaDataController = new AnalysisViewMetaDataController();
+        coverageController = new AnalysisViewCoverageController();
+        analysisViewCNVController = new AnalysisViewCNVController();
 
         if (App.get().getService().equals(Service.BGM)) {
-            reportBGMController = new AnalysisViewReportBGMController(analysis.get());
+            reportBGMController = new AnalysisViewReportBGMController();
         } else {
             reportViewToggleBtn.setVisible(false);
             reportViewToggleBtn.setManaged(false);
         }
-        runInfoController = new AnalysisViewRunInfoController(analysis.get());
+        runInfoController = new AnalysisViewRunInfoController();
+        ciqViewController = new AnalysisViewCIQController();
 
         variantsViewToggleBtn.selectedProperty().addListener(((observableValue, oldV, newV) -> {
             if (newV) {
@@ -160,6 +171,12 @@ public class AnalysisViewController extends Module {
             }
         }));
 
+        ciqViewToggleBtn.selectedProperty().addListener(((observableValue, oldV, newV) -> {
+            if (newV) {
+                showCIQView();
+            }
+        }));
+
         editAnalysisStatusIcon.setOnMouseClicked(e -> {
             if (App.get().getLoggedUser().isPermitted(PermissionsEnum.CHANGE_ANALYSIS_STATE)) {
                 ChangeAnalysisStateDialog dialog = new ChangeAnalysisStateDialog(analysis.get());
@@ -180,22 +197,22 @@ public class AnalysisViewController extends Module {
             }
         });
 
-        setAnalysisStatus();
+
 
         analysisStatusChangeListener = (obs, oldV, newV) -> setAnalysisStatus();
 
-        analysis.get().statusProperty().addListener(analysisStatusChangeListener);
+        variantsViewToggleBtn.setSelected(true);
+
 
         Platform.runLater(() -> {
-            variantsViewToggleBtn.setSelected(true);
+//            variantsViewToggleBtn.setSelected(true);
             applyCss();
             layout();
             variantsViewController.getTableBuilder().setColumnsHeaderEvent();
-            variantsViewController.setDividerPosition();
-            System.out.println(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING));
-            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
-                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
-            }
+//            variantsViewController.setDividerPosition();
+//            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
+//                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
+//            }
         });
 
     }
@@ -210,29 +227,76 @@ public class AnalysisViewController extends Module {
         if (reportBGMController != null) {
             reportBGMController.clear();
         }
+
+
+//        initAnalysisCb();
+//        Platform.runLater(() -> {
+//            variantsViewToggleBtn.setSelected(true);
+//            applyCss();
+//            layout();
+////            variantsViewController.getTableBuilder().setColumnsHeaderEvent();
+//            variantsViewController.setDividerPosition();
+//            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
+//                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
+//            }
+//        });
     }
+
+
+    private void updateView() {
+        variantsViewController.setAnalysis(analysis.get());
+        additionalDataController.setAnalysis(analysis.get());
+        metaDataController.setAnalysis(analysis.get());
+        coverageController.setAnalysis(analysis.get());
+        analysisViewCNVController.setAnalysis(analysis.get());
+        runInfoController.setAnalysis(analysis.get());
+        ciqViewController.setAnalysis(analysis.get());
+        if (App.get().getService().equals(Service.BGM)) {
+            reportBGMController.setAnalysis(analysis.get());
+        }
+//        variantsViewController.getTableBuilder().setColumnsHeaderEvent();
+        initAnalysisCb();
+        setAnalysisStatus();
+        analysis.get().statusProperty().addListener(analysisStatusChangeListener);
+        variantsViewToggleBtn.setSelected(true);
+
+        Platform.runLater(() -> {
+//            variantsViewToggleBtn.setSelected(true);
+//            applyCss();
+//            layout();
+//            variantsViewController.getTableBuilder().setColumnsHeaderEvent();
+            variantsViewController.setDividerPosition();
+//            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
+//                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
+//            }
+        });
+    }
+
 
     private void initAnalysisCb() {
         try {
+            analysisCb.valueProperty().removeListener(analysisCbValueListener);
             analysisCb.setItems(analysis.get().getRun().getAnalyses());
             analysisCb.getSelectionModel().select(analysis.get());
+            analysisCb.valueProperty().addListener(analysisCbValueListener);
         } catch (SQLException e) {
             logger.error(e);
         }
 
-        analysisCb.valueProperty().addListener((obs, oldV, newV) -> App.get().getAppController().openAnalysis(newV));
+
     }
 
     private void setAnalysisStatus() {
-        if (analysis.get().getStatus().equals(AnalysisStatus.DONE)) {
-            analysisStatusLb.setText(AnalysisStatus.DONE.getValue());
-            analysisStatusLb.getStyleClass().setAll("analysis_status_complete");
+        if(analysis.get() != null) {
+            if (analysis.get().getStatus().equals(AnalysisStatus.DONE)) {
+                analysisStatusLb.setText(AnalysisStatus.DONE.getValue());
+                analysisStatusLb.getStyleClass().setAll("analysis_status_complete");
+            } else {
+                analysisStatusLb.setText(AnalysisStatus.INPROGRESS.getValue());
+                analysisStatusLb.getStyleClass().setAll("analysis_status_inprogress");
+            }
+            analysisStatusLb.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.CHANGE_ANALYSIS_STATE));
         }
-        else {
-            analysisStatusLb.setText(AnalysisStatus.INPROGRESS.getValue());
-            analysisStatusLb.getStyleClass().setAll("analysis_status_inprogress");
-        }
-        analysisStatusLb.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.CHANGE_ANALYSIS_STATE));
     }
 
 
@@ -278,6 +342,12 @@ public class AnalysisViewController extends Module {
         analysisModuleContainer.getChildren().clear();
         analysisModuleContainer.getChildren().add(runInfoController);
         setModuleViewAnchors(runInfoController);
+    }
+
+    private void showCIQView() {
+        analysisModuleContainer.getChildren().clear();
+        analysisModuleContainer.getChildren().add(ciqViewController);
+        setModuleViewAnchors(ciqViewController);
     }
 
     private void setModuleViewAnchors(Pane pane) {

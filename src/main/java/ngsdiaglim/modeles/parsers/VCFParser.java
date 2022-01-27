@@ -30,6 +30,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -329,10 +333,16 @@ public class VCFParser {
         if (intron != null) transcriptConsequence.setIntron(intron);
 
         String hgvsc = vepPrediction.getByCol(VepTag.HGVSc.getColumnName());
-        if (hgvsc != null) transcriptConsequence.setHgvsc(hgvsc);
+        if (hgvsc != null) {
+            String s = URLDecoder.decode(hgvsc, StandardCharsets.UTF_8);
+            transcriptConsequence.setHgvsc(s);
+        }
 
         String hgvsp = vepPrediction.getByCol(VepTag.HGVSp.getColumnName());
-        if (hgvsp != null) transcriptConsequence.setHgvsp(hgvsp);
+        if (hgvsp != null) {
+            String s = URLDecoder.decode(hgvsp, StandardCharsets.UTF_8);
+            transcriptConsequence.setHgvsp(s);
+        }
 
         String cDNAPosition = vepPrediction.getByCol(VepTag.cDNA_position.getColumnName());
         if (cDNAPosition != null) transcriptConsequence.setcDNAPosition(cDNAPosition);

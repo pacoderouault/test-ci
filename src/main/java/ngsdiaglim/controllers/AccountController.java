@@ -48,11 +48,6 @@ public class AccountController extends Module {
         for (VariantsTableTheme t : VariantsTableTheme.values()) {
             themesCb.getItems().add(t);
         }
-        String themeName = App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_TABLE_THEME);
-        if (themeName != null) {
-            VariantsTableTheme theme = VariantsTableTheme.valueOf(themeName);
-            themesCb.getSelectionModel().select(theme);
-        }
         themesCb.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 colorUniqueVariantsCb.setVisible(newV.equals(VariantsTableTheme.THEME1));
@@ -60,6 +55,11 @@ public class AccountController extends Module {
                 App.get().getLoggedUser().savePreferences();
             }
         });
+        String themeName = App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.VARIANT_TABLE_THEME);
+        if (themeName != null) {
+            VariantsTableTheme theme = VariantsTableTheme.valueOf(themeName);
+            themesCb.getSelectionModel().select(theme);
+        }
         colorUniqueVariantsCb.setSelected(Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.COLOR_UNIQUE_VARIANTS)));
         colorUniqueVariantsCb.selectedProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {

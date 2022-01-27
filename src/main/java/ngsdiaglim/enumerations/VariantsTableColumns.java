@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public enum VariantsTableColumns {
 
+    INDEX("#"),
     HOTSPOT(App.getBundle().getString("analysisview.variants.table.hotspot")),
     CONTIG(App.getBundle().getString("analysisview.variants.table.contigCol")),
     POSITION(App.getBundle().getString("analysisview.variants.table.posCol")),

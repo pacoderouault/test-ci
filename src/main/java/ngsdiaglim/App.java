@@ -1,5 +1,6 @@
 package ngsdiaglim;
 
+import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,12 +10,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import ngsdiaglim.controllers.AppController;
 import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.DatabaseCreatorDAO;
+import ngsdiaglim.enumerations.CIQRecordState;
 import ngsdiaglim.enumerations.Service;
+import ngsdiaglim.importer.ImportVariants;
 import ngsdiaglim.modeles.igv.IGVHandler;
 import ngsdiaglim.modeles.igv.IGVLinks;
+import ngsdiaglim.modeles.igv.IGVLinks2;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modules.ModuleManager;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +48,7 @@ public class App extends Application {
     private final SimpleObjectProperty<User> loggedUser = new SimpleObjectProperty<>();
     private AppSettings appSettings;
     public final IGVHandler igvHandler = new IGVHandler();
-    public IGVLinks igvLinks;
+    public IGVLinks2 igvLinks;
     private Service service;
 
     public App() {
@@ -50,6 +56,7 @@ public class App extends Application {
     }
 
     public void init() {
+
         instance = this;
         DatabaseCreatorDAO databaseCreatorDAO = new DatabaseCreatorDAO();
         if (!databaseCreatorDAO.exists()) {
@@ -84,8 +91,8 @@ public class App extends Application {
 //            ImportsRuns runImporter = new ImportsRuns(runDir, localRunDir);
 //            runImporter.importRuns();
 //
-////            File variantsDir = new File(dir, "variants");
-////            ImportVariants.importVariants(variantsDir);
+//            File variantsDir = new File(dir, "variants");
+//            ImportVariants.importVariants(variantsDir);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
@@ -98,7 +105,7 @@ public class App extends Application {
         } catch (IOException e) {
             logger.error("Error when reader application properties file");
         }
-//        CSSFX.start();
+        CSSFX.start();
         primaryStage = stage;
 
 
@@ -146,12 +153,12 @@ public class App extends Application {
             appSettings.setValue(AppSettings.DefaultAppSettings.MAXIMIZED, newV);
         });
 
-//        try {
-//            setLoggedUser(null);
-//            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            setLoggedUser(null);
+            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
 //        try {
@@ -160,7 +167,7 @@ public class App extends Application {
 //            e.printStackTrace();
 //        }
 
-        igvLinks = new IGVLinks();
+        igvLinks = new IGVLinks2();
 
         primaryStage.setOnCloseRequest((event) -> {// <----------- this is what you need
             Platform.exit();
@@ -169,7 +176,8 @@ public class App extends Application {
 
     public IGVHandler getIgvHandler() {return igvHandler;}
 
-    public IGVLinks getIgvLinks() {return igvLinks;}
+//    public IGVLinks getIgvLinks() {return igvLinks;}
+    public IGVLinks2 getIgvLinks2() {return igvLinks;}
 
     private void loadLoggingScreen() throws IOException {
         FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/Logging.fxml"));

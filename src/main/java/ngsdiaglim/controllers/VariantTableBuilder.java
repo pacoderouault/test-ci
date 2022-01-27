@@ -1,11 +1,13 @@
 package ngsdiaglim.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.TableColumnHeader;
@@ -65,6 +67,8 @@ public class VariantTableBuilder {
     }
 
     public void buildTable(boolean basicTable) throws SQLException {
+
+        table.getStyleClass().add("variants-table");
 
         User loggedUser = App.get().getLoggedUser();
 
@@ -126,6 +130,12 @@ public class VariantTableBuilder {
     private void initColumnsMap() {
 
         columnsMap.clear();
+
+        TableColumn<Annotation, Integer> indexColumn = new TableColumn<>(VariantsTableColumns.INDEX.getName());
+        indexColumn.setSortable(false);
+        indexColumn.setCellValueFactory( data -> new ReadOnlyObjectWrapper(table.getItems().indexOf(data.getValue())+ 1));
+        indexColumn.getStyleClass().add("index-column");
+        columnsMap.put(VariantsTableColumns.INDEX, indexColumn);
 
         TableColumn<Annotation, Hotspot> hotspotColumn = new TableColumn<>(VariantsTableColumns.HOTSPOT.getName());
         hotspotColumn.setCellValueFactory(data -> data.getValue().getVariant().hotspotProperty());
@@ -311,8 +321,7 @@ public class VariantTableBuilder {
 
     public void setColumnsHeaderEvent() {
         for (Node n : table.lookupAll("TableColumnHeader")) {
-            if (n instanceof TableColumnHeader) {
-                TableColumnHeader tch = (TableColumnHeader) n;
+            if (n instanceof TableColumnHeader tch) {
                 tch.addEventFilter(MouseEvent.ANY, e -> {
                     if (e.getButton() == MouseButton.SECONDARY) {
                         TableColumnBase<?, ?> columnBase = tch.getTableColumn();
@@ -328,6 +337,7 @@ public class VariantTableBuilder {
     }
 
     private void setDefaultColumnsOrder() {
+        defaultColumnsOrder.add(VariantsTableColumns.INDEX);
         defaultColumnsOrder.add(VariantsTableColumns.HOTSPOT);
         defaultColumnsOrder.add(VariantsTableColumns.CONTIG);
         defaultColumnsOrder.add(VariantsTableColumns.POSITION);
@@ -386,6 +396,7 @@ public class VariantTableBuilder {
     }
 
     private void setDefaultVisibleColumns() throws SQLException {
+        defaultVisibleColumns.put(VariantsTableColumns.INDEX, true);
         defaultVisibleColumns.put(VariantsTableColumns.HOTSPOT, true);
         defaultVisibleColumns.put(VariantsTableColumns.CONTIG, true);
         defaultVisibleColumns.put(VariantsTableColumns.POSITION, true);
@@ -438,6 +449,7 @@ public class VariantTableBuilder {
 
     private void setDefaultColumnsSize() throws SQLException {
         double v = 100;
+        defaultColumnsSize.put(VariantsTableColumns.INDEX, 30d);
         defaultColumnsSize.put(VariantsTableColumns.HOTSPOT, v);
         defaultColumnsSize.put(VariantsTableColumns.CONTIG, v);
         defaultColumnsSize.put(VariantsTableColumns.POSITION, v);
@@ -573,9 +585,20 @@ public class VariantTableBuilder {
             try {
                 VariantsTableTheme theme = VariantsTableTheme.valueOf(themeName);
                 if (theme.equals(VariantsTableTheme.THEME1)) {
-                    table.setRowFactory(row -> new Theme1());
+//                    System.out.println(table.getRowFactory().);
+//                    if (!(table.getRowFactory() instanceof Theme1)) {
+                        table.setRowFactory(row -> new Theme1());
+//                        System.out.println("set theme1");
+//                    } else {
+//                        System.out.println("theme 1 deja installe");
+//                    }
                 } else {
-                    table.setRowFactory(row -> new Theme2());
+//                    if (!(table.getRowFactory() instanceof Theme1)) {
+                        table.setRowFactory(row -> new Theme2());
+//                        System.out.println("set theme2");
+//                    } else {
+//                        System.out.println("theme 2 deja installe");
+//                    }
                 }
             } catch (Exception e) {
                 logger.error(e);
@@ -584,6 +607,7 @@ public class VariantTableBuilder {
         } else {
             table.setRowFactory(row -> new Theme2());
         }
+        table.refresh();
     }
 
 

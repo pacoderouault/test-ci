@@ -23,6 +23,7 @@ import ngsdiaglim.controllers.ui.RunFileNode;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.exceptions.DuplicateSampleInRun;
 import ngsdiaglim.modeles.analyse.*;
+import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.BundleFormatter;
@@ -59,6 +60,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
     @FXML private TableColumn<AnalysisInputData, File> colBamFile;
     @FXML private TableColumn<AnalysisInputData, File> colDepth;
     @FXML private TableColumn<AnalysisInputData, AnalysisParameters> colAnalysisParameters;
+    @FXML private TableColumn<AnalysisInputData, CIQModel> colCIQ;
     @FXML private TableColumn<AnalysisInputData, Void> colActions;
 
     private final Run run;
@@ -137,6 +139,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
         colDepth.setCellFactory(data -> new ImportAnalysisDepthTableCell(true));
         colAnalysisParameters.setCellValueFactory(data -> data.getValue().analysisParametersProperty());
         colAnalysisParameters.setCellFactory(data-> new ImportAnalysisAnalysisParametersTableCell());
+        colCIQ.setCellValueFactory(data -> data.getValue().ciqModelProperty());
+        colCIQ.setCellFactory(data-> new ImportAnalysisCIQTableCell());
+
         colActions.setCellFactory(data -> new ImportAnalysisActionsTableCell());
 
         // auto adjust the width of the column clonotypesNameCol

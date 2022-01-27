@@ -61,6 +61,7 @@ public class CovCopCNVData {
             covcopRegions.values().forEach(covcopRegionList::addAll);
             covcopRegionList.sort(new RegionComparator());
         }
+//        System.out.println(covcopRegionList.size());
         return covcopRegionList;
     }
 

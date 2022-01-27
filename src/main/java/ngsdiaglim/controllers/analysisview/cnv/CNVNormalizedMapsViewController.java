@@ -1,14 +1,12 @@
 package ngsdiaglim.controllers.analysisview.cnv;
 
 import de.gsi.chart.utils.AxisSynchronizer;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -16,6 +14,7 @@ import ngsdiaglim.App;
 import ngsdiaglim.cnv.CNVSample;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.controllers.dialogs.Message;
+import ngsdiaglim.enumerations.CNVChartHeight;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.PlatformUtils;
@@ -38,16 +37,17 @@ public class CNVNormalizedMapsViewController extends VBox {
     @FXML private ToggleButton loesBtn;
     @FXML private ToggleButton geneAverageBtn;
     @FXML private ToggleButton cusumBtn;
-//    private DropDownMenu sampleDropDownMenu;
+    @FXML private Button chartSettings;
+
+    private PopOver chartSettingsPopover = new PopOver();
+
     private final Map<String, CNVMap> drawnMapList = new HashMap<>();
-    private final CovCopCNVData covcopCnvData;
+    private final SimpleObjectProperty<CovCopCNVData> covcopCnvData = new SimpleObjectProperty<>();
 
     private ChangeListener<Number> paginationPageIndexListener;
     private ChangeListener<Number> paginationPageCountListener;
 
-    public CNVNormalizedMapsViewController(CNVNormalizedViewController cnvNormalizedViewController, CovCopCNVData covcopCnvData) {
-        //    private final AxisSynchronizer2 sync2 = new AxisSynchronizer2();
-        this.covcopCnvData = covcopCnvData;
+    public CNVNormalizedMapsViewController() {
 
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVNormalizedMapsView.fxml"), App.getBundle());
@@ -60,17 +60,34 @@ public class CNVNormalizedMapsViewController extends VBox {
         }
 
         initView();
+
+        covcopCnvData.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
     }
 
 
+    public CovCopCNVData getCovcopCnvData() {
+        return covcopCnvData.get();
+    }
+
+    public SimpleObjectProperty<CovCopCNVData> covcopCnvDataProperty() {
+        return covcopCnvData;
+    }
+
+    public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(covcopCnvData);
+    }
+
     private void initView() {
+
+        initChartSettingsPopover();
+
         initShowChartElementsBtn();
-        initVisibleSamplesDropDownMenu();
+
         intiSamplesPerPageCb();
-
-        covcopCnvData.getVisibleSamples().addListener((ListChangeListener<CNVSample>) change -> initPagination());
-
-        initPagination();
 
         paginationPageIndexListener = (obs, old, newV) -> drawMaps();
         paginationPageCountListener = (obs, old, newV) -> {
@@ -85,8 +102,75 @@ public class CNVNormalizedMapsViewController extends VBox {
         pagination.pageCountProperty().addListener(paginationPageCountListener);
 
         HBox.setHgrow(mapsContainer, Priority.ALWAYS);
+    }
 
-        drawMaps();
+
+    private void updateView() {
+        initVisibleSamplesDropDownMenu();
+        covcopCnvData.get().getVisibleSamples().addListener((ListChangeListener<CNVSample>) change -> initPagination());
+        initPagination();
+        forceRedrawMaps();
+    }
+
+    private void initChartSettingsPopover() {
+        VBox box = new VBox();
+        box.setSpacing(5);
+
+        Label chartHeightLb = new Label(App.getBundle().getString("cnvnormalizedview.chart.lb.chartHeight"));
+
+        ToggleGroup chartheightTg = new ToggleGroup();
+        RadioButton smallChartRb = new RadioButton(App.getBundle().getString("cnvnormalizedview.chart.lb.chartHeight.small"));
+        RadioButton mediumChartRb = new RadioButton(App.getBundle().getString("cnvnormalizedview.chart.lb.chartHeight.medium"));
+        RadioButton largeChartRb = new RadioButton(App.getBundle().getString("cnvnormalizedview.chart.lb.chartHeight.large"));
+        smallChartRb.setToggleGroup(chartheightTg);
+        mediumChartRb.setToggleGroup(chartheightTg);
+        largeChartRb.setToggleGroup(chartheightTg);
+
+        User user = App.get().getLoggedUser();
+        String chartHeightString = user.getPreferences().getPreference(DefaultPreferencesEnum.CNV_CHART_HEIGHT);
+        CNVChartHeight chartHeight;
+        if (chartHeightString != null) {
+            try {
+                chartHeight = CNVChartHeight.valueOf(chartHeightString);
+            } catch (Exception e) {
+                logger.warn(e);
+                chartHeight = CNVChartHeight.MEDIUM;
+            }
+        } else {
+            chartHeight = CNVChartHeight.MEDIUM;
+        }
+        if (chartHeight.equals(CNVChartHeight.SMALL)) {
+            smallChartRb.setSelected(true);
+        } else if (chartHeight.equals(CNVChartHeight.LARGE)) {
+            largeChartRb.setSelected(true);
+        } else {
+            mediumChartRb.setSelected(true);
+        }
+
+        chartheightTg.selectedToggleProperty().addListener((obs, oldV, newV) -> {
+            CNVChartHeight newChartHeight;
+            if (smallChartRb.isSelected()) {
+                newChartHeight = CNVChartHeight.SMALL;
+            } else if (largeChartRb.isSelected()) {
+                newChartHeight = CNVChartHeight.LARGE;
+            } else {
+                newChartHeight = CNVChartHeight.MEDIUM;
+            }
+            user.setPreference(DefaultPreferencesEnum.CNV_CHART_HEIGHT, newChartHeight.name());
+            user.savePreferences();
+            drawMaps(true);
+        });
+
+        box.getChildren().addAll(chartHeightLb, smallChartRb, mediumChartRb, largeChartRb);
+        box.getStyleClass().add("chart-settings-popover");
+        chartSettingsPopover.setContentNode(box);
+        chartSettingsPopover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        chartSettingsPopover.setArrowIndent(chartSettings.getWidth());
+        chartSettingsPopover.setAnimated(false);
+
+        chartSettings.setOnAction(e -> {
+            chartSettingsPopover.show(chartSettings);
+        });
     }
 
     private void initShowChartElementsBtn() {
@@ -114,7 +198,7 @@ public class CNVNormalizedMapsViewController extends VBox {
 
     private void initVisibleSamplesDropDownMenu() {
 //        DropDownMenu dropDownMenu = new DropDownMenu(App.getBundle().getString("cnvnormalizedview.btn.visibleSamples"));
-        CNVVisibleSamplesDropMenuContent content = new CNVVisibleSamplesDropMenuContent(covcopCnvData);
+        CNVVisibleSamplesDropMenuContent content = new CNVVisibleSamplesDropMenuContent(covcopCnvData.get());
 //        dropDownMenu.setContentNode(content);
 //        visibleSamplesDropMenuContainer.getChildren().setAll(dropDownMenu);
         PopOver visibleSamplesPopOver = new PopOver();
@@ -138,7 +222,7 @@ public class CNVNormalizedMapsViewController extends VBox {
 
 
     private void initPagination() {
-        int pageNumber = (int) Math.ceil(covcopCnvData.getVisibleSamples().size() / (samplesByPageCountCb.getValue() * 1.0));
+        int pageNumber = (int) Math.ceil(covcopCnvData.get().getVisibleSamples().size() / (samplesByPageCountCb.getValue() * 1.0));
         pagination.setPageCount(pageNumber);
         pagination.setCurrentPageIndex(0);
     }
@@ -159,18 +243,18 @@ public class CNVNormalizedMapsViewController extends VBox {
             AxisSynchronizer synchronizer = new AxisSynchronizer();
 
             int firstSampleIndexToDraw = pagination.getCurrentPageIndex() * samplesByPageCountCb.getValue();
-            int lastSampleIndexToDraw = Math.min(firstSampleIndexToDraw + samplesByPageCountCb.getValue(), covcopCnvData.getVisibleSamples().size()) - 1;
+            int lastSampleIndexToDraw = Math.min(firstSampleIndexToDraw + samplesByPageCountCb.getValue(), covcopCnvData.get().getVisibleSamples().size()) - 1;
             Set<String> drawnSamples = new HashSet<>();
 
             for (int i = firstSampleIndexToDraw; i <= lastSampleIndexToDraw; i++) {
 
-                CNVSample sample = covcopCnvData.getVisibleSamples().get(i);
+                CNVSample sample = covcopCnvData.get().getVisibleSamples().get(i);
                 drawnSamples.add(sample.getBarcode());
                 CNVMap cnvMap;
                 if (!forceRedraw && drawnMapList.containsKey(sample.getBarcode())) {
                     cnvMap = drawnMapList.get(sample.getBarcode());
                 } else {
-                    cnvMap = new CNVMap(this, covcopCnvData, sample);
+                    cnvMap = new CNVMap(this, covcopCnvData.get(), sample);
                     cnvMap.getCnvChart().loessVisibleProperty().bind(loesBtn.selectedProperty());
                     cnvMap.getCnvChart().geneAverageVisibleProperty().bind(geneAverageBtn.selectedProperty());
                     cnvMap.getCnvChart().cusumVisibleProperty().bind(cusumBtn.selectedProperty());
@@ -196,6 +280,13 @@ public class CNVNormalizedMapsViewController extends VBox {
     public void resetZoom() {
         drawnMapList.values().forEach(CNVMap::resetZoom);
     }
+
+
+    @FXML
+    private void showChartSettingsPopover() {
+
+    }
+
 
     public void clear() {
         for (CNVMap map : drawnMapList.values()) {

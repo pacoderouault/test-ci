@@ -46,6 +46,7 @@ public class CNVNormalizedTableViewController extends VBox {
     @FXML private TableColumn<CovCopRegion, Integer> endCol;
     @FXML private TableColumn<CovCopRegion, String> geneCol;
     @FXML private TableColumn<CovCopRegion, String> nameCol;
+    private final int defaultColumnsCount = 5;
     private final FontIcon searchIcon = new FontIcon("fas-search");
 
     public static final int noSampleColumnsNumber = 6;
@@ -55,14 +56,9 @@ public class CNVNormalizedTableViewController extends VBox {
     private final ArrayList<Integer[]> CNVIndexes = new ArrayList<>();
     private int currentCNVIndex = 0;
 
-    private final CNVNormalizedViewController cnvNormalizedViewController;
-    private final CovCopCNVData covcopCnvData;
+    private final SimpleObjectProperty<CovCopCNVData> covcopCnvData = new SimpleObjectProperty<>();
 
-    private final CNVTableCellFactory cnvTableCellFactory = new CNVTableCellFactory();
-
-    public CNVNormalizedTableViewController(CNVNormalizedViewController cnvNormalizedViewController, CovCopCNVData covcopCnvData) {
-        this.cnvNormalizedViewController = cnvNormalizedViewController;
-        this.covcopCnvData = covcopCnvData;
+    public CNVNormalizedTableViewController() {
 
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/CNVNormalizedTableView.fxml"), App.getBundle());
@@ -75,17 +71,37 @@ public class CNVNormalizedTableViewController extends VBox {
         }
 
         initView();
+
+        covcopCnvData.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
     }
 
+
+    public CovCopCNVData getCovcopCnvData() {
+        return covcopCnvData.get();
+    }
+
+    public SimpleObjectProperty<CovCopCNVData> covcopCnvDataProperty() {
+        return covcopCnvData;
+    }
+
+    public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(covcopCnvData);
+    }
 
     private void initView() {
         initDataTable();
         searchTf.setLeft(searchIcon);
-        dataTable.setItems(covcopCnvData.getAllCovcopRegionsAsList());
-        getCNVIndexs();
     }
 
-
+    private void updateView() {
+        initSampleColumns();
+        dataTable.setItems(covcopCnvData.get().getAllCovcopRegionsAsList());
+        getCNVIndexs();
+    }
 
     private void initDataTable() {
         poolCol.setCellValueFactory(data -> data.getValue().poolProperty());
@@ -94,19 +110,25 @@ public class CNVNormalizedTableViewController extends VBox {
         endCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getEnd()).asObject());
         geneCol.setCellValueFactory(data -> data.getValue().geneProperty());
         nameCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
-        initSampleColumns();
+
 
         dataTable.getColumns().forEach(c -> c.setReorderable(false));
     }
 
 
     private void initSampleColumns() {
+
+        // delete old sample columns
+        if (dataTable.getColumns().size() > defaultColumnsCount) {
+            dataTable.getColumns().remove(defaultColumnsCount, dataTable.getColumns().size());
+        }
+
         int sampleIdx = 0;
-        for (String sampleName : covcopCnvData.getSamples().keySet()) {
+        for (String sampleName : covcopCnvData.get().getSamples().keySet()) {
             TableColumn<CovCopRegion, Double> col = new TableColumn<>(sampleName);
             int finalSampleIdx = sampleIdx;
             col.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNormalized_values().get(finalSampleIdx)));
-            col.setCellFactory(data -> cnvTableCellFactory);
+            col.setCellFactory(data -> new CNVTableCellFactory());
             dataTable.getColumns().add(col);
             sampleIdx++;
         }
@@ -118,8 +140,8 @@ public class CNVNormalizedTableViewController extends VBox {
         int sampleIndex = 0;
         Set<Integer> rowsIds = new HashSet<>();
         int colIndex;
-        for (String sampleName : covcopCnvData.getSamples().keySet()) {
-            CNVSample sample = covcopCnvData.getSamples().get(sampleName);
+        for (String sampleName : covcopCnvData.get().getSamples().keySet()) {
+            CNVSample sample = covcopCnvData.get().getSamples().get(sampleName);
 
             for (CNV cnv : sample.getCNV()) {
                 if (rowsIds.add(cnv.getFirstAmpliconIndex())) {

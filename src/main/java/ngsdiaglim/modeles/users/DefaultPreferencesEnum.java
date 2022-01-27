@@ -1,5 +1,7 @@
 package ngsdiaglim.modeles.users;
 
+import ngsdiaglim.enumerations.CNVChartHeight;
+
 public enum DefaultPreferencesEnum {
 
     FULL_SCREEN("false"),
@@ -24,6 +26,7 @@ public enum DefaultPreferencesEnum {
     CNV_SHOW_LOESS("True"),
     CNV_SHOW_GENE_AVERAGE("False"),
     CNV_SHOW_CUSUM("True"),
+    CNV_CHART_HEIGHT(CNVChartHeight.MEDIUM.name()),
     VARIANT_EXPORT_FALSE_POSITIVE("False"),
     VARIANT_EXPORT_SYNONYMOUS("False"),
     VARIANT_EXPORT_NON_CODING("False"),

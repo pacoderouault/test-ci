@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview;
 
 import com.dlsc.gemsfx.DialogPane;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -49,12 +50,11 @@ public class AnalysisViewAdditionalData extends HBox {
     @FXML private FlowPane imagesFp;
     @FXML private Button addComentaryBtn;
     @FXML private Button addImageBtn;
-    private final Analysis analysis;
-    private final ImageImporter imageImporter;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
+    private ImageImporter imageImporter;
 
-    public AnalysisViewAdditionalData(Analysis analysis) {
-        this.analysis = analysis;
-        this.imageImporter = new ImageImporter(analysis);
+    public AnalysisViewAdditionalData() {
+
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewAdditionalData.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -67,12 +67,35 @@ public class AnalysisViewAdditionalData extends HBox {
 
         commentariesLv.setCellFactory(data -> new AnalysisCommentaryListCell());
 
-        loadAnalysisCommentaries();
-        loadAnalysisImages();
-
-        addComentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
-        addImageBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES));
+        analysis.addListener((obs, oldV, newV) -> {
+            updateView();
+        });
     }
+
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
+    }
+
+    private void updateView() {
+        if (analysis.get() != null) {
+            this.imageImporter = new ImageImporter(analysis.get());
+
+            loadAnalysisCommentaries();
+            loadAnalysisImages();
+
+            addComentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
+            addImageBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES));
+        }
+    }
+
 
     @FXML
     private void addCommentaryHandler() {
@@ -86,7 +109,7 @@ public class AnalysisViewAdditionalData extends HBox {
                 if (addVariantCommentaryDialog.isValid() && addVariantCommentaryDialog.getValue() != null) {
                     String comment = addVariantCommentaryDialog.getValue().getCommentary();
                     try {
-                        DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.getId(), comment);
+                        DAOController.getAnalysisCommentaryDAO().addAnalysisCommentary(analysis.get().getId(), comment);
                         loadAnalysisCommentaries();
                         Message.hideDialog(addVariantCommentaryDialog);
                     } catch (SQLException ex) {
@@ -127,7 +150,7 @@ public class AnalysisViewAdditionalData extends HBox {
 
     public void loadAnalysisCommentaries() {
         try {
-            commentariesLv.setItems(DAOController.getAnalysisCommentaryDAO().getVariantCommentaries(analysis.getId()));
+            commentariesLv.setItems(DAOController.getAnalysisCommentaryDAO().getVariantCommentaries(analysis.get().getId()));
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);

@@ -4,6 +4,7 @@ import htsjdk.samtools.util.CloseableIterator;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFEncoder;
 import htsjdk.variant.vcf.VCFFileReader;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -52,14 +53,13 @@ public class AnalysisViewMetaDataController  extends VBox {
     @FXML private CustomTextField searchInVCFTf;
     @FXML private TextArea vcfHeaderTa;
     @FXML private GridPane parametersGrid;
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
     private VCFFileReader reader;
     private String vcfHeader;
     private VCFEncoder encoder;
 
-    public AnalysisViewMetaDataController(Analysis analysis) {
-        this.analysis = analysis;
+    public AnalysisViewMetaDataController() {
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewMetaData.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -69,32 +69,99 @@ public class AnalysisViewMetaDataController  extends VBox {
             logger.error(e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
-        initView();
+//        initView();
+
+        analysis.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
     }
 
-    private void initView() {
-        analysisNameTf.setText(analysis.getName());
-        analysisSampleNameTf.setText(analysis.getSampleName());
-        analysisDateTf.setText(DateFormatterUtils.formatLocalDateTime(analysis.getCreationDate(), "dd/MM/yyyy à HH:ss"));
-        analysisUserTf.setText(analysis.getCreationUser());
-        analysisRunTf.setText(analysis.getRun().getName());
-        analysisPathTf.setText(analysis.getDirectoryPath());
-        analysisVCFTf.setText(analysis.getVcfFile().getAbsolutePath());
-        analysisBAMTf.setText(analysis.getBamFile() == null ? "na" : analysis.getBamFile().getAbsolutePath());
-        analysisDepthTf.setText(analysis.getDepthFile() == null ? "na" : analysis.getDepthFile().getAbsolutePath());
-        paramsNameTf.setText(analysis.getAnalysisParameters().getAnalysisName());
-        paramsGenomeTf.setText(analysis.getAnalysisParameters().getGenome().getName());
-        paramsPanelTf.setText(analysis.getAnalysisParameters().getPanel().getName());
-        paramsGenesTf.setText(analysis.getAnalysisParameters().getGeneSet().getName());
-        paramsHotspotsTf.setText(analysis.getAnalysisParameters().getHotspotsSet() == null ? "" : analysis.getAnalysisParameters().getHotspotsSet().getName());
-        paramsMinDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinDepth()));
-        paramsWarningDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getWarningDepth()));
-        paramsMinVafTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinVAF()));
-        paramsLibraryTf.setText(analysis.getAnalysisParameters().getTargetEnrichment().name());
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
 
-        if (analysis.getVcfFile().exists()) {
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
+    }
+
+    //    private void initView() {
+//        analysisNameTf.setText(analysis.getName());
+//        analysisSampleNameTf.setText(analysis.getSampleName());
+//        analysisDateTf.setText(DateFormatterUtils.formatLocalDateTime(analysis.getCreationDate(), "dd/MM/yyyy à HH:ss"));
+//        analysisUserTf.setText(analysis.getCreationUser());
+//        analysisRunTf.setText(analysis.getRun().getName());
+//        analysisPathTf.setText(analysis.getDirectoryPath());
+//        analysisVCFTf.setText(analysis.getVcfFile().getAbsolutePath());
+//        analysisBAMTf.setText(analysis.getBamFile() == null ? "na" : analysis.getBamFile().getAbsolutePath());
+//        analysisDepthTf.setText(analysis.getDepthFile() == null ? "na" : analysis.getDepthFile().getAbsolutePath());
+//        paramsNameTf.setText(analysis.getAnalysisParameters().getAnalysisName());
+//        paramsGenomeTf.setText(analysis.getAnalysisParameters().getGenome().getName());
+//        paramsPanelTf.setText(analysis.getAnalysisParameters().getPanel().getName());
+//        paramsGenesTf.setText(analysis.getAnalysisParameters().getGeneSet().getName());
+//        paramsHotspotsTf.setText(analysis.getAnalysisParameters().getHotspotsSet() == null ? "" : analysis.getAnalysisParameters().getHotspotsSet().getName());
+//        paramsMinDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinDepth()));
+//        paramsWarningDepthTf.setText(String.valueOf(analysis.getAnalysisParameters().getWarningDepth()));
+//        paramsMinVafTf.setText(String.valueOf(analysis.getAnalysisParameters().getMinVAF()));
+//        paramsLibraryTf.setText(analysis.getAnalysisParameters().getTargetEnrichment().name());
+//
+//        if (analysis.getVcfFile().exists()) {
+//            try {
+//                reader = VCFUtils.getVCFReader(analysis.getVcfFile());
+//                vcfHeader = VCFUtils.getVcfHeader(reader);
+//                encoder = new VCFEncoder(reader.getHeader(), true, true);
+//                vcfHeaderTa.setText(vcfHeader);
+//            } catch (IOException e) {
+//                logger.error(e);
+//                vcfHeaderTa.setText(null);
+//                Message.error(e.getMessage(), e);
+//            }
+//        }
+//
+//        Map<String, String> metadata = analysis.getmMetadataAsMap();
+//        if (!metadata.isEmpty()) {
+//            int rowIdx = 0;
+//            for (Map.Entry<String, String> e : metadata.entrySet()) {
+//                Label l = new Label(e.getKey() + " :");
+//                l.getStyleClass().add("font-medium");
+//                TextField tf = new TextField(e.getValue());
+//                tf.getStyleClass().add("textfield-label");
+//                tf.setEditable(false);
+//                parametersGrid.add(l, 2, rowIdx);
+//                parametersGrid.add(tf, 3, rowIdx++);
+//            }
+//        }
+//    }
+
+
+    private void updateView() {
+        analysisNameTf.setText(analysis.get().getName());
+        analysisSampleNameTf.setText(analysis.get().getSampleName());
+        analysisDateTf.setText(DateFormatterUtils.formatLocalDateTime(analysis.get().getCreationDate(), "dd/MM/yyyy à HH:ss"));
+        analysisUserTf.setText(analysis.get().getCreationUser());
+        analysisRunTf.setText(analysis.get().getRun().getName());
+        analysisPathTf.setText(analysis.get().getDirectoryPath());
+        analysisVCFTf.setText(analysis.get().getVcfFile().getAbsolutePath());
+        analysisBAMTf.setText(analysis.get().getBamFile() == null ? "na" : analysis.get().getBamFile().getAbsolutePath());
+        analysisDepthTf.setText(analysis.get().getDepthFile() == null ? "na" : analysis.get().getDepthFile().getAbsolutePath());
+        paramsNameTf.setText(analysis.get().getAnalysisParameters().getAnalysisName());
+        paramsGenomeTf.setText(analysis.get().getAnalysisParameters().getGenome().getName());
+        paramsPanelTf.setText(analysis.get().getAnalysisParameters().getPanel().getName());
+        paramsGenesTf.setText(analysis.get().getAnalysisParameters().getGeneSet().getName());
+        paramsHotspotsTf.setText(analysis.get().getAnalysisParameters().getHotspotsSet() == null ? "" : analysis.get().getAnalysisParameters().getHotspotsSet().getName());
+        paramsMinDepthTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getMinDepth()));
+        paramsWarningDepthTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getWarningDepth()));
+        paramsMinVafTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getMinVAF()));
+        paramsLibraryTf.setText(analysis.get().getAnalysisParameters().getTargetEnrichment().name());
+
+        if (analysis.get().getVcfFile().exists()) {
             try {
-                reader = VCFUtils.getVCFReader(analysis.getVcfFile());
+                reader = VCFUtils.getVCFReader(analysis.get().getVcfFile());
                 vcfHeader = VCFUtils.getVcfHeader(reader);
                 encoder = new VCFEncoder(reader.getHeader(), true, true);
                 vcfHeaderTa.setText(vcfHeader);
@@ -105,7 +172,12 @@ public class AnalysisViewMetaDataController  extends VBox {
             }
         }
 
-        Map<String, String> metadata = analysis.getmMetadataAsMap();
+        parametersGrid.getChildren().removeIf(n -> {
+            Integer idx = GridPane.getColumnIndex(n);
+            return idx != null && idx >= 2;
+//            n != null && GridPane.getColumnIndex(n) >= 2;
+        });
+        Map<String, String> metadata = analysis.get().getmMetadataAsMap();
         if (!metadata.isEmpty()) {
             int rowIdx = 0;
             for (Map.Entry<String, String> e : metadata.entrySet()) {

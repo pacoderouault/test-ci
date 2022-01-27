@@ -2,6 +2,7 @@ package ngsdiaglim.controllers.analysisview.cnv;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,19 +44,20 @@ public class AnalysisViewCNVController extends VBox {
     @FXML private Button normalizeBtn;
     @FXML private HBox cnvViewContainer;
 
-    private final Analysis analysis;
+    private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
     private final CNVImportDataController cnvImportDataController;
-    private CNVRawDataController cnvRawDataController;
-    private CNVQualityControl cnvQualityControl;
-    private CNVNormalizedViewController cnvNormalizedViewController;
+    private final CNVRawDataController cnvRawDataController;
+    private final CNVQualityControl cnvQualityControl;
+    private final CNVNormalizedViewController cnvNormalizedViewController;
 
     private final SimpleObjectProperty<CovCopCNVData> covcopCNVData = new SimpleObjectProperty<>();
 
     private CovCopCNVCaller caller;
 
-    public AnalysisViewCNVController(Analysis analysis) {
-        this.analysis = analysis;
+    private final ChangeListener<Analysis> analysisChangeListener;
+
+    public AnalysisViewCNVController() {
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewCNV.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -66,11 +68,24 @@ public class AnalysisViewCNVController extends VBox {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
-        cnvImportDataController = new CNVImportDataController(this, analysis);
+        cnvImportDataController = new CNVImportDataController(this);
+        cnvRawDataController = new CNVRawDataController(this);
+        cnvQualityControl = new CNVQualityControl(this);
+        cnvNormalizedViewController = new CNVNormalizedViewController(this);
+
+        analysisChangeListener = (obs, oldV, newV) -> {
+            if (newV != null) {
+                cnvImportDataController.setAnalysis(analysis.get());
+                covcopCNVData.set(null);
+            }
+        };
+        analysis.addListener(analysisChangeListener);
+
         covcopCNVData.addListener((obs, oldV, newV) -> {
             if (newV != null) {
-                cnvRawDataController = new CNVRawDataController(this, analysis, covcopCNVData.get());
-                cnvQualityControl = new CNVQualityControl(this, analysis, covcopCNVData.get());
+                cnvImportDataController.setAnalysis(analysis.get());
+                cnvRawDataController.setCovcopCnvData(covcopCNVData.get());
+                cnvQualityControl.setCovcopCnvData(covcopCNVData.get());
                 rawDataTb.setDisable(false);
                 defineControlsBtn.setDisable(false);
                 normalizeBtn.setDisable(false);
@@ -80,11 +95,13 @@ public class AnalysisViewCNVController extends VBox {
                 rawDataTb.setSelected(true);
                 caller = new CovCopCNVCaller(covcopCNVData.get());
             } else {
-                cnvRawDataController = null;
                 rawDataTb.setDisable(true);
                 qualityCrontrolTb.setDisable(true);
                 defineControlsBtn.setDisable(true);
                 normalizeBtn.setDisable(true);
+                normalizedDataTb.setDisable(true);
+                mapsTb.setDisable(true);
+                importDataTb.setSelected(true);
             }
         });
         importDataTb.selectedProperty().addListener((obs, oldV, newV) -> {
@@ -117,7 +134,17 @@ public class AnalysisViewCNVController extends VBox {
         });
     }
 
-    public Analysis getAnalysis() {return analysis;}
+    public Analysis getAnalysis() {
+        return analysis.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis.set(analysis);
+    }
 
     public CNVImportDataController getCnvImportDataController() {return cnvImportDataController;}
 
@@ -162,7 +189,7 @@ public class AnalysisViewCNVController extends VBox {
         WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("cnvnormalizedview.lb.normalizeData"));
         wid.addTaskEndNotification(r -> {
             if (r == 0) {
-                cnvNormalizedViewController = new CNVNormalizedViewController(this, covcopCNVData.get());
+                cnvNormalizedViewController.setCovcopCnvData(covcopCNVData.get());
                 normalizedDataTb.setDisable(false);
                 mapsTb.setDisable(false);
                 mapsTb.setSelected(true);

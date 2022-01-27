@@ -1,12 +1,14 @@
 package ngsdiaglim.controllers.analysisview;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -37,6 +39,7 @@ import ngsdiaglim.modeles.variants.Variant;
 import ngsdiaglim.utils.FileChooserUtils;
 import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.PredicateUtils;
+import ngsdiaglim.utils.ScrollBarUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,18 +82,20 @@ public class AnalysisViewVariantsController2 extends VBox {
     private PopOver hideVariantPopOver;
     private HideVariantDropDownMenuContent hideVariantDropDownMenuContent;
 
-    private final Analysis analysis;
     private FilteredList<Annotation> filteredAnnotations;
-    private VariantTableBuilder tableBuilder;
-    private AnalysisViewVariantDetailController variantDetailController;
+    private final VariantTableBuilder tableBuilder;
+    private final AnalysisViewVariantDetailController variantDetailController;
     private final AnnotationComparator annotationComparator = new AnnotationComparator();
     private final ObservableList<Integer> searchRsltRowIndex = FXCollections.observableArrayList();
     private int searchRsltCursor = 0;
     private String lastQuery = "";
 
+    private final ScrollBarUtil scrollBarUtil;
 
-    public AnalysisViewVariantsController2(Analysis analysis) {
-        this.analysis = analysis;
+    private final SimpleObjectProperty<Analysis> analysisProperty = new SimpleObjectProperty<>();
+
+    public AnalysisViewVariantsController2() {
+//        this.analysis = analysis;
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("/fxml/AnalysisViewVariants.fxml"), App.getBundle());
             fxml.setRoot(this);
@@ -118,22 +123,21 @@ public class AnalysisViewVariantsController2 extends VBox {
             logger.error(e);
             Message.error(e.getMessage(), e);
         }
-        setTableItems();
+
         initView();
 
-        setAnnotationsFilters();
+        analysisProperty.addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateView();
+            }
+        });
 
         variantDetailController.annotationProperty().bind(variantsTable.getSelectionModel().selectedItemProperty());
 
         // listen when table is filtered from columns
         variantsTable.predicateProperty().addListener((obs, oldV, newV) -> setAnnotationsFilters());
 
-        // select first variant of the table
-        if (variantsTable.getItems().size() > 0) {
-            variantsTable.getSelectionModel().select(0, variantsTable.getColumns().get(0));
-        }
-
-        addgenePanelBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL));
+        scrollBarUtil = new ScrollBarUtil(variantsTable, Orientation.VERTICAL);
     }
 
     @FXML
@@ -146,12 +150,43 @@ public class AnalysisViewVariantsController2 extends VBox {
 //        });
     }
 
-    private void setTableItems() {
-        filteredAnnotations = new FilteredList<>(analysis.getAnnotations().sorted(annotationComparator));
-        SortedList<Annotation> sortedAnnotations = new SortedList<>(filteredAnnotations);
-        sortedAnnotations.comparatorProperty().bind(variantsTable.comparatorProperty());
-        variantsTable.setItems(sortedAnnotations);
 
+    private void updateView() {
+        setTableItems();
+        setAnnotationsFilters();
+        try {
+            loadGenesPanels();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // select first variant of the table
+        if (variantsTable.getItems().size() > 0) {
+            variantsTable.getSelectionModel().select(0, variantsTable.getColumns().get(0));
+        }
+
+        addgenePanelBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL));
+
+        Platform.runLater(() -> {
+            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
+                scrollBarUtil.smoothScrollingTableView( (1d / variantsTable.getItems().size()) * 4);
+            } else {
+                scrollBarUtil.resetScrollBar();
+            }
+            tableBuilder.setRowFactory();
+        });
+
+    }
+
+
+    private void setTableItems() {
+        if (analysisProperty.get() != null) {
+            filteredAnnotations = new FilteredList<>(analysisProperty.get().getAnnotations().sorted(annotationComparator));
+            SortedList<Annotation> sortedAnnotations = new SortedList<>(filteredAnnotations);
+            sortedAnnotations.comparatorProperty().bind(variantsTable.comparatorProperty());
+            variantsTable.setItems(sortedAnnotations);
+        } else {
+            variantsTable.setItems(null);
+        }
     }
 
     @FXML
@@ -222,14 +257,14 @@ public class AnalysisViewVariantsController2 extends VBox {
 
 
     private void initGenesPanelCombobox() {
-        try {
-            loadGenesPanels();
+//        try {
+
             panelsCb.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
                 setAnnotationsFilters();
             });
-        } catch (SQLException e) {
-            logger.error(e);
-        }
+//        } catch (SQLException e) {
+//            logger.error(e);
+//        }
     }
 
 
@@ -278,7 +313,7 @@ public class AnalysisViewVariantsController2 extends VBox {
 
 
     public void setVisibleTranscript(Transcript transcript) {
-        analysis.getAnnotations().parallelStream().forEach(a -> {
+        analysisProperty.get().getAnnotations().parallelStream().forEach(a -> {
             for (Map.Entry<String, TranscriptConsequence> entry : a.getTranscriptConsequences().entrySet()) {
                 if (entry.getValue().getTranscript().equals(transcript)) {
                     a.setTranscriptConsequence(entry.getValue());
@@ -299,7 +334,7 @@ public class AnalysisViewVariantsController2 extends VBox {
         bOk.setOnAction(e -> {
             dialog.clear();
             FileChooser fc = FileChooserUtils.getFileChooser();
-            fc.setInitialFileName(analysis.getName().replaceAll("[/.]", "_") + ".xlsx");
+            fc.setInitialFileName(analysisProperty.get().getName().replaceAll("[/.]", "_") + ".xlsx");
             File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
             if (selectedFile != null) {
                 User user = App.get().getLoggedUser();
@@ -320,7 +355,7 @@ public class AnalysisViewVariantsController2 extends VBox {
                         }
                     }
                     try {
-                        TableExporter.exportTableToExcel(analysis, dialog.getValue().getTable(), columnsToWrite, selectedFile);
+                        TableExporter.exportTableToExcel(analysisProperty.get(), dialog.getValue().getTable(), columnsToWrite, selectedFile);
                     } catch (IOException exception) {
                         logger.error(exception);
                         Platform.runLater(() -> Message.error(exception.getMessage(), exception));
@@ -514,9 +549,21 @@ public class AnalysisViewVariantsController2 extends VBox {
         splitPane.setDividerPositions(divPos);
     }
 
+    public Analysis getAnalysis() {
+        return analysisProperty.get();
+    }
+
+    public SimpleObjectProperty<Analysis> analysisProperty() {
+        return analysisProperty;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysisProperty.set(analysis);
+    }
+
     public void clear() {
-        tableBuilder.clear();
-        variantDetailController.clear();
+//        tableBuilder.clear();
+//        variantDetailController.clear();
     }
 
     @FXML

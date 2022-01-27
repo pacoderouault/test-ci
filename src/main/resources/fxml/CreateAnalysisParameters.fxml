@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <TabPane layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <tabs>
-            <Tab fx:id="analysisParamsTab" closable="false" text="%createAnalasisParameters.modulename">
-               <content>
+    <children>
+        <TabPane layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <Tab fx:id="analysisParamsTab" closable="false" text="%createAnalasisParameters.modulename">
+                    <content>
 
-               </content>
-            </Tab>
-             <Tab fx:id="panelsTab" closable="false" text="%createAnalasisParameters.module.panels.title">
-                 <content>
+                    </content>
+                </Tab>
+                <Tab fx:id="panelsTab" closable="false" text="%createAnalasisParameters.module.panels.title">
+                    <content>
 
-                 </content>
-             </Tab>
-             <Tab fx:id="genesTranscriptsTab" closable="false" text="%createAnalasisParameters.module.genes.title">
-                 <content>
+                    </content>
+                </Tab>
+                <Tab fx:id="genesTranscriptsTab" closable="false" text="%createAnalasisParameters.module.genes.title">
+                    <content>
 
-                 </content>
-             </Tab>
-            <Tab fx:id="hotspotsTab" closable="false" text="%createAnalasisParameters.module.hotspots.title">
-              <content>
-
-              </content>
-            </Tab>
-         </tabs>
-      </TabPane>
-   </children>
+                    </content>
+                </Tab>
+                <Tab fx:id="hotspotsTab" closable="false" text="%createAnalasisParameters.module.hotspots.title">
+                    <content>
+                    </content>
+                </Tab>
+                <Tab fx:id="ciqsTab" closable="false" text="%createAnalasisParameters.module.ciq.title">
+                    <content>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
 </fx:root>

@@ -416,7 +416,7 @@ Button {
     -fx-border-insets: 0px, -2px;
     -fx-border-width: 2px, 1px;
 
-    -fx-padding: 3px; /* 4 -- padding from outside edge to the inner black dot */
+    -fx-padding: 2px; /* 4 -- padding from outside edge to the inner black dot */
 }
 
 .radio-button > .radio > .dot {
@@ -424,7 +424,7 @@ Button {
     -fx-background-insets: 0;
     -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
 
-    -fx-padding: 0.416667em; /* 5px -- radius of the inner black dot when selected */
+    -fx-padding: 0.316667em; /* 5px -- radius of the inner black dot when selected */
 }
 
 /* hover */

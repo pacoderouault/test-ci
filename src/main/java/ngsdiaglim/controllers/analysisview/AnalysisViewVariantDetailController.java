@@ -194,14 +194,18 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         annotationListener = (obs, oldV, newV) -> {
             searchVariantResults = null;
             if (oldV != null) {
-                oldV.getVariant().falsePositiveProperty().removeListener(falsePositiveListener);
-                oldV.getVariant().acmgProperty().removeListener(pathogenicityListener);
-                oldV.transcriptConsequenceProperty().removeListener(transcriptListener);
+//                oldV.getVariant().falsePositiveProperty().removeListener(falsePositiveListener);
+//                oldV.getVariant().acmgProperty().removeListener(pathogenicityListener);
+//                oldV.transcriptConsequenceProperty().removeListener(transcriptListener);
+                clear();
             }
             if (newV != null) {
+                initListeners();
                 fillAnnotationRelatedFields();
                 annotation.get().transcriptConsequenceProperty().addListener(transcriptListener);
 //                annotation.get().getVariant().acmgProperty().addListener(((observableValue, acmg, t1) -> fillAnnotationRelatedFields()));
+
+
             }
         };
 
@@ -401,7 +405,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
                 hgvscTf.setText(t.getHgvsc());
                 hgvspTf.setText(t.getHgvsp());
-                consequencesTf.setText(t.getConsequence().getName());
+                if (t.getConsequence() != null) {
+                    consequencesTf.setText(t.getConsequence().getName());
+                } else {
+                    consequencesTf.setText(null);
+                }
                 if (t.getClinvarSign() != null) {
                     clinvarLb.setText(t.getClinvarSign().replaceAll(";", "\n"));
                 } else {
@@ -841,7 +849,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         igvLinkBtn.setOnAction(e -> {
             try {
 //                App.get().getIgvHandler().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
-                App.get().getIgvLinks().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
+                App.get().getIgvLinks2().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
             } catch (IOException ex) {
                 Message.error(ex.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
@@ -985,6 +993,6 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         }
         vafChart.vafValueProperty().unbind();
         addToReportTs.selectedProperty().removeListener(addToReportListener);
-        annotation.removeListener(annotationListener);
+//        annotation.removeListener(annotationListener);
     }
 }

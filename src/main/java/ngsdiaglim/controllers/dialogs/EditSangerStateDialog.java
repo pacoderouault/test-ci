@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.SangerState;
@@ -92,6 +93,15 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
                     setText(DateFormatterUtils.formatLocalDateTime(item));
                 }
             }
+        });
+        commentaryCol.setCellFactory(tc -> {
+            TableCell<SangerCheck, String> cell = new TableCell<>();
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(commentaryCol.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+            return cell ;
         });
         commentaryCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getComment()));
     }

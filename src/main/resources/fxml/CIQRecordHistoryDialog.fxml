@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="dialogContainer" spacing="10.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox styleClass="module-box">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="module-box-header">
+               <children>
+                  <Label text="%ciqhistorydialog.title.hotspot" />
+               </children>
+            </HBox>
+            <VBox styleClass="module-box-container">
+               <children>
+                  <GridPane hgap="5.0">
+                    <columnConstraints>
+                      <ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+                      <ColumnConstraints fillWidth="false" hgrow="ALWAYS" minWidth="10.0" />
+                        <ColumnConstraints fillWidth="false" minWidth="-Infinity" />
+                        <ColumnConstraints fillWidth="false" minWidth="-Infinity" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label styleClass="font-medium" text="%ciqhistorydialog.lb.hotspot" />
+                        <TextField fx:id="hotspotTf" editable="false" styleClass="textfield-label" GridPane.columnIndex="1" GridPane.columnSpan="5" />
+                        <Label styleClass="font-medium" text="%ciqhistorydialog.lb.run" GridPane.rowIndex="1" />
+                        <TextField fx:id="runTf" editable="false" styleClass="textfield-label" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+                        <Label styleClass="font-medium" text="%ciqhistorydialog.lb.analyse" GridPane.rowIndex="2" />
+                        <TextField fx:id="analyseTf" editable="false" styleClass="textfield-label" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="2" />
+                        <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                           <children>
+                              <Label styleClass="font-medium" text="%ciqhistorydialog.lb.vaf" />
+                              <TextField fx:id="vafTf" editable="false" maxWidth="75.0" prefWidth="75.0" styleClass="textfield-label" />
+                              <Label styleClass="font-medium" text="%ciqhistorydialog.lb.dp">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="dpTf" editable="false" maxWidth="75.0" prefWidth="75.0" styleClass="textfield-label" />
+                              <Label styleClass="font-medium" text="%ciqhistorydialog.lb.ao">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="aoTf" editable="false" maxWidth="75.0" prefWidth="75.0" styleClass="textfield-label" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+      <VBox styleClass="module-box">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="module-box-header">
+               <children>
+                  <Label text="%ciqhistorydialog.title.history" />
+               </children>
+            </HBox>
+            <VBox styleClass="module-box-container">
+               <children>
+                  <TableView fx:id="historyTable">
+                    <columns>
+                      <TableColumn fx:id="validatorCol" prefWidth="150.0" text="%ciqhistorydialog.table.userCol" />
+                      <TableColumn fx:id="dateCol" prefWidth="200.0" text="%ciqhistorydialog.table.dateCol" />
+                        <TableColumn fx:id="oldStateCol" prefWidth="150.0" text="%ciqhistorydialog.table.before_state" />
+                        <TableColumn fx:id="newStateCol" prefWidth="150.0" text="%ciqhistorydialog.table.after_state" />
+                        <TableColumn fx:id="commentCol" prefWidth="300.0" text="%ciqhistorydialog.table.commentCol" />
+                        <TableColumn fx:id="meanCol" prefWidth="100.0" text="%ciqhistorydialog.table.meanCol" />
+                        <TableColumn fx:id="sdCol" prefWidth="100.0" text="%ciqhistorydialog.table.sdCol" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

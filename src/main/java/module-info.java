@@ -42,6 +42,7 @@ module NGSDiagLim {
     exports ngsdiaglim.modeles.variants.predictions;
     exports ngsdiaglim.modeles.variants.populations;
     exports ngsdiaglim.modeles.biofeatures;
+    exports ngsdiaglim.modeles.ciq;
     exports ngsdiaglim.modeles.igv;
     exports ngsdiaglim.modeles.reports;
     exports ngsdiaglim.modeles.reports.bgm;
@@ -76,4 +77,6 @@ module NGSDiagLim {
     opens ngsdiaglim.modules to javafx.fxml;
     opens ngsdiaglim.controllers.charts to javafx.fxml;
     opens ngsdiaglim.modeles.reports.bgm to javafx.fxml;
+    exports ngsdiaglim.controllers.analysisview.ciq;
+    opens ngsdiaglim.controllers.analysisview.ciq to javafx.fxml;
 }
