@@ -126,7 +126,9 @@ public class CIQHotspot {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CIQHotspot that)) return false;
+        if (!(o instanceof CIQHotspot)) return false;
+
+        CIQHotspot that = (CIQHotspot) o;
 
         return id == that.id;
     }

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class CNVQualityControl extends VBox {
 
@@ -156,12 +157,12 @@ public class CNVQualityControl extends VBox {
         maleRb.selectedProperty().addListener(maleRbListener);
 
 
-        contructPoolsDetail(sample);
+        constructPoolsDetail(sample);
     }
 
-    private void contructPoolsDetail(CNVSample sample) {
+    private void constructPoolsDetail(CNVSample sample) {
         poolsDetailContainer.getChildren().clear();
-        for (String poolName : sample.getBoxplotDatabyPool().keySet().stream().sorted().toList()) {
+        for (String poolName : sample.getBoxplotDatabyPool().keySet().stream().sorted().collect(Collectors.toList())) {
 
             BoxplotData boxplotData = sample.getBoxplotDatabyPool().get(poolName);
 

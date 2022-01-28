@@ -39,6 +39,8 @@ public class DatabaseCreatorDAO extends DAO {
         createGenesPanelTable();
         createHotspotsSetTable();
         createHotspotsTable();
+        createSpecificCoverageSetTable();
+        createSpecificCoverageTable();
         createAnalysisParametersTable();
         createRunTable();
         createRunFilesTable();
@@ -241,10 +243,12 @@ public class DatabaseCreatorDAO extends DAO {
                 "panel_id INT, " +
                 "geneSet_id INT, " +
                 "hotspotsSet_id INT, " +
+                "specificCoverageSet_id INT, " +
                 "target_enrichment VARCHAR(255), " +
                 "UNIQUE (name), " +
                 "FOREIGN KEY (panel_id) REFERENCES panels(id), " +
                 "FOREIGN KEY (hotspotsSet_id) REFERENCES hotspotsSet(id), " +
+                "FOREIGN KEY (specificCoverageSet_id) REFERENCES specificCoverageSet(id), " +
                 "FOREIGN KEY (geneSet_id) REFERENCES geneSet(id));";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.executeUpdate();
@@ -356,6 +360,34 @@ public class DatabaseCreatorDAO extends DAO {
                 "protein_mut VARCHAR(255), " +
                 "type VARCHAR(255), " +
                 "FOREIGN KEY (hotspotsSet_id) REFERENCES hotspotsSet(id) ON DELETE CASCADE);";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+
+    private void createSpecificCoverageSetTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS specificCoverageSet ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "name VARCHAR_IGNORECASE(255), " +
+                "is_active BOOLEAN DEFAULT True, " +
+                "UNIQUE (name));";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.executeUpdate();
+        }
+    }
+
+
+    private void createSpecificCoverageTable() throws SQLException {
+        final String sql = "CREATE TABLE IF NOT EXISTS specificCoverage ( " +
+                "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
+                "specificCoverageSet_id INT NOT NULL, " +
+                "name VARCHAR(255), " +
+                "contig VARCHAR(255), " +
+                "start INT, " +
+                "end_ INT, " +
+                "minCov INT, " +
+                "FOREIGN KEY (specificCoverageSet_id) REFERENCES specificCoverageSet(id) ON DELETE CASCADE);";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.executeUpdate();
         }

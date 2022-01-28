@@ -72,7 +72,8 @@ public class ScrollBarUtil {
 
     private ScrollBar getScrollbarComponent() {
         Node n = table.lookup(".scroll-bar");
-        if (n instanceof final ScrollBar bar) {
+        if (n instanceof ScrollBar ) {
+            ScrollBar bar = (ScrollBar) n;
             if (bar.getOrientation().equals(orientation)) {
                 return bar;
             }

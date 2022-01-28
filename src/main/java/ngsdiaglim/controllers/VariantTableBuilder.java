@@ -321,7 +321,8 @@ public class VariantTableBuilder {
 
     public void setColumnsHeaderEvent() {
         for (Node n : table.lookupAll("TableColumnHeader")) {
-            if (n instanceof TableColumnHeader tch) {
+            if (n instanceof TableColumnHeader) {
+                TableColumnHeader tch = (TableColumnHeader) n;
                 tch.addEventFilter(MouseEvent.ANY, e -> {
                     if (e.getButton() == MouseButton.SECONDARY) {
                         TableColumnBase<?, ?> columnBase = tch.getTableColumn();
