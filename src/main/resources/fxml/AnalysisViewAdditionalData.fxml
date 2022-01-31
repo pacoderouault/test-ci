@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-
 <fx:root spacing="20.0" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER">
@@ -20,7 +19,7 @@
                      <children>
                         <Label text="%additionaldata.lb.commentaries" />
                         <Region HBox.hgrow="SOMETIMES" />
-                        <Button defaultButton="true" mnemonicParsing="false" onAction="#addCommentaryHandler" fx:id="addComentaryBtn" text="%additionaldata.btn.addCommentary" />
+                        <Button fx:id="addComentaryBtn" defaultButton="true" mnemonicParsing="false" onAction="#addCommentaryHandler" text="%additionaldata.btn.addCommentary" />
                      </children>
                   </HBox>
                   <ListView fx:id="commentariesLv">
@@ -32,13 +31,14 @@
             </VBox>
          </children>
       </HBox>
-      <VBox spacing="5.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+      <VBox fx:id="imagesBox" spacing="5.0" styleClass="module-box" HBox.hgrow="ALWAYS">
          <children>
-            <HBox styleClass="module-box-header">
+            <HBox spacing="5.0" styleClass="module-box-header">
                <children>
                   <Label text="%additionaldata.lb.images" />
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#addImageHandler" fx:id="addImageBtn" text="%additionaldata.btn.importImage" />
+                  <Button fx:id="addImageBtn" defaultButton="true" mnemonicParsing="false" onAction="#addImageHandler" text="%additionaldata.btn.importImage" />
+                  <Button fx:id="pasteImageBtn" mnemonicParsing="false" onAction="#pasteImageHandler" text="%additionaldata.btn.pasteImage" />
                </children>
             </HBox>
             <FlowPane fx:id="imagesFp" hgap="10.0" styleClass="module-box-container" vgap="10.0" />

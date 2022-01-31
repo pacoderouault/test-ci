@@ -89,7 +89,6 @@ public class RunImporter {
             File targetDepthFile = null;
             AnalysisParameters analysisParameters = analysisInputData.getAnalysisParameters();
             CIQModel ciqModel = analysisInputData.getCiqModel();
-            System.out.println(ciqModel.getName());
             // create analysis directory in the analysis dir of the run
             File analysisDirectory = Paths.get(targetDirectory.toString(), analysisName).toFile();
             if (analysisDirectory.exists()) {
@@ -130,7 +129,8 @@ public class RunImporter {
                         VCFUtils.createTabixIndex(targetVCFFile, targetIndexFile);
                     }
 
-                    File coverageFile = null;
+                    File targetCoverageFile = Paths.get(analysisDirectory.toString(), RunConstants.ANALYSIS_COVERAGE_FILENAME).toFile();
+                    File targetSpecCoverageFile = Paths.get(analysisDirectory.toString(), RunConstants.ANALYSIS_SPECIFIC_COVERAGE_FILENAME).toFile();
 
                     if (depthFile != null && depthFile.exists()) {
                         targetDepthFile = Paths.get(analysisDirectory.toString(), depthFile.getName().replace(GZIP_EXTENSION, "") + GZIP_EXTENSION).toFile();
@@ -149,14 +149,12 @@ public class RunImporter {
 
                         if (targetDepthFile.exists()) {
                             SamtoolsDepthParser samtoolsDepthParser = new SamtoolsDepthParser(analysisParameters, targetDepthFile);
-                            coverageFile = samtoolsDepthParser.parseFile();
+                            samtoolsDepthParser.parseFile(targetCoverageFile, targetSpecCoverageFile);
 
                         }
                     } else if (bamFile != null && bamFile.exists()){
                         BamParser bamParser = new BamParser(analysisParameters, bamFile);
-                        String outFileName = RunConstants.ANALYSIS_COVERAGE_FILENAME;
-                        coverageFile = Paths.get(analysisDirectory.toString(), outFileName).toFile();
-                        bamParser.parseFile(coverageFile);
+                        bamParser.parseFile(targetCoverageFile, targetSpecCoverageFile);
                     }
 
                     String metadata = App.getAppName() + ":" + App.getVersion();
@@ -166,7 +164,8 @@ public class RunImporter {
                             targetVCFFile,
                             bamFile,
                             targetDepthFile,
-                            coverageFile,
+                            targetCoverageFile,
+                            targetSpecCoverageFile,
                             LocalDateTime.now(),
                             sampleName,
                             run,

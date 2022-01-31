@@ -9,8 +9,9 @@ import ngsdiaglim.enumerations.CoverageQuality;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.analyse.PanelRegion;
-import ngsdiaglim.modeles.analyse.RunConstants;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverage;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageSet;
 import ngsdiaglim.utils.BamUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
@@ -30,30 +30,30 @@ public class BamParser {
     private final Logger logger = LogManager.getLogger(BamParser.class);
     //    private final Analysis analysis;
     private final AnalysisParameters analysisParameters;
-    private final File file;
+    private final File bamFile;
 
     public BamParser(AnalysisParameters analysisParameters, File file) {
 //        this.analysis = analysis;
         this.analysisParameters = analysisParameters;
-        this.file = file;
+        this.bamFile = file;
     }
 
 
-    public void parseFile(File outFile) throws Exception {
+    public void parseFile(File outFile, File outSpecFile) throws Exception {
         // Open the bam file
         final SamReader samReader = SamReaderFactory.makeDefault()
                 .enable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS)
                 .validationStringency(ValidationStringency.DEFAULT_STRINGENCY)
-                .open(file);
+                .open(bamFile);
 
         // Index the bam file if no .bai file is found
         if (!samReader.hasIndex()) {
-            BamUtils.buildBamIndex(file, samReader);
+            BamUtils.buildBamIndex(bamFile, samReader);
         }
         samReader.close();
 
         // read the coverage
-        depthBamReader(outFile);
+        depthBamReader(outFile, outSpecFile);
     }
 
 
@@ -61,7 +61,7 @@ public class BamParser {
      * Read and calculate the coverage of the bam file
      * @throws Exception
      */
-    private void depthBamReader(File outFile) throws Exception {
+    private void depthBamReader(File outFile, File outSpecFile) throws Exception {
 
         Panel panel = analysisParameters.getPanel();
 
@@ -70,8 +70,8 @@ public class BamParser {
                 .disable(SamReaderFactory.Option.INCLUDE_SOURCE_IN_RECORDS)
                 .enable(SamReaderFactory.Option.EAGERLY_DECODE)
                 .validationStringency(ValidationStringency.SILENT)
-                .open(file);
-        readDepth(panel, samReaderLocal, outFile);
+                .open(bamFile);
+        readDepth(panel, samReaderLocal, outFile, outSpecFile);
         try {
             samReaderLocal.close();
         } catch (IOException e) {
@@ -84,10 +84,11 @@ public class BamParser {
      * @param samReader
      * @throws Exception
      */
-    private void readDepth(Panel panel, SamReader samReader, File outFile) throws Exception {
+    private void readDepth(Panel panel, SamReader samReader, File outFile, File outSpecFile) throws Exception {
 
         int minDepth = analysisParameters.getMinDepth();
         int warningDepth = analysisParameters.getWarningDepth();
+        SpecificCoverageSet specificCoverageSet = analysisParameters.getSpecificCoverageSet();
 
         // create IntervalList from panel:
         // Loci to sample (could be a single position):
@@ -100,6 +101,7 @@ public class BamParser {
 
         List<CoverageRegion> noCoveredRegions = new ArrayList<>();
         List<CoverageRegion> badCoveredRegions = new ArrayList<>();
+        List<CoverageRegion> specificCoveredRegions = new ArrayList<>();
 
         for (SamLocusIterator.LocusInfo sli : samLocIter) {
 
@@ -121,6 +123,20 @@ public class BamParser {
                     badCoveredRegions.add(cr);
                 } else {
                     badCoveredRegions.get(badCoveredRegions.size() - 1).extendsRegion(depth);
+                }
+            }
+
+            if (specificCoverageSet != null) {
+                for (SpecificCoverage r : specificCoverageSet.getSpecificCoverageList()) {
+                    if (depth < r.getMinCov() && r.overlaps(chrom, from, from)) {
+                        if (specificCoveredRegions.isEmpty() || !specificCoveredRegions.get(specificCoveredRegions.size() - 1).isTouching(chrom, from)) {
+                            CoverageRegion cr = new CoverageRegion(chrom, from - 1, from, null, CoverageQuality.NO_COVERED);
+                            cr.addDepthValue(depth);
+                            specificCoveredRegions.add(cr);
+                        } else {
+                            specificCoveredRegions.get(specificCoveredRegions.size() - 1).extendsRegion(depth);
+                        }
+                    }
                 }
             }
         }
@@ -172,6 +188,22 @@ public class BamParser {
             logger.error(e);
             Files.deleteIfExists(outFile.toPath());
             throw e;
+        }
+
+        // specific coverage regions
+        if (specificCoverageSet != null) {
+            try (FileOutputStream outputSpec = new FileOutputStream(outSpecFile); GZIPOutputStream gos = new GZIPOutputStream(outputSpec)) {
+                specificCoveredRegions.sort(new RegionComparator());
+                for (CoverageRegion cr : specificCoveredRegions) {
+                    String line = cr.toIgvBed() + "\n";
+                    gos.write(line.getBytes(StandardCharsets.UTF_8));
+                }
+                gos.flush();
+            } catch (IOException e) {
+                logger.error(e);
+                Files.deleteIfExists(outSpecFile.toPath());
+                throw e;
+            }
         }
     }
 

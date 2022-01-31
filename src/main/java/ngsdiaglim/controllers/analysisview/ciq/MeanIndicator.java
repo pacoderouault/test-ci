@@ -19,6 +19,7 @@ public class MeanIndicator extends YValueIndicator {
         setStyleClasses(label, "y-", AbstractSingleValueIndicator.STYLE_CLASS_LABEL);
         setStyleClasses(line, "y-", STYLE_CLASS_LINE);
         setStyleClasses(triangle, "x-", AbstractSingleValueIndicator.STYLE_CLASS_MARKER);
+        label.getStyleClass().add("mean");
     }
 
     @Override

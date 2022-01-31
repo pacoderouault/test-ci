@@ -41,6 +41,7 @@ public class CreateDefaultParams {
                 panel_id,
                 transcripts_id,
                 null,
+                null,
                 TargetEnrichment.CAPTURE
         );
     }
@@ -59,6 +60,7 @@ public class CreateDefaultParams {
                 0.1,
                 panel_id,
                 transcripts_id,
+                null,
                 null,
                 TargetEnrichment.AMPLICON
         );

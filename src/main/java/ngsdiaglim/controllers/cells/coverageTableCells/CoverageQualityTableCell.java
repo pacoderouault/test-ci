@@ -18,13 +18,15 @@ public class CoverageQualityTableCell extends TableCell<CoverageRegion, Coverage
                 icon = new FontIcon("mdal-error");
                 icon.setIconColor(Color.RED);
                 setText(App.getBundle().getString("coverage.lb.nocoveredregion"));
-            } else {
+                icon.setIconSize(18);
+                setGraphic(icon);
+            } else if (coverageQuality.equals(CoverageQuality.LOW_COVERAGE)) {
                 icon = new FontIcon("mdmz-warning");
                 icon.setIconColor(Color.ORANGE);
                 setText(App.getBundle().getString("coverage.lb.lowcoveredregion"));
+                icon.setIconSize(18);
+                setGraphic(icon);
             }
-            icon.setIconSize(18);
-            setGraphic(icon);
         } else {
             setText(null);
             setGraphic(null);

@@ -15,7 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.data" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="jdk" jdkName="11 (4)" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.openjdk.jol:jol-core:0.10" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:linux:17.0.1" level="project" />

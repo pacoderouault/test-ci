@@ -57,42 +57,55 @@ public class IGVLinks2 {
     }
 
     private String getAnalysisFiles(Analysis analysis) {
-            String link = igvLink + "load?file=";
-            StringJoiner files = new StringJoiner(",");
-            StringJoiner names = new StringJoiner(",");
+        String link = igvLink + "load?file=";
+        StringJoiner files = new StringJoiner(",");
+        StringJoiner names = new StringJoiner(",");
 
-            File bamFile = analysis.getBamFile();
-            if (bamFile != null && bamFile.exists()) {
-                files.add(bamFile.getAbsolutePath());
-                names.add(analysis.getSampleName());
+        File bamFile = analysis.getBamFile();
+        if (bamFile != null && bamFile.exists()) {
+            files.add(bamFile.getAbsolutePath());
+            names.add(analysis.getSampleName());
+        }
+
+        File covFile = analysis.getCoverageFile();
+        if (covFile != null && covFile.exists()) {
+            String path = covFile.getAbsolutePath();
+            if (!path.endsWith(".gz")) {
+                path += ".gz";
             }
+            files.add(path);
+            String trackname = analysis.getSampleName() + "_cov";
+            names.add(trackname);
+        }
 
-            File covFile = analysis.getCoverageFile();
-            if (covFile != null && covFile.exists()) {
-                String path = covFile.getAbsolutePath();
+        if (analysis.getAnalysisParameters().getSpecificCoverageSet() != null) {
+            File specCovFile = analysis.getSpecCoverageFile();
+            if (specCovFile != null && specCovFile.exists()) {
+                String path = specCovFile.getAbsolutePath();
                 if (!path.endsWith(".gz")) {
                     path += ".gz";
                 }
                 files.add(path);
-                String trackname = analysis.getSampleName() + "_cov";
+                String trackname = analysis.getSampleName() + "_spec_cov";
                 names.add(trackname);
             }
+        }
 
-            File vcfFile = analysis.getVcfFile();
-            if (vcfFile != null && vcfFile.exists()) {
-                files.add(vcfFile.getAbsolutePath());
-                names.add(analysis.getSampleName());
-            }
+        File vcfFile = analysis.getVcfFile();
+        if (vcfFile != null && vcfFile.exists()) {
+            files.add(vcfFile.getAbsolutePath());
+            names.add(analysis.getSampleName());
+        }
 
-            File bedFile = analysis.getAnalysisParameters().getPanel().getBedFile();
-            if (bedFile != null && bedFile.exists()) {
-                files.add(bedFile.getAbsolutePath());
-                names.add(analysis.getAnalysisParameters().getPanel().getName());
-            }
+        File bedFile = analysis.getAnalysisParameters().getPanel().getBedFile();
+        if (bedFile != null && bedFile.exists()) {
+            files.add(bedFile.getAbsolutePath());
+            names.add(analysis.getAnalysisParameters().getPanel().getName());
+        }
 
-            link += files.toString();
-            link += "&name=";
-            link += names.toString();
+        link += files.toString();
+        link += "&name=";
+        link += names.toString();
 
         return link;
     }

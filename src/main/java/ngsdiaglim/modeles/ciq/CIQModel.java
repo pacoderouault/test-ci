@@ -2,6 +2,7 @@ package ngsdiaglim.modeles.ciq;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ngsdiaglim.modeles.variants.Variant;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -15,7 +16,7 @@ public class CIQModel {
     private final SimpleStringProperty name = new SimpleStringProperty();
     private final SimpleStringProperty barcode = new SimpleStringProperty();
     private final SimpleBooleanProperty active = new SimpleBooleanProperty();
-    private ObservableList<CIQHotspot> hotspots;
+    private ObservableList<CIQHotspot> hotspots = FXCollections.observableArrayList();
 
     public CIQModel(long id, String name, String barcode, boolean isActive) {
         this.id = id;
@@ -69,7 +70,7 @@ public class CIQModel {
     public ObservableList<CIQHotspot> getHotspots() {return hotspots;}
 
     public void setHotspots(ObservableList<CIQHotspot> hotspots) {
-        this.hotspots = hotspots;
+        this.hotspots.setAll(hotspots);
     }
 
     public CIQHotspot getHotspot(Variant variant) {

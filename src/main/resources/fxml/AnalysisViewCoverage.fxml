@@ -3,10 +3,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root alignment="TOP_CENTER" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="TOP_CENTER" spacing="20.0" type="HBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="TOP_CENTER" spacing="5.0" styleClass="module-box">
          <children>
@@ -15,8 +17,9 @@
                   <Label text="%coverage.lb.tabletitle" />
                </children>
             </HBox>
-            <HBox alignment="TOP_CENTER" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+            <HBox fx:id="coverageRegionsTableContainer" alignment="TOP_CENTER" styleClass="module-box-container" VBox.vgrow="ALWAYS">
                <children>
+                  <Label fx:id="noCoverageAnalysisLb" text="%coverage.msg.noCoverageAnalysis" />
                   <TableView fx:id="coverageTable">
                     <columns>
                         <TableColumn fx:id="qualityCol" prefWidth="175.0" />
@@ -31,6 +34,48 @@
                   </TableView>
                </children>
             </HBox>
+         </children>
+      </VBox>
+      <VBox styleClass="module-box" HBox.hgrow="ALWAYS">
+         <children>
+            <HBox styleClass="module-box-header">
+               <children>
+                  <Label text="%coverage.lb.specificcovtabletitle" />
+               </children>
+            </HBox>
+            <VBox fx:id="specificCoverageBox" styleClass="module-box-container" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox fx:id="specificCoverageRegionsTableContainer" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TreeTableView fx:id="treeTableView" prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                            <TreeTableColumn fx:id="specificCoverageNameTreeCol" prefWidth="75.0" text="name" />
+                            <TreeTableColumn fx:id="specificCoverageContigTreeCol" prefWidth="75.0" text="contig" />
+                              <TreeTableColumn fx:id="specificCoverageStartTreeCol" prefWidth="75.0" text="start" />
+                              <TreeTableColumn fx:id="specificCoverageEndTreeCol" prefWidth="75.0" text="end" />
+                              <TreeTableColumn fx:id="specificCoverageTargetCovTreeCol" prefWidth="75.0" text="Pronfondeur cilbee" />
+                              <TreeTableColumn fx:id="specificCoverageMeanCovTreeCol" prefWidth="75.0" text="Profondeur moyenne" />
+                              <TreeTableColumn fx:id="specificCoverageSizeTreeCol" prefWidth="75.0" text="taille" />
+                              <TreeTableColumn fx:id="specificCoverageSizeTreeCol" prefWidth="75.0" text="actions" />
+                          </columns>
+                        </TreeTableView>
+                        <TableView fx:id="specificCoverageTable" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="specificCoverageNameCol" prefWidth="120.0" text="%coverage.col.specName" />
+                            <TableColumn fx:id="specificCoverageContigCol" prefWidth="75.0" text="%coverage.col.specContig" />
+                              <TableColumn fx:id="specificCoverageStartCol" prefWidth="100.0" text="%coverage.col.specStart" />
+                              <TableColumn fx:id="specificCoverageEndCol" prefWidth="100.0" text="%coverage.col.specEnd" />
+                              <TableColumn fx:id="specificCoverageTargetCovCol" prefWidth="120.0" text="%coverage.col.specMinCov" />
+                              <TableColumn fx:id="specificCoverageMeanCovCol" prefWidth="120.0" text="%coverage.col.specCov" />
+                              <TableColumn fx:id="specificCoverageSizeCol" prefWidth="75.0" text="%coverage.col.specSize" />
+                              <TableColumn fx:id="specificCoverageActionsCol" prefWidth="50.0" />
+                          </columns>
+                        </TableView>
+                        <Label fx:id="noSpecificCoverageAnalysisLb" text="%coverage.msg.noSpecificCoverageAnalysis" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
          </children>
       </VBox>
    </children>

@@ -1,7 +1,6 @@
 package ngsdiaglim.database;
 
 import ngsdiaglim.database.dao.*;
-import ngsdiaglim.modeles.ciq.CIQVariantRecord;
 
 public class DAOController {
 
@@ -45,7 +44,8 @@ public class DAOController {
     private static final CIQHotspotDAO ciqHotspotDAO = new CIQHotspotDAO();
     private static final CIQRecordDAO ciqRecordDAO = new CIQRecordDAO();
     private static final CIQRecordHistoryDAO ciqRecordHistoryDAO = new CIQRecordHistoryDAO();
-
+    private static final SpecificCoverageSetDAO specificCoverageSetDAO = new SpecificCoverageSetDAO();
+    private static final SpecificCoverageDAO specificCoverageDAO = new SpecificCoverageDAO();
 
     public static DatabaseCreatorDAO getDatabaseCreatorDAO() { return databaseCreatorDAO; }
 
@@ -127,5 +127,8 @@ public class DAOController {
 
     public static CIQRecordHistoryDAO getCiqRecordHistoryDAO() {return  ciqRecordHistoryDAO;}
 
+    public static SpecificCoverageSetDAO getSpecificCoverageSetDAO() { return specificCoverageSetDAO; }
+
+    public static SpecificCoverageDAO getSpecificCoverageDAO() { return specificCoverageDAO; }
 
 }

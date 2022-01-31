@@ -1531,6 +1531,12 @@ Text {
     -fx-background-color: TOMATO;
 }
 
+.targetvaf-value-indicator-line {
+    -fx-stroke-width: 1.5px;
+    -fx-stroke: #000;
+    -fx-stroke-dash-array: 4;
+}
+
 .mean-value-indicator-line {
   -fx-stroke-width: 2;
   -fx-stroke: YELLOWGREEN;
@@ -1544,4 +1550,27 @@ Text {
 .sd-high-value-indicator-line {
   -fx-stroke-width: 2;
   -fx-stroke: TOMATO;
+}
+
+.value-indicator-label{
+    -fx-background-color: white;
+    -fx-font-family:'Ubuntu Medium';
+    -fx-font-weight: normal;
+}
+
+.value-indicator-label.error {
+    -fx-background-color: LIGHTCORAL;
+}
+
+.value-indicator-label.warning {
+    -fx-background-color: LIGHTBLUE;
+}
+
+.value-indicator-label.mean {
+    -fx-background-color: cceb8cff;
+}
+
+.chart-title {
+    -fx-font-family: "Ubuntu medium";
+    -fx-padding: 5px 0 0 0;
 }

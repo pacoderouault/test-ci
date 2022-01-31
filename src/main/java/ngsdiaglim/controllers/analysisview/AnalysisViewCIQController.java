@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.analysisview.ciq.CIQChart;
 import ngsdiaglim.controllers.cells.ciq.CIQRecordAcceptedCell;
@@ -14,16 +16,17 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.ciq.*;
-import ngsdiaglim.utils.DateFormatterUtils;
-import ngsdiaglim.utils.MathUtils;
-import ngsdiaglim.utils.NumberUtils;
+import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
+import ngsdiaglim.modeles.users.User;
+import ngsdiaglim.utils.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +40,8 @@ public class AnalysisViewCIQController extends VBox {
     @FXML private TextField vafTargetTf;
     @FXML private TextField meanTf;
     @FXML private TextField sdTf;
+    @FXML private Button copyToClipboardBtn;
+    @FXML private Button exportToImageBtn;
     @FXML private ListView<CIQHotspot> ciqHotspotLv;
     @FXML private TableView<CIQVariantRecord> ciqRecordTable;
     @FXML private TableColumn<CIQVariantRecord, String> runCol;
@@ -50,6 +55,9 @@ public class AnalysisViewCIQController extends VBox {
     @FXML private TableColumn<CIQVariantRecord, CIQRecordHistory> commentCol;
     @FXML private TableColumn<CIQVariantRecord, Void> actionsCol;
     @FXML private VBox chartContainer;
+    private final static Tooltip saveToFileTp = new Tooltip(App.getBundle().getString("cnvnormalizedview.btn.exportToFile"));
+    private final static Tooltip copyToClipboardTp = new Tooltip(App.getBundle().getString("cnvnormalizedview.btn.exportToClipboard"));
+
     private final CIQChart chart = new CIQChart();
     private final HashMap<CIQHotspot, CIQVariantDataSet> recordMap = new HashMap<>();
 
@@ -83,6 +91,11 @@ public class AnalysisViewCIQController extends VBox {
     private void initView() {
         initCIQHotspotLv();
         initCIQRecordTable();
+
+        saveToFileTp.setShowDelay(Duration.ZERO);
+        exportToImageBtn.setTooltip(saveToFileTp);
+        copyToClipboardTp.setShowDelay(Duration.ZERO);
+        copyToClipboardBtn.setTooltip(copyToClipboardTp);
     }
 
     private void initCIQHotspotLv() {
@@ -106,8 +119,7 @@ public class AnalysisViewCIQController extends VBox {
             vafTargetTf.setText(String.valueOf(ciqHotspot.getVafTarget()));
 
             CIQVariantDataSet dataset = recordMap.get(ciqHotspot);
-            meanTf.setText(String.valueOf(NumberUtils.round(dataset.getMean(), 3)));
-            sdTf.setText(String.valueOf(NumberUtils.round(dataset.getSd(), 3)));
+            fillHotspotsStatsFields(dataset);
             ciqRecordTable.getItems().setAll(dataset.getCiqRecords());
             chart.setDataset(dataset);
             chartContainer.getChildren().setAll(chart);
@@ -197,12 +209,47 @@ public class AnalysisViewCIQController extends VBox {
     }
 
 
+    public void fillHotspotsStatsFields(CIQVariantDataSet dataset) {
+        if (dataset != null) {
+            meanTf.setText(String.valueOf(NumberUtils.round(dataset.getMean(), 3)));
+            sdTf.setText(String.valueOf(NumberUtils.round(dataset.getSd(), 3)));
+        } else {
+            meanTf.setText(null);
+            sdTf.setText(null);
+        }
+    }
+
+
     public void clearView() {
         ciqNameTf.setText(null);
         ciqBarcodeTf.setText(null);
         chart.setDataset(null);
         chart.setDisable(true);
         ciqHotspotLv.getItems().clear();
+    }
+
+
+
+    @FXML
+    private void exportToFile() {
+
+        CIQVariantDataSet hotspotDataset = getShowedDataset();
+        if (hotspotDataset != null) {
+            FileChooser fc = FileChooserUtils.getFileChooser();
+            fc.setInitialFileName(ciqModel.getName() + "_" + hotspotDataset.getCiqHotspot().getName() + "_" + DateFormatterUtils.formatLocalDate(LocalDate.now(), "YYMMdd") +".png");
+            File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
+            if (selectedFile != null) {
+                User user = App.get().getLoggedUser();
+                user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(selectedFile));
+                user.savePreferences();
+                chart.screenshotToFile(selectedFile);
+            }
+        }
+    }
+
+    @FXML
+    private void exportToClipBoard() {
+        chart.screenshotToClipboard();
     }
 
     public Analysis getAnalysis() {

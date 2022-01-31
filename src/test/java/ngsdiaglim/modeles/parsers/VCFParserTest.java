@@ -74,7 +74,7 @@ class VCFParserTest extends BaseSetup {
 
 
             params = new AnalysisParameters(
-                    1, Genome.GRCh37, "", 30, 50, 0.1f, true, panel, geneSet, null, TargetEnrichment.CAPTURE
+                    1, Genome.GRCh37, "", 30, 50, 0.1f, true, panel, geneSet, null, null, TargetEnrichment.CAPTURE
                     );
         } catch (IOException | MalformedPanelFile | SQLException | MalformedGeneTranscriptFile e) {
             fail();

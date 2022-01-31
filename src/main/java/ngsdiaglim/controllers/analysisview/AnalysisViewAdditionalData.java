@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.beans.EventHandler;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -47,11 +48,14 @@ public class AnalysisViewAdditionalData extends HBox {
     private static final Logger logger = LogManager.getLogger(AnalysisViewAdditionalData.class);
 
     @FXML private ListView<AnalysisCommentary> commentariesLv;
+    @FXML private VBox imagesBox;
     @FXML private FlowPane imagesFp;
     @FXML private Button addComentaryBtn;
     @FXML private Button addImageBtn;
+    @FXML private Button pasteImageBtn;
     private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
     private ImageImporter imageImporter;
+    private final KeyCodeCombination pastKeyCombination = new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN);
 
     public AnalysisViewAdditionalData() {
 
@@ -93,6 +97,7 @@ public class AnalysisViewAdditionalData extends HBox {
 
             addComentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
             addImageBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES));
+
         }
     }
 
@@ -145,6 +150,24 @@ public class AnalysisViewAdditionalData extends HBox {
                     Message.error(String.join("\n", notImageFiles), "The following files are not images :");
                 }
             }
+        }
+    }
+
+    @FXML
+    private void pasteImageHandler() {
+        Image image = Clipboard.getSystemClipboard().getImage();
+        if (image != null)
+        {
+            try {
+                File importedImage = imageImporter.importImage(image);
+                AdditionalImage ai = new AdditionalImage(importedImage);
+                imagesFp.getChildren().add(buildImageContainer(ai));
+            } catch (IOException e) {
+                logger.error(e);
+                Message.error(e.getMessage(), e);
+            }
+//            AdditionalImage ai = new AdditionalImage(image);
+//            imagesFp.getChildren().add(buildImageContainer(ai));
         }
     }
 
@@ -226,7 +249,7 @@ public class AnalysisViewAdditionalData extends HBox {
 
             FileChooser fc = FileChooserUtils.getFileChooser();
 
-            fc.setInitialFileName(analysis.getName() + "_image.png");
+            fc.setInitialFileName(ai.getImageFile().getName());
             File selectedFile = fc.showSaveDialog(App.getPrimaryStage());
             if (selectedFile != null) {
                 User user = App.get().getLoggedUser();

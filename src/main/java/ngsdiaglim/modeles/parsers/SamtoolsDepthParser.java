@@ -5,6 +5,8 @@ import ngsdiaglim.enumerations.CoverageQuality;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.analyse.RunConstants;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverage;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageSet;
 import ngsdiaglim.utils.IOUtils;
 import ngsdiaglim.utils.NumberUtils;
 import org.apache.logging.log4j.LogManager;
@@ -34,13 +36,17 @@ public class SamtoolsDepthParser {
 
     public File getFile() {return file;}
 
-    public File parseFile(File outFile) throws IOException {
+    public File parseFile(File outFile, File outSpecFile) throws IOException {
         int minDepth = analysisParameters.getMinDepth();
         int warningDepth = analysisParameters.getWarningDepth();
+
+        SpecificCoverageSet specificCoverageSet = analysisParameters.getSpecificCoverageSet();
 
         // read samtools depth file
         List<CoverageRegion> noCoveredRegions = new ArrayList<>();
         List<CoverageRegion> badCoveredRegions = new ArrayList<>();
+        List<CoverageRegion> specificCoveredRegions = new ArrayList<>();
+
         try (BufferedReader br = IOUtils.getFileReader(file)) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -68,6 +74,20 @@ public class SamtoolsDepthParser {
                         badCoveredRegions.get(badCoveredRegions.size() - 1).extendsRegion(depth);
                     }
                 }
+
+                if (specificCoverageSet != null) {
+                    for (SpecificCoverage r : specificCoverageSet.getSpecificCoverageList()) {
+                        if (depth < r.getMinCov() && r.overlaps(contig, pos, pos)) {
+                            if (specificCoveredRegions.isEmpty() || !specificCoveredRegions.get(specificCoveredRegions.size() - 1).isTouching(contig, pos)) {
+                                CoverageRegion cr = new CoverageRegion(contig, pos - 1, pos, null, CoverageQuality.NO_COVERED);
+                                cr.addDepthValue(depth);
+                                specificCoveredRegions.add(cr);
+                            } else {
+                                specificCoveredRegions.get(specificCoveredRegions.size() - 1).extendsRegion(depth);
+                            }
+                        }
+                    }
+                }
             }
         } catch (IOException e) {
             logger.error(e);
@@ -76,8 +96,7 @@ public class SamtoolsDepthParser {
 
 
         // write regions
-        try (FileOutputStream output = new FileOutputStream(outFile);
-             GZIPOutputStream gos = new GZIPOutputStream(output)) {
+        try (FileOutputStream output = new FileOutputStream(outFile); GZIPOutputStream gos = new GZIPOutputStream(output)) {
             List<CoverageRegion> coverageRegions = new ArrayList<>(noCoveredRegions);
             coverageRegions.addAll(badCoveredRegions);
             coverageRegions.sort(new RegionComparator());
@@ -91,13 +110,31 @@ public class SamtoolsDepthParser {
             Files.deleteIfExists(outFile.toPath());
             throw e;
         }
+
+        // specific coverage regions
+        if (specificCoverageSet != null) {
+            try (FileOutputStream outputSpec = new FileOutputStream(outSpecFile); GZIPOutputStream gos = new GZIPOutputStream(outputSpec)) {
+                specificCoveredRegions.sort(new RegionComparator());
+                for (CoverageRegion cr : specificCoveredRegions) {
+                    String line = cr.toIgvBed() + "\n";
+                    gos.write(line.getBytes(StandardCharsets.UTF_8));
+                }
+                gos.flush();
+            } catch (IOException e) {
+                logger.error(e);
+                Files.deleteIfExists(outSpecFile.toPath());
+                throw e;
+            }
+        }
         return outFile;
     }
 
     public File parseFile() throws IOException {
         String outFileName = RunConstants.ANALYSIS_COVERAGE_FILENAME;
+        String outSpecFileName = RunConstants.ANALYSIS_SPECIFIC_COVERAGE_FILENAME;
         File outFile = Paths.get(file.getParent(), outFileName).toFile();
-        return parseFile(outFile);
+        File outSpecFile = Paths.get(file.getParent(), outSpecFileName).toFile();
+        return parseFile(outFile, outSpecFile);
     }
 
     /**

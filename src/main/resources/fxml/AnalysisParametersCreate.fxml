@@ -43,6 +43,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
@@ -64,11 +65,13 @@
                                         </HBox>
                                         <Label text="%createAnalasisParameters.lb.geneSet" GridPane.rowIndex="6" />
                                         <ComboBox fx:id="geneSetsCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <Label text="%createAnalasisParameters.lb.hotspots" GridPane.rowIndex="7" />
-                              <ComboBox fx:id="hotspotsCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <Label text="%createAnalasisParameters.lb.targetEnrichment" GridPane.rowIndex="8" />
-                              <ComboBox fx:id="targetEnrichmentCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                        <Button defaultButton="true" mnemonicParsing="false" onAction="#createAnalysisParametersHandler" text="%createAnalasisParameters.btn.createAnalysis" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Label text="%createAnalasisParameters.lb.hotspots" GridPane.rowIndex="8" />
+                              <ComboBox fx:id="hotspotsCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label text="%createAnalasisParameters.lb.targetEnrichment" GridPane.rowIndex="9" />
+                              <ComboBox fx:id="targetEnrichmentCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                        <Button defaultButton="true" mnemonicParsing="false" onAction="#createAnalysisParametersHandler" text="%createAnalasisParameters.btn.createAnalysis" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label text="%createAnalasisParameters.lb.specifiCoverageSet" GridPane.rowIndex="7" />
+                              <ComboBox fx:id="specificCoverageCb" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
                                 </GridPane>
                             </children>
@@ -90,6 +93,7 @@
                         <TableColumn fx:id="analysisParametersGenomeCol" prefWidth="100.0" text="%createAnalasisParameters.module.analyseslist.colGenome" />
                         <TableColumn fx:id="analysisParametersPanelCol" prefWidth="200.0" text="%createAnalasisParameters.module.analyseslist.colPanel" />
                         <TableColumn fx:id="analysisParametersGeneSetCol" prefWidth="200.0" text="%createAnalasisParameters.module.analyseslist.colGeneSet" />
+                  <TableColumn fx:id="analysisParametersSpecificCoverageSetCol" prefWidth="200.0" text="%createAnalasisParameters.module.analyseslist.colSpecificCoverageSet" />
                         <TableColumn fx:id="analysisParametersHotspotsSetCol" prefWidth="200.0" text="%createAnalasisParameters.module.analyseslist.colHotspotsSet" />
                   <TableColumn fx:id="analysisParametersEnrichmentCol" prefWidth="120.0" text="%createAnalasisParameters.module.analyseslist.colEnrichment" />
                         <TableColumn fx:id="analysisParametersMinDepthCol" text="%createAnalasisParameters.module.analyseslist.colMinDepth" />

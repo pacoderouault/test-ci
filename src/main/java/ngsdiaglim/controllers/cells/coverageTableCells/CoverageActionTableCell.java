@@ -35,7 +35,6 @@ public class CoverageActionTableCell extends TableCell<CoverageRegion, Void> {
     }
 
     private void viewRegionOnIGV() {
-//        IGVHandler igv = App.get().getIgvHandler();
         IGVLinks2 igv = App.get().getIgvLinks2();
         CoverageRegion cr = getTableRow().getItem();
         if (cr != null) {

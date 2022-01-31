@@ -32,6 +32,22 @@ public class CIQVariantDataSet {
 
     public double getCv() {return cv;}
 
+    public double getHighMaxValue() {
+        return mean + 3 * sd;
+    }
+
+    public double getHighMinValue() {
+        return mean - 3 * sd;
+    }
+
+    public double getLowMaxValue() {
+        return mean + 2 * sd;
+    }
+
+    public double getLowMinValue() {
+        return mean - 2 * sd;
+    }
+
     public void computeStats() {
         DescriptiveStatistics stats = getVafStats();
         this.min = stats.getMin();

@@ -19,6 +19,7 @@ import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.GeneSet;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageSet;
 import ngsdiaglim.modeles.biofeatures.Transcript;
 import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.modeles.variants.HotspotsSet;
@@ -43,6 +44,7 @@ public class AnalysisParametersCreateController extends VBox {
     @FXML private ComboBox<Genome> genomesCb;
     @FXML private ComboBox<Panel> panelsCb;
     @FXML private ComboBox<GeneSet> geneSetsCb;
+    @FXML private ComboBox<SpecificCoverageSet> specificCoverageCb;
     @FXML private ComboBox<HotspotsSet> hotspotsCb;
     @FXML private ComboBox<TargetEnrichment> targetEnrichmentCb;
 
@@ -55,6 +57,7 @@ public class AnalysisParametersCreateController extends VBox {
     @FXML private TableColumn<AnalysisParameters, Genome> analysisParametersGenomeCol;
     @FXML private TableColumn<AnalysisParameters, Panel> analysisParametersPanelCol;
     @FXML private TableColumn<AnalysisParameters, GeneSet> analysisParametersGeneSetCol;
+    @FXML private TableColumn<AnalysisParameters, SpecificCoverageSet> analysisParametersSpecificCoverageSetCol;
     @FXML private TableColumn<AnalysisParameters, HotspotsSet> analysisParametersHotspotsSetCol;
     @FXML private TableColumn<AnalysisParameters, TargetEnrichment> analysisParametersEnrichmentCol;
     @FXML private TableColumn<AnalysisParameters, Integer> analysisParametersMinDepthCol;
@@ -91,6 +94,7 @@ public class AnalysisParametersCreateController extends VBox {
         initMinVAFSpinner();
         initPanelsCombobox();
         initGeneSetsCombobox();
+        initSpecificCoverageCombobox();
         initHotspotsSetCombobox();
 //        initCIQCombobox();
         initAnalysisParametersTable();
@@ -132,6 +136,11 @@ public class AnalysisParametersCreateController extends VBox {
     private void initGeneSetsCombobox() {
         geneSetsCb.setItems(createAnalysisParametersController
                 .getAnalysisParametersGenesTrancriptsController().getGenesSetTable().getItems().filtered(GeneSet::isActive));
+    }
+
+    private void initSpecificCoverageCombobox() {
+        specificCoverageCb.setItems(createAnalysisParametersController
+                .getAnalysisParametersSpecificCoverageController().getSpecificCoverageSetTable().getItems().filtered(SpecificCoverageSet::isActive));
     }
 
     private void initHotspotsSetCombobox() {
@@ -373,6 +382,7 @@ public class AnalysisParametersCreateController extends VBox {
 
         analysisParametersPanelCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getPanel()));
         analysisParametersGeneSetCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getGeneSet()));
+        analysisParametersSpecificCoverageSetCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getSpecificCoverageSet()));
         analysisParametersHotspotsSetCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getHotspotsSet()));
 //        analysisParametersPanelCol.setCellFactory(ComboBoxTableCell.forTableColumn(panelsCb.getItems()));
 //        analysisParametersPanelCol.setOnEditStart(t -> {
@@ -584,6 +594,7 @@ public class AnalysisParametersCreateController extends VBox {
         String error = checkError();
         if(error == null) {
             try {
+                Long specificCoverageSetId = specificCoverageCb.getValue() == null ? null : specificCoverageCb.getValue().getId();
                 Long hotspotsSetId = hotspotsCb.getValue() == null ? null : hotspotsCb.getValue().getId();
                 DAOController.getAnalysisParametersDAO().addAnalysisParameters(
                         analysisNameTf.getText(),
@@ -593,6 +604,7 @@ public class AnalysisParametersCreateController extends VBox {
                         minVAFSpinner.getValue(),
                         panelsCb.getValue().getId(),
                         geneSetsCb.getValue().getId(),
+                        specificCoverageSetId,
                         hotspotsSetId,
                         targetEnrichmentCb.getValue()
                 );

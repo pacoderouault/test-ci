@@ -51,7 +51,7 @@ class BamParserTest extends BaseSetup {
 //            float minVAF, boolean isActive, Panel panel, GeneSet geneSet,
 //                    HotspotsSet hotspotsSet, TargetEnrichment targetEnrichment
             params = new AnalysisParameters(
-                    1, Genome.GRCh37, "test", 30, 50, 0.1f, true, panel, null, null, TargetEnrichment.CAPTURE
+                    1, Genome.GRCh37, "test", 30, 50, 0.1f, true, panel, null, null, null, TargetEnrichment.CAPTURE
             );
         } catch (IOException | MalformedPanelFile | SQLException e) {
             fail(e.getMessage());
@@ -65,7 +65,7 @@ class BamParserTest extends BaseSetup {
 
         File outFile = new File(tempDir, "coverage.bed.gz");
         try {
-            bamParser.parseFile(outFile);
+            bamParser.parseFile(outFile, null);
             assertTrue(outFile.exists());
             List<CoverageRegion> regions = CoverageFileParser.parseCoverageFile(outFile, params);
             assertEquals(1, regions.size());

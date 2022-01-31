@@ -15,19 +15,17 @@ import de.gsi.chart.renderer.spi.LabelledMarkerRenderer;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import de.gsi.dataset.spi.DoubleDataSet;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.paint.Color;
 import ngsdiaglim.App;
-import ngsdiaglim.cnv.caller.CNVDetectionRobustZScore;
-import ngsdiaglim.controllers.analysisview.cnv.DataPointTooltip2;
 import ngsdiaglim.controllers.analysisview.cnv.MaxDataReducer2;
-import ngsdiaglim.modeles.ciq.CIQHotspot;
+import ngsdiaglim.controllers.analysisview.cnv.ScreenShotPlugin;
 import ngsdiaglim.modeles.ciq.CIQVariantDataSet;
 import ngsdiaglim.modeles.ciq.CIQVariantRecord;
-import ngsdiaglim.modules.ModuleManager;
+import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.DateFormatterUtils;
+import ngsdiaglim.utils.NumberUtils;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CIQChart extends XYChart {
@@ -38,16 +36,17 @@ public class CIQChart extends XYChart {
     private final List<String> categories = new ArrayList<>();
     private final ErrorDataSetRenderer recordRenderer = new ErrorDataSetRenderer();
     private DefaultErrorDataSet recordDataSet;
-    private DoubleDataSet targetVafDataSet;
-    private final Zoomer zoomer = new Zoomer();
-    private final LabelledMarkerRenderer targetVafRenderer = new LabelledMarkerRenderer();
+    private final Zoomer2 zoomer = new Zoomer2();
+    private TargetVAFIndicator targetVafIndicator;
     private MeanIndicator meanTargetIndicator;
     private SDLowIndicator lowSDIndicatorMin;
     private SDLowIndicator lowSDIndicatorMax;
     private SDHighIndicator highSDIndicatorMin;
     private SDHighIndicator highSDIndicatorMax;
     private XRangeIndicator yRange1;
-    private DataPointTooltip3 dataPointTooltip = new DataPointTooltip3();
+    private final DataPointTooltip3 dataPointTooltip = new DataPointTooltip3();
+    private final ScreenShotPlugin screenshot = new ScreenShotPlugin();
+
     public CIQChart() {
 
         super(new CategoryAxis(App.getBundle().getString("ciqchart.lb.axis.x")), new DefaultNumericAxis(App.getBundle().getString("ciqchart.lb.axis.y")));
@@ -99,12 +98,7 @@ public class CIQChart extends XYChart {
         recordDataSet = new DefaultErrorDataSet("RegionDataSet");
         recordRenderer.getDatasets().add(recordDataSet);
 
-        targetVafDataSet = new DoubleDataSet("ContigDataSet");
-        targetVafDataSet.setStyle("strokeColor=#000;fillColor=#000;" + XYChartCss.FONT_SIZE+ "=11;");
-        targetVafRenderer.getDatasets().add(targetVafDataSet);
-        targetVafRenderer.enableHorizontalMarker(true);
-        targetVafRenderer.enableVerticalMarker(false);
-
+        targetVafIndicator = new TargetVAFIndicator(yAxis, 0, "");
         meanTargetIndicator = new MeanIndicator(yAxis, 0, "Moyenne");
         lowSDIndicatorMin = new SDLowIndicator(yAxis, 0, "Moy - 2 SD");
         lowSDIndicatorMax = new SDLowIndicator(yAxis, 0, "Moy + 2 SD");
@@ -112,8 +106,10 @@ public class CIQChart extends XYChart {
         highSDIndicatorMax = new SDHighIndicator(yAxis, 0, "Moy + 3 SD");
 
 
-        getRenderers().addAll(targetVafRenderer, recordRenderer);
-        getPlugins().addAll(meanTargetIndicator, lowSDIndicatorMin, lowSDIndicatorMax, highSDIndicatorMin, highSDIndicatorMax, dataPointTooltip);
+        getRenderers().addAll(recordRenderer);
+        getPlugins().addAll(screenshot, targetVafIndicator, meanTargetIndicator, lowSDIndicatorMin, lowSDIndicatorMax, highSDIndicatorMin, highSDIndicatorMax, dataPointTooltip);
+
+
     }
 
     private void initYAxis() {
@@ -149,9 +145,23 @@ public class CIQChart extends XYChart {
         xAxis.getCategories().clear();
     }
 
+
+    private void updateSDMarkers() {
+        Object[] lowMinValue = {NumberUtils.round(dataset.get().getLowMinValue(), 3)};
+        Object[] lowMaxValue = {NumberUtils.round(dataset.get().getLowMaxValue(), 3)};
+        Object[] highMinValue = {NumberUtils.round(dataset.get().getHighMinValue(), 3)};
+        Object[] highMaxValue = {NumberUtils.round(dataset.get().getHighMaxValue(), 3)};
+        Object[] mean = {NumberUtils.round(dataset.get().getMean(), 3)};
+        lowSDIndicatorMin.setText(BundleFormatter.format("ciq.chart.lb.lowSDmin", lowMinValue));
+        lowSDIndicatorMax.setText(BundleFormatter.format("ciq.chart.lb.lowSDmax", lowMaxValue));
+        highSDIndicatorMin.setText(BundleFormatter.format("ciq.chart.lb.highSDmin", highMinValue));
+        highSDIndicatorMax.setText(BundleFormatter.format("ciq.chart.lb.highSDmax", highMaxValue));
+        meanTargetIndicator.setText(BundleFormatter.format("ciq.chart.lb.mean", mean));
+    }
+
     private void setZoomPlugin() {
-//        zoomer.setAxisMode(AxisMode.XY);
-        zoomer.setSliderVisible(false);
+        zoomer.setAxisMode(AxisMode.XY);
+        zoomer.setSliderVisible(true);
         zoomer.setAddButtonsToToolBar(true);
         zoomer.setPannerEnabled(true);
         getPlugins().add(zoomer);
@@ -163,13 +173,14 @@ public class CIQChart extends XYChart {
 
         updateXAxis();
         updateYAxis();
+        updateSDMarkers();
 
         recordDataSet.clearData();
-        targetVafDataSet.clearData();
+//        targetVafDataSet.clearData();
 //        recordDataSet.setStyle("strokeColor=#4f4f4f;fillColor=#4f4f4f;");
 
-
-
+        setTitle(dataset.get().getCiqHotspot().getName());
+//        System.out.println(dataset.get().getCiqHotspot().getName());
         int recordIndex = 0;
         for (CIQVariantRecord record : dataset.get().getCiqRecords()) {
             xAxis.getCategories().add(record.getAnalysis().getName() + "_" + recordIndex);
@@ -185,8 +196,8 @@ public class CIQChart extends XYChart {
             recordIndex++;
         }
 
-        targetVafDataSet.add(0, dataset.get().getCiqHotspot().getVafTarget(), "VAF ciblee");
-
+//        targetVafDataSet.add(0, dataset.get().getCiqHotspot().getVafTarget(), "VAF ciblee");
+        targetVafIndicator.setValue(dataset.get().getCiqHotspot().getVafTarget());
         meanTargetIndicator.setValue(dataset.get().getMean());
         lowSDIndicatorMin.setValue(dataset.get().getMean() - 2 * dataset.get().getSd());
         lowSDIndicatorMax.setValue(dataset.get().getMean() + 2 * dataset.get().getSd());
@@ -226,7 +237,7 @@ public class CIQChart extends XYChart {
 //        final YWatchValueIndicator highSdMaxIndicator = new YWatchValueIndicator(yAxis, dataset.getMean() + 3 * dataset.getSd());
 //        getPlugins().addAll(vafTargetIndicator, meanIndicator, lowSdMinIndicator, lowSdMaxIndicator, highSdMinIndicator, highSdMaxIndicator);
 
-
+        getCanvas().toFront();
     }
 
     private void initRecordRenderer() {
@@ -239,11 +250,14 @@ public class CIQChart extends XYChart {
     }
 
     private void setDataStyle(DefaultErrorDataSet dataSet, int regionIdx, CIQVariantRecord record) {
-        if (!record.isAccepted()) {
+        if (record.isDefined()) {
+            dataSet.addDataStyle(regionIdx, "strokeColor=#a2a2a2;");
+        }
+        else if (!record.isAccepted()) {
             dataSet.addDataStyle(regionIdx, "strokeColor=red;");
         } else {
             if (dataset.get().isInside2SD(record.getVaf())) {
-                dataSet.addDataStyle(regionIdx, "strokeColor=green;");
+                dataSet.addDataStyle(regionIdx, "strokeColor=#4f4f4f;");
             } else if (dataset.get().isInside3SD(record.getVaf())) {
                 dataSet.addDataStyle(regionIdx, "strokeColor=orange;");
             } else {
@@ -271,11 +285,22 @@ public class CIQChart extends XYChart {
 
     private void clearChart() {
         recordDataSet.clearData();
-        targetVafDataSet.clearData();
+        targetVafIndicator.setValue(0);
         meanTargetIndicator.setValue(0);
         lowSDIndicatorMin.setValue(0);
         lowSDIndicatorMax.setValue(0);
         highSDIndicatorMin.setValue(0);
         highSDIndicatorMax.setValue(0);
+        setTitle(null);
+    }
+
+    public void screenshotToFile(File file) {
+        screenshot.setDirectory(file.getParent());
+        screenshot.setPattern(file.getName());
+        screenshot.screenshotToFile(false);
+    }
+
+    public void screenshotToClipboard() {
+        screenshot.screenshotToClipboard();
     }
 }

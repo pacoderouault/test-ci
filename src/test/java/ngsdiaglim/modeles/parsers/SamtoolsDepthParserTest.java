@@ -32,12 +32,12 @@ class SamtoolsDepthParserTest {
 
         AnalysisParameters params = new AnalysisParameters(
                 1, Genome.GRCh37, "paramsTest", 30, 50, 0.1f,
-                true, null, null, null, TargetEnrichment.CAPTURE
+                true, null, null, null, null, TargetEnrichment.CAPTURE
         );
         SamtoolsDepthParser samtoolsDepthParser = new SamtoolsDepthParser(params, depthFile);
         try {
             File bedOutput = new File(tempDir, "coverage.bed.gz");
-            samtoolsDepthParser.parseFile(bedOutput);
+            samtoolsDepthParser.parseFile(bedOutput, null);
 
             assertTrue(bedOutput.exists());
             List<CoverageRegion> regions = CoverageFileParser.parseCoverageFile(bedOutput, params);

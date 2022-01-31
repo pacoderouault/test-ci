@@ -235,6 +235,7 @@ public class ImportsRuns {
                 null,
                 depthFile,
                 covFile.isEmpty() ? null : covFile.get(),
+                null,
                 LocalDateTime.now(),
                 sampleName,
                 run,

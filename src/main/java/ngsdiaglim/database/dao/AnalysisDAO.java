@@ -23,10 +23,10 @@ public class AnalysisDAO extends DAO {
     private final static Logger logger = LogManager.getLogger(AnalysisDAO.class);
     private static final NaturalSortComparator naturalSortComparator = new NaturalSortComparator();
 
-    public long addAnalyse(String name, String path, File vcfFile, File bamFile, File depthFile, File coverageFile, LocalDateTime creationDate, String sampleName, Run run, AnalysisParameters analysisParameters, String metadata) throws SQLException, IOException {
+    public long addAnalyse(String name, String path, File vcfFile, File bamFile, File depthFile, File coverageFile, File specCoverageFile, LocalDateTime creationDate, String sampleName, Run run, AnalysisParameters analysisParameters, String metadata) throws SQLException, IOException {
         long analysis_id;
-        final String sql = "INSERT INTO analysis (name, path, vcf_path, bam_path, depth_path, coverage_path, creation_datetime, creation_user, sample_name, run_id, analysisParameters_id, status, metadata)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        final String sql = "INSERT INTO analysis (name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, run_id, analysisParameters_id, status, metadata)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int i = 0;
             stm.setString(++i, name);
@@ -46,6 +46,12 @@ public class AnalysisDAO extends DAO {
             }
             if (coverageFile != null) {
                 stm.setString(++i, coverageFile.toString());
+            }
+            else {
+                stm.setNull(++i, Types.NULL);
+            }
+            if (specCoverageFile != null) {
+                stm.setString(++i, specCoverageFile.toString());
             }
             else {
                 stm.setNull(++i, Types.NULL);
@@ -72,7 +78,7 @@ public class AnalysisDAO extends DAO {
 
     public ObservableList<Analysis> getAnalysis(Run run) throws SQLException {
         ObservableList<Analysis> analyses = FXCollections.observableArrayList();
-        final String sql = "SELECT id, name, path, vcf_path, bam_path, depth_path, coverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
+        final String sql = "SELECT id, name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
                 " FROM analysis WHERE run_id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, run.getId());
@@ -85,6 +91,7 @@ public class AnalysisDAO extends DAO {
                 String bam_path = rs.getString("bam_path");
                 String depth_path = rs.getString("depth_path");
                 String coverage = rs.getString("coverage_path");
+                String specCoverage = rs.getString("specificCoverage_path");
                 LocalDateTime creationDate = rs.getTimestamp("creation_datetime").toLocalDateTime();
                 String creationUser = rs.getString("creation_user");
                 String sampleName = rs.getString("sample_name");
@@ -108,6 +115,7 @@ public class AnalysisDAO extends DAO {
                         bam_path,
                         depth_path,
                         coverage,
+                        specCoverage,
                         run,
                         creationDate,
                         creationUser,
@@ -128,7 +136,7 @@ public class AnalysisDAO extends DAO {
 
 
     public Analysis getAnalysis(Run run, long id) throws SQLException {
-        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
+        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
                 " FROM analysis WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
@@ -140,6 +148,7 @@ public class AnalysisDAO extends DAO {
                 String bam_path = rs.getString("bam_path");
                 String depth_path = rs.getString("depth_path");
                 String coverage = rs.getString("coverage_path");
+                String specCoverage = rs.getString("specificCoverage_path");
                 LocalDateTime creationDate = rs.getTimestamp("creation_datetime").toLocalDateTime();
                 String creationUser = rs.getString("creation_user");
                 String sampleName = rs.getString("sample_name");
@@ -163,6 +172,7 @@ public class AnalysisDAO extends DAO {
                         bam_path,
                         depth_path,
                         coverage,
+                        specCoverage,
                         run,
                         creationDate,
                         creationUser,
@@ -180,7 +190,7 @@ public class AnalysisDAO extends DAO {
 
 
     public Analysis getAnalysis(long id) throws SQLException {
-        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, creation_datetime, " +
+        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, " +
                 "creation_user, sample_name, run_id, analysisParameters_id, status, metadata" +
                 " FROM analysis WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -193,6 +203,7 @@ public class AnalysisDAO extends DAO {
                 String bam_path = rs.getString("bam_path");
                 String depth_path = rs.getString("depth_path");
                 String coverage = rs.getString("coverage_path");
+                String specCoverage = rs.getString("specificCoverage_path");
                 LocalDateTime creationDate = rs.getTimestamp("creation_datetime").toLocalDateTime();
                 String creationUser = rs.getString("creation_user");
                 String sampleName = rs.getString("sample_name");
@@ -219,6 +230,7 @@ public class AnalysisDAO extends DAO {
                         bam_path,
                         depth_path,
                         coverage,
+                        specCoverage,
                         run,
                         creationDate,
                         creationUser,
@@ -294,7 +306,7 @@ public class AnalysisDAO extends DAO {
     public ObservableList<Analysis> searchAnalysis(String query) throws SQLException {
         ObservableList<Analysis> analyses = FXCollections.observableArrayList();
         final String sql = "SELECT a.id AS aId, a.name AS aName, a.path AS aPath, a.vcf_path AS Avcf_path," +
-                " a.bam_path AS aBam_path, a.depth_path AS aDepth_path, a.coverage_path AS aCoverage_path," +
+                " a.bam_path AS aBam_path, a.depth_path AS aDepth_path, a.coverage_path AS aCoverage_path, a.specificCoverage_path AS aSpecificCoverage_path," +
                 " a.creation_datetime AS aCreation_datetime, a.creation_user AS aCreation_user, a.sample_name AS aSample_name," +
                 " a.run_id AS aRun_id, a.analysisParameters_id AS aAnalysisParameters_id, a.status AS aStatus, a.metadata AS aMetadata," +
                 " r.id AS rId, r.path AS rPath, r.name AS rName, r.date AS rDate, r.creation_date AS rCreation_date, r.creation_user AS rCreation_user" +
@@ -329,6 +341,7 @@ public class AnalysisDAO extends DAO {
                 String bam_path = rs.getString("aBam_path");
                 String depth_path = rs.getString("aDepth_path");
                 String coverage = rs.getString("aCoverage_path");
+                String specCoverage = rs.getString("aSpecificCoverage_path");
                 LocalDateTime creationDate = rs.getTimestamp("aCreation_datetime").toLocalDateTime();
                 String creationUser = rs.getString("aCreation_user");
                 String sampleName = rs.getString("aSample_name");
@@ -352,6 +365,7 @@ public class AnalysisDAO extends DAO {
                         bam_path,
                         depth_path,
                         coverage,
+                        specCoverage,
                         run,
                         creationDate,
                         creationUser,

@@ -8,6 +8,7 @@ import ngsdiaglim.enumerations.AnalysisStatus;
 import ngsdiaglim.exceptions.MalformedCoverageFile;
 import ngsdiaglim.modeles.TabixGetter;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageRegion;
 import ngsdiaglim.modeles.parsers.CoverageFileParser;
 import ngsdiaglim.modeles.variants.Annotation;
 
@@ -25,6 +26,7 @@ public class Analysis {
     private final File bamFile;
     private final File depthFile;
     private File coverageFile;
+    private File specCoverageFile;
     private Run run;
     private LocalDateTime creationDate;
     private String creationUser;
@@ -35,9 +37,10 @@ public class Analysis {
     private final SimpleObjectProperty<AnalysisStatus> status = new SimpleObjectProperty<>();
     private final ObservableList<Annotation> annotations = FXCollections.observableArrayList();
     private ObservableList<CoverageRegion> coverageRegions = null;
+    private ObservableList<SpecificCoverageRegion> specCoverageRegions = null;
     private TabixGetter tabixGetter;
 
-    public Analysis(long id, String name, String directoryPath, String vcfPath, String bamPath, String depthPath, String coveragePath,
+    public Analysis(long id, String name, String directoryPath, String vcfPath, String bamPath, String depthPath, String coveragePath, String specCoveragePath,
                     Run run, LocalDateTime creationDate, String creationUser, String sampleName, AnalysisParameters analysisParameters,
                     AnalysisStatus status, String metadata) {
         this.id = id;
@@ -47,6 +50,7 @@ public class Analysis {
         this.bamFile = bamPath == null ? null : new File(bamPath);
         this.depthFile = depthPath == null ? null : new File(depthPath);
         this.coverageFile = coveragePath == null ? null : new File(coveragePath);
+        this.specCoverageFile = specCoveragePath == null ? null : new File(specCoveragePath);
         this.run = run;
         this.creationDate = creationDate;
         this.creationUser = creationUser;
@@ -130,6 +134,8 @@ public class Analysis {
         this.coverageFile = coverageFile;
     }
 
+    public File getSpecCoverageFile() {return specCoverageFile;}
+
     public ObservableList<Annotation> getAnnotations() {return annotations;}
 
     public void setAnnotations(Collection<Annotation> annotations) {
@@ -137,6 +143,8 @@ public class Analysis {
     }
 
     public ObservableList<CoverageRegion> getCoverageRegions() {return coverageRegions;}
+
+    public ObservableList<SpecificCoverageRegion> getSpecificCoverageRegions() {return specCoverageRegions;}
 
     public TabixGetter getTabixGetter() throws IOException {
         if (tabixGetter == null) {
@@ -148,12 +156,12 @@ public class Analysis {
     public void loadCoverage() throws IOException, MalformedCoverageFile {
         File coverageFile = getCoverageFile();
         if (coverageFile != null && coverageFile.exists()) {
-//            try {
             coverageRegions = CoverageFileParser.parseCoverageFile(coverageFile, getAnalysisParameters());
-//            } catch (IOException | MalformedCoverageFile e) {
-//                logger.error(e);
-//                Message.error(e.getMessage(), e);
-//            }
+        }
+
+        File specCoverageFile = getSpecCoverageFile();
+        if (specCoverageFile != null && specCoverageFile.exists()) {
+            specCoverageRegions = CoverageFileParser.parseSpecCoverageFile(specCoverageFile, getAnalysisParameters());
         }
     }
 

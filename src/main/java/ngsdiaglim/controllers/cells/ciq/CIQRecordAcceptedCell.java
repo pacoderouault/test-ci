@@ -16,6 +16,7 @@ import ngsdiaglim.modeles.ciq.CIQVariantDataSet;
 import ngsdiaglim.modeles.ciq.CIQVariantRecord;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modules.ModuleManager;
+import ngsdiaglim.utils.PlatformUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,9 +44,15 @@ public class CIQRecordAcceptedCell extends TableCell<CIQVariantRecord, CIQRecord
         ciqRecordSateCb.getItems().setAll(CIQRecordState.ACCEPTED, CIQRecordState.NOT_ACCEPTED);
         acceptedListener = (obs, oldV, newV) -> {
             if (newV != null) {
-                setAccepted(oldV, newV);
-                setStyles(newV);
+                PlatformUtils.runAndWait(() -> {
+                    setAccepted(oldV, newV);
+                    setStyles(newV);
+                });
+
                 ModuleManager.getAnalysisViewController().getCiqViewController().getShowedDataset().computeStats();
+                ModuleManager.getAnalysisViewController().getCiqViewController().fillHotspotsStatsFields(
+                        ModuleManager.getAnalysisViewController().getCiqViewController().getShowedDataset()
+                );
                 ModuleManager.getAnalysisViewController().getCiqViewController().getChart().drawChart();
             }
         };

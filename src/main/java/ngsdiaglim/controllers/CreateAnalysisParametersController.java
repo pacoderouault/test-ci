@@ -19,12 +19,14 @@ public class CreateAnalysisParametersController extends Module {
     @FXML private Tab panelsTab;
     @FXML private Tab genesTranscriptsTab;
     @FXML private Tab hotspotsTab;
+    @FXML private Tab specificCoverageTab;
     @FXML private Tab ciqsTab;
 
     private AnalysisParametersCreateController analysisParametersCreateController;
     private AnalysisParametersPanelsController analysisParametersPanelsController;
     private AnalysisParametersGenesTrancriptsController analysisParametersGenesTrancriptsController;
     private AnalysisParametersHotspotsController analysisParametersHotspotsController;
+    private AnalysisParametersSpecificCoverageController analysisParametersSpecificCoverageController;
     private AnalysisParametersCIQController analysisParametersCIQController;
 
 //    private final Tooltip inactivePanelTooltip = new Tooltip(App.getBundle().getString("createAnalasisParameters.tooltip.inactivePanel"));
@@ -54,6 +56,9 @@ public class CreateAnalysisParametersController extends Module {
         analysisParametersHotspotsController = new AnalysisParametersHotspotsController(this);
         hotspotsTab.setContent(analysisParametersHotspotsController);
 
+        analysisParametersSpecificCoverageController = new AnalysisParametersSpecificCoverageController();
+        specificCoverageTab.setContent(analysisParametersSpecificCoverageController);
+
         analysisParametersCreateController = new AnalysisParametersCreateController(this);
         analysisParamsTab.setContent(analysisParametersCreateController);
 
@@ -75,4 +80,6 @@ public class CreateAnalysisParametersController extends Module {
     public AnalysisParametersHotspotsController getAnalysisParametersHotspotsController() {return analysisParametersHotspotsController;}
 
     public AnalysisParametersCIQController getAnalysisParametersCIQController() {return analysisParametersCIQController;}
+
+    public AnalysisParametersSpecificCoverageController getAnalysisParametersSpecificCoverageController() {return analysisParametersSpecificCoverageController;}
 }

@@ -118,6 +118,7 @@ public class GlobalAnalysisTest extends BaseSetup {
                     panelId,
                     geneSetId,
                     null,
+                    null,
                     TargetEnrichment.CAPTURE
             );
         } catch (SQLException e) {

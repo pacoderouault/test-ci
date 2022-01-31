@@ -3,6 +3,7 @@ package ngsdiaglim.modeles.analyse;
 import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.modeles.biofeatures.GeneSet;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageSet;
 import ngsdiaglim.modeles.variants.HotspotsSet;
 
 public class AnalysisParameters {
@@ -17,10 +18,11 @@ public class AnalysisParameters {
     private final Panel panel;
     private final GeneSet geneSet;
     private final HotspotsSet hotspotsSet;
+    private final SpecificCoverageSet specificCoverageSet;
     private final TargetEnrichment targetEnrichment;
 
     public AnalysisParameters(long id, Genome genome, String analysisName, int minDepth, int warningDepth,
-                              float minVAF, boolean isActive, Panel panel, GeneSet geneSet,
+                              float minVAF, boolean isActive, Panel panel, GeneSet geneSet, SpecificCoverageSet specificCoverageSet,
                               HotspotsSet hotspotsSet, TargetEnrichment targetEnrichment) {
         this.id = id;
         this.genome = genome;
@@ -31,6 +33,7 @@ public class AnalysisParameters {
         this.isActive = isActive;
         this.panel = panel;
         this.geneSet = geneSet;
+        this.specificCoverageSet = specificCoverageSet;
         this.hotspotsSet = hotspotsSet;
         this.targetEnrichment = targetEnrichment;
     }
@@ -56,6 +59,8 @@ public class AnalysisParameters {
     public Panel getPanel() {return panel;}
 
     public GeneSet getGeneSet() {return geneSet;}
+
+    public SpecificCoverageSet getSpecificCoverageSet() {return specificCoverageSet;}
 
     public HotspotsSet getHotspotsSet() {return hotspotsSet;}
 

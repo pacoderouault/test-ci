@@ -8,6 +8,7 @@ import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.biofeatures.GeneSet;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageSet;
 import ngsdiaglim.modeles.variants.HotspotsSet;
 
 import java.sql.*;
@@ -26,11 +27,11 @@ public class AnalysisParametersDAO extends DAO {
 
 
     public long addAnalysisParameters(String name, Genome genome, int minDepth, int warningDepth,
-                                      double minVaf, long panel_id, long geneSet_id,
+                                      double minVaf, long panel_id, long geneSet_id, Long specificCoverageSetId,
                                       Long hotspotsSet_id, TargetEnrichment targetEnrichment) throws SQLException {
         long id;
         final String sql = "INSERT INTO analysisParameters (name, genome, min_depth, warning_depth, min_vaf," +
-                " is_active, panel_id, geneSet_id, hotspotsSet_id, target_enrichment) VALUES(?, ?, ?, ?, ?, True, ?, ?, ?, ?);";
+                " is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment) VALUES(?, ?, ?, ?, ?, ?, True, ?, ?, ?, ?);";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int i = 0;
             stm.setString(++i, name);
@@ -40,6 +41,11 @@ public class AnalysisParametersDAO extends DAO {
             stm.setDouble(++i, minVaf);
             stm.setLong(++i, panel_id);
             stm.setLong(++i, geneSet_id);
+            if (specificCoverageSetId == null) {
+                stm.setNull(++i, Types.INTEGER);
+            } else {
+                stm.setLong(++i, specificCoverageSetId);
+            }
             if (hotspotsSet_id == null) {
                 stm.setNull(++i, Types.INTEGER);
             } else {
@@ -78,7 +84,7 @@ public class AnalysisParametersDAO extends DAO {
 
     public ObservableList<AnalysisParameters> getAnalysisParameters() throws SQLException {
         ObservableList<AnalysisParameters> analysisParameters = FXCollections.observableArrayList();
-        final String sql = "SELECT id, name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters ORDER BY name;";
+        final String sql = "SELECT id, name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters ORDER BY name;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -91,13 +97,15 @@ public class AnalysisParametersDAO extends DAO {
                 boolean isActive = rs.getBoolean("is_active");
                 long panelId = rs.getLong("panel_id");
                 long geneSetId = rs.getLong("geneSet_id");
+                long specificCoverageSetId = rs.getLong("specificCoverageSet_id");
                 long hotspotsSetId = rs.getLong("hotspotsSet_id");
                 TargetEnrichment targetEnrichment = TargetEnrichment.valueOf(rs.getString("target_enrichment"));
                 Panel panel = DAOController.getPanelDAO().getPanel(panelId);
                 GeneSet geneSet = DAOController.getGeneSetDAO().getGeneSet(geneSetId);
+                SpecificCoverageSet specificCoverageSet = DAOController.getSpecificCoverageSetDAO().getSpecificCoverageSet(specificCoverageSetId);
                 HotspotsSet hotspotsSet = DAOController.getHotspotsSetDAO().getHotspotsSet(hotspotsSetId);
 
-                analysisParameters.add(new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, hotspotsSet, targetEnrichment));
+                analysisParameters.add(new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, specificCoverageSet, hotspotsSet, targetEnrichment));
             }
         }
         return analysisParameters;
@@ -106,7 +114,7 @@ public class AnalysisParametersDAO extends DAO {
 
     public ObservableList<AnalysisParameters> getActiveAnalysisParameters() throws SQLException {
         ObservableList<AnalysisParameters> analysisParameters = FXCollections.observableArrayList();
-        final String sql = "SELECT id, name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE is_active=True ORDER BY name;";
+        final String sql = "SELECT id, name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE is_active=True ORDER BY name;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -118,14 +126,16 @@ public class AnalysisParametersDAO extends DAO {
                 float minVaf = rs.getFloat("min_vaf");
                 boolean isActive = rs.getBoolean("is_active");
                 long panelId = rs.getLong("panel_id");
+                long specificCoverageSetId = rs.getLong("specificCoverageSet_id");
                 long geneSetId = rs.getLong("geneSet_id");
                 long hotspotsSetId = rs.getLong("hotspotsSet_id");
                 TargetEnrichment targetEnrichment = TargetEnrichment.valueOf(rs.getString("target_enrichment"));
                 Panel panel = DAOController.getPanelDAO().getPanel(panelId);
                 GeneSet geneSet = DAOController.getGeneSetDAO().getGeneSet(geneSetId);
+                SpecificCoverageSet specificCoverageSet = DAOController.getSpecificCoverageSetDAO().getSpecificCoverageSet(specificCoverageSetId);
                 HotspotsSet hotspotsSet = DAOController.getHotspotsSetDAO().getHotspotsSet(hotspotsSetId);
 
-                analysisParameters.add(new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, hotspotsSet, targetEnrichment));
+                analysisParameters.add(new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, specificCoverageSet, hotspotsSet, targetEnrichment));
             }
         }
         return analysisParameters;
@@ -133,7 +143,7 @@ public class AnalysisParametersDAO extends DAO {
 
 
     public AnalysisParameters getAnalysisParameters(long id) throws SQLException {
-        final String sql = "SELECT name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE id=?;";
+        final String sql = "SELECT name, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
             ResultSet rs = stm.executeQuery();
@@ -146,13 +156,15 @@ public class AnalysisParametersDAO extends DAO {
                 boolean isActive = rs.getBoolean("is_active");
                 long panelId = rs.getLong("panel_id");
                 long geneSetId = rs.getLong("geneSet_id");
+                long specificCoverageSetId = rs.getLong("specificCoverageSet_id");
                 long hotspotsSetId = rs.getLong("hotspotsSet_id");
                 TargetEnrichment targetEnrichment = TargetEnrichment.valueOf(rs.getString("target_enrichment"));
                 Panel panel = DAOController.getPanelDAO().getPanel(panelId);
                 GeneSet geneSet = DAOController.getGeneSetDAO().getGeneSet(geneSetId);
+                SpecificCoverageSet specificCoverageSet = DAOController.getSpecificCoverageSetDAO().getSpecificCoverageSet(specificCoverageSetId);
                 HotspotsSet hotspotsSet = DAOController.getHotspotsSetDAO().getHotspotsSet(hotspotsSetId);
 
-                return new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, hotspotsSet, targetEnrichment);
+                return new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, specificCoverageSet, hotspotsSet, targetEnrichment);
             }
         }
         return null;
@@ -160,7 +172,7 @@ public class AnalysisParametersDAO extends DAO {
 
 
     public AnalysisParameters getAnalysisParameters(String name) throws SQLException {
-        final String sql = "SELECT id, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE name=?;";
+        final String sql = "SELECT id, genome, min_depth, warning_depth, min_vaf, is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment FROM analysisParameters WHERE name=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, name);
             ResultSet rs = stm.executeQuery();
@@ -173,13 +185,15 @@ public class AnalysisParametersDAO extends DAO {
                 boolean isActive = rs.getBoolean("is_active");
                 long panelId = rs.getLong("panel_id");
                 long geneSetId = rs.getLong("geneSet_id");
+                long specificCoverageSetId = rs.getLong("specificCoverageSet_id");
                 long hotspotsSetId = rs.getLong("hotspotsSet_id");
                 TargetEnrichment targetEnrichment = TargetEnrichment.valueOf(rs.getString("target_enrichment"));
                 Panel panel = DAOController.getPanelDAO().getPanel(panelId);
                 GeneSet geneSet = DAOController.getGeneSetDAO().getGeneSet(geneSetId);
+                SpecificCoverageSet specificCoverageSet = DAOController.getSpecificCoverageSetDAO().getSpecificCoverageSet(specificCoverageSetId);
                 HotspotsSet hotspotsSet = DAOController.getHotspotsSetDAO().getHotspotsSet(hotspotsSetId);
 
-                return new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, hotspotsSet, targetEnrichment);
+                return new AnalysisParameters(id, genome, name, minDepth, warningDepth, minVaf, isActive, panel, geneSet, specificCoverageSet, hotspotsSet, targetEnrichment);
             }
         }
         return null;

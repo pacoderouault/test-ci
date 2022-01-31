@@ -455,6 +455,7 @@ public class DatabaseCreatorDAO extends DAO {
                 "bam_path VARCHAR, " +
                 "depth_path VARCHAR, " +
                 "coverage_path VARCHAR, " +
+                "specificCoverage_path VARCHAR, " +
                 "creation_datetime TIMESTAMP, " +
                 "creation_user VARCHAR, " +
                 "sample_name VARCHAR(255), " +

@@ -1,8 +1,11 @@
 package ngsdiaglim.modeles.analyse;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import ngsdiaglim.utils.ImageUtils;
 import org.apache.commons.io.FileUtils;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,6 +41,24 @@ public class ImageImporter {
         }
         FileUtils.copyFile(imageFile, targetImageFile);
 
+        return targetImageFile;
+    }
+
+    public File importImage(Image image) throws IOException {
+        // create image directory if not exists
+        File imagesDirectory = createImageDirectory();
+
+        // copy image
+        File targetImageFile = new File(imagesDirectory, analysis.getSampleName() + ".png");
+        if (targetImageFile.exists()) {
+
+            // try to rename targetFile with unique name
+            targetImageFile = renameFile(imagesDirectory, targetImageFile.getName());
+            if (targetImageFile == null) {
+                throw new IOException("Impossible to copy file. File exists");
+            }
+        }
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", targetImageFile);
         return targetImageFile;
     }
 

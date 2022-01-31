@@ -91,6 +91,10 @@ public class CIQVariantRecord {
         return NumberUtils.round(vaf.get(), decimal);
     }
 
+    public boolean isDefined() {
+        return (getLastHistory() == null ||  getLastHistory().getNewState().equals(CIQRecordState.UNKNOWN));
+    }
+
     public boolean isAccepted() {
         CIQRecordHistory lastState = getLastHistory();
         return lastState != null && lastState.getNewState().equals(CIQRecordState.ACCEPTED);
