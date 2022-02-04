@@ -1,9 +1,12 @@
 package ngsdiaglim.modeles.biofeatures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SpecificCoverageRegion {
 
     private final SpecificCoverage specificCoverage;
-    private CoverageRegion coverageRegion;
+    private List<CoverageRegion> coverageRegions;
 
     public SpecificCoverageRegion(SpecificCoverage specificCoverage) {
         this.specificCoverage = specificCoverage;
@@ -11,9 +14,12 @@ public class SpecificCoverageRegion {
 
     public SpecificCoverage getSpecificCoverage() {return specificCoverage;}
 
-    public CoverageRegion getCoverageRegion() {return coverageRegion;}
+    public List<CoverageRegion> getCoverageRegions() {return coverageRegions;}
 
-    public void setCoverageRegion(CoverageRegion coverageRegion) {
-        this.coverageRegion = coverageRegion;
+    public void addCoverageRegions(CoverageRegion coverageRegion) {
+        if (this.coverageRegions == null) {
+            this.coverageRegions = new ArrayList<>();
+        }
+        this.coverageRegions.add(coverageRegion);
     }
 }

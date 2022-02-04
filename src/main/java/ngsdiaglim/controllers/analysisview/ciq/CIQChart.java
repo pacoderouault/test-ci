@@ -12,9 +12,12 @@ import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.LineStyle;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
 import de.gsi.chart.renderer.spi.LabelledMarkerRenderer;
+import de.gsi.chart.ui.geometry.Side;
 import de.gsi.dataset.spi.DefaultErrorDataSet;
 import de.gsi.dataset.spi.DoubleDataSet;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.text.TextAlignment;
+import javafx.util.StringConverter;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.analysisview.cnv.MaxDataReducer2;
 import ngsdiaglim.controllers.analysisview.cnv.ScreenShotPlugin;
@@ -36,7 +39,7 @@ public class CIQChart extends XYChart {
     private final List<String> categories = new ArrayList<>();
     private final ErrorDataSetRenderer recordRenderer = new ErrorDataSetRenderer();
     private DefaultErrorDataSet recordDataSet;
-    private final Zoomer2 zoomer = new Zoomer2();
+    private Zoomer2 zoomer = new Zoomer2();
     private TargetVAFIndicator targetVafIndicator;
     private MeanIndicator meanTargetIndicator;
     private SDLowIndicator lowSDIndicatorMin;
@@ -55,6 +58,8 @@ public class CIQChart extends XYChart {
         this.yAxis = (DefaultNumericAxis) getYAxis();
 
         init();
+//        this.dataset.set(dataset);
+//        drawChart();
 
         dataset.addListener((obs, oldV, newV) -> {
             if (newV != null) {
@@ -89,7 +94,7 @@ public class CIQChart extends XYChart {
 
         initXAxis();
         initYAxis();
-        setZoomPlugin();
+
 
         initRecordRenderer();
 
@@ -104,38 +109,59 @@ public class CIQChart extends XYChart {
         lowSDIndicatorMax = new SDLowIndicator(yAxis, 0, "Moy + 2 SD");
         highSDIndicatorMin = new SDHighIndicator(yAxis, 0, "Moy - 3 SD");
         highSDIndicatorMax = new SDHighIndicator(yAxis, 0, "Moy + 3 SD");
-
-
         getRenderers().addAll(recordRenderer);
         getPlugins().addAll(screenshot, targetVafIndicator, meanTargetIndicator, lowSDIndicatorMin, lowSDIndicatorMax, highSDIndicatorMin, highSDIndicatorMax, dataPointTooltip);
 
-
+        setZoomPlugin();
     }
 
     private void initYAxis() {
         yAxis.setAutoRanging(false);
-        yAxis.setAutoRangeRounding(false);
-        yAxis.setAutoGrowRanging(false);
+//        yAxis.setAutoRangeRounding(false);
+//        yAxis.setAutoGrowRanging(false);
         yAxis.setUnit(null);
     }
 
     private void initXAxis() {
-        xAxis.setOverlapPolicy(AxisLabelOverlapPolicy.SKIP_ALT);
+        xAxis.setOverlapPolicy(AxisLabelOverlapPolicy.SHIFT_ALT);
+//        xAxis.setMinorTickVisible(false);
+        xAxis.setAutoRanging(false);
         xAxis.setCategories(categories);
         xAxis.setUnit(null);
+        xAxis.setTickLabelFormatter(new StringConverter<>() {
+            @Override
+            public Number fromString(String string) {
+                for (int i = 0; i < xAxis.getCategories().size(); i++) {
+                    if (xAxis.getCategories().get(i).equalsIgnoreCase(string)) {
+                        return i;
+                    }
+                }
+                throw new IllegalArgumentException("Category not found.");
+            }
+
+            @Override
+            public String toString(Number object) {
+                final int index = Math.round(object.floatValue());
+                if (index < 0 || index >= xAxis.getCategories().size()) {
+                    return "";
+                }
+                return xAxis.getCategories().get(index);
+            }
+        });
+
+        xAxis.maxMajorTickLabelCountProperty().bind(xAxis.maxProperty().subtract(xAxis.minProperty()));
     }
 
     private void updateYAxis() {
         yAxis.set(
-                Math.max(0, dataset.get().getCiqHotspot().getVafTarget() - 4 * dataset.get().getSd()),
-                dataset.get().getCiqHotspot().getVafTarget() + 4 * dataset.get().getSd()
+                Math.max(0, dataset.get().getMean() - 4 * dataset.get().getSd()),
+                dataset.get().getMean() + 4 * dataset.get().getSd()
         );
     }
 
     private void updateXAxis() {
-        xAxis.setMaxMajorTickLabelCount(dataset.get().getCiqRecords().size() - 1);
-        xAxis.setMinorTickVisible(false);
-        xAxis.setAutoRanging(false);
+//        xAxis.setMaxMajorTickLabelCount(Math.mdataset.get().getCiqRecords().size() - 1);
+//        xAxis.tick
 //        // show only the 30 last records
         if (dataset.get().getCiqRecords().size() > 30) {
             xAxis.set(dataset.get().getCiqRecords().size() - 30.5, dataset.get().getCiqRecords().size() - 0.5);
@@ -161,18 +187,19 @@ public class CIQChart extends XYChart {
 
     private void setZoomPlugin() {
         zoomer.setAxisMode(AxisMode.XY);
-        zoomer.setSliderVisible(true);
-        zoomer.setAddButtonsToToolBar(true);
+        zoomer.setSliderVisible(false);
+        zoomer.setAddButtonsToToolBar(false);
         zoomer.setPannerEnabled(true);
         getPlugins().add(zoomer);
     }
 
     public void drawChart() {
 
-        zoomer.clear();
+//        zoomer.clear();
 
         updateXAxis();
         updateYAxis();
+
         updateSDMarkers();
 
         recordDataSet.clearData();
@@ -196,7 +223,6 @@ public class CIQChart extends XYChart {
             recordIndex++;
         }
 
-//        targetVafDataSet.add(0, dataset.get().getCiqHotspot().getVafTarget(), "VAF ciblee");
         targetVafIndicator.setValue(dataset.get().getCiqHotspot().getVafTarget());
         meanTargetIndicator.setValue(dataset.get().getMean());
         lowSDIndicatorMin.setValue(dataset.get().getMean() - 2 * dataset.get().getSd());
@@ -204,40 +230,8 @@ public class CIQChart extends XYChart {
         highSDIndicatorMin.setValue(dataset.get().getMean() - 3 * dataset.get().getSd());
         highSDIndicatorMax.setValue(dataset.get().getMean() + 3 * dataset.get().getSd());
 
-//        final TargetVAFIndicator vafTargetIndicator = new TargetVAFIndicator(yAxis, ciqHotspot.getVafTarget(), "VAF ciblee");
-//        getPlugins().add(vafTargetIndicator);
+//        redrawCanvas();
 
-//        final MeanIndicator meanTargetIndicator = new MeanIndicator(yAxis, dataset.getMean(), "Moyenne");
-//        getPlugins().add(meanTargetIndicator);
-//
-//        final SDLowIndicator lowSDIndicatorMin = new SDLowIndicator(yAxis, dataset.getMean() - 2 * dataset.getSd(), "Moy - 2 SD");
-//        final SDLowIndicator lowSDIndicatorMax = new SDLowIndicator(yAxis, dataset.getMean() + 2 * dataset.getSd(), "Moy + 2 SD");
-//        getPlugins().addAll(lowSDIndicatorMin, lowSDIndicatorMax);
-//
-//        final SDHighIndicator highSDIndicatorMin = new SDHighIndicator(yAxis, dataset.getMean() - 3 * dataset.getSd(), "Moy - 3 SD");
-//        final SDHighIndicator highSDIndicatorMax = new SDHighIndicator(yAxis, dataset.getMean() + 3 * dataset.getSd(), "Moy + 3 SD");
-//        getPlugins().addAll(highSDIndicatorMin, highSDIndicatorMax);
-
-
-//        LabelledMarkerRenderer targetVafRenderer = new LabelledMarkerRenderer();
-//        targetVafRenderer.enableHorizontalMarker(true);
-//        targetVafRenderer.enableVerticalMarker(false);
-//        targetVafDataSet.add(2, ciqHotspot.getVafTarget(), "VAF ciblee");
-//        targetVafRenderer.getDatasets().add(targetVafDataSet);
-
-//        final YWatchValueIndicator vafTargetIndicator = new YWatchValueIndicator(yAxis, dataset.getCiqHotspot().getVafTarget());
-//        vafTargetIndicator.setPreventOcclusion(true);
-//        final YWatchValueIndicator meanIndicator = new YWatchValueIndicator(yAxis, dataset.getMean());
-//        meanIndicator.setPreventOcclusion(true);
-//        meanIndicator.setId("valA");
-
-//        final YWatchValueIndicator lowSdMinIndicator = new YWatchValueIndicator(yAxis, dataset.getMean() - 2 * dataset.getSd());
-//        final YWatchValueIndicator lowSdMaxIndicator = new YWatchValueIndicator(yAxis, dataset.getMean() + 2 * dataset.getSd());
-//        final YWatchValueIndicator highSdMinIndicator = new YWatchValueIndicator(yAxis, dataset.getMean() - 3 * dataset.getSd());
-//        final YWatchValueIndicator highSdMaxIndicator = new YWatchValueIndicator(yAxis, dataset.getMean() + 3 * dataset.getSd());
-//        getPlugins().addAll(vafTargetIndicator, meanIndicator, lowSdMinIndicator, lowSdMaxIndicator, highSdMinIndicator, highSdMaxIndicator);
-
-        getCanvas().toFront();
     }
 
     private void initRecordRenderer() {
@@ -284,14 +278,14 @@ public class CIQChart extends XYChart {
     }
 
     private void clearChart() {
-        recordDataSet.clearData();
-        targetVafIndicator.setValue(0);
-        meanTargetIndicator.setValue(0);
-        lowSDIndicatorMin.setValue(0);
-        lowSDIndicatorMax.setValue(0);
-        highSDIndicatorMin.setValue(0);
-        highSDIndicatorMax.setValue(0);
-        setTitle(null);
+//        recordDataSet.clearData();
+//        targetVafIndicator.setValue(0);
+//        meanTargetIndicator.setValue(0);
+//        lowSDIndicatorMin.setValue(0);
+//        lowSDIndicatorMax.setValue(0);
+//        highSDIndicatorMin.setValue(0);
+//        highSDIndicatorMax.setValue(0);
+//        setTitle(null);
     }
 
     public void screenshotToFile(File file) {

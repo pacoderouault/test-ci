@@ -2,11 +2,12 @@ package ngsdiaglim.controllers.cells.coverageTreetableCell;
 
 import javafx.scene.control.TreeTableCell;
 import ngsdiaglim.modeles.biofeatures.SpecificCoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageTreeItem;
 
-public class CoverageEndTreeTableCell extends TreeTableCell<SpecificCoverageRegion, SpecificCoverageRegion> {
+public class CoverageEndTreeTableCell extends TreeTableCell<SpecificCoverageTreeItem, SpecificCoverageTreeItem> {
 
     @Override
-    protected void updateItem(SpecificCoverageRegion item, boolean empty) {
+    protected void updateItem(SpecificCoverageTreeItem item, boolean empty) {
         super.updateItem(item, empty);
         if (item == null || empty) {
             setText(null);

@@ -79,7 +79,7 @@ public class SamtoolsDepthParser {
                     for (SpecificCoverage r : specificCoverageSet.getSpecificCoverageList()) {
                         if (depth < r.getMinCov() && r.overlaps(contig, pos, pos)) {
                             if (specificCoveredRegions.isEmpty() || !specificCoveredRegions.get(specificCoveredRegions.size() - 1).isTouching(contig, pos)) {
-                                CoverageRegion cr = new CoverageRegion(contig, pos - 1, pos, null, CoverageQuality.NO_COVERED);
+                                CoverageRegion cr = new CoverageRegion(contig, pos-1, pos, null, CoverageQuality.NO_COVERED);
                                 cr.addDepthValue(depth);
                                 specificCoveredRegions.add(cr);
                             } else {

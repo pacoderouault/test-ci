@@ -184,7 +184,7 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
     }
 
     protected String formatLabel(DataPoint dataPoint) {
-        return String.format("'%s'%n%s", dataPoint.label, formatDataPoint(dataPoint));
+        return String.format("%s", dataPoint.label);
     }
 
     protected String getDataLabelSafe(final DataSet dataSet, final int index) {
@@ -194,6 +194,7 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
         }
         return labelString;
     }
+
 
     /**
      * Returns the value of the {@link #pickingDistanceProperty()}.
@@ -225,7 +226,7 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
 
     protected void updateLabel(final MouseEvent event, final Bounds plotAreaBounds, final DataPoint dataPoint) {
         label.setText(dataPoint.formattedLabel);
-        final double mouseX = event.getX();
+        final double mouseX = event.getX() + plotAreaBounds.getMinX();
         final double spaceLeft = mouseX - plotAreaBounds.getMinX();
         final double spaceRight = plotAreaBounds.getWidth() - spaceLeft;
         double width = label.prefWidth(-1);
@@ -273,17 +274,20 @@ public class DataPointTooltip2 extends AbstractDataFormattingPlugin {
 
     private void updateToolTip(final MouseEvent event) {
         final Bounds plotAreaBounds = getChart().getPlotArea().getBoundsInLocal();
+        final Bounds plotAreaParentBounds = getChart().getPlotArea().getBoundsInParent();
         final Optional<DataPoint> dataPoint = findDataPoint(event, plotAreaBounds);
 
         if (dataPoint.isEmpty()) {
-            getChartChildren().remove(label);
+//            getChartChildren().remove(label);
+            getChart().getPlotForeground().getChildren().remove(label);
             return;
         }
 
-        updateLabel(event, plotAreaBounds, dataPoint.get());
+        updateLabel(event, plotAreaParentBounds, dataPoint.get());
 
-        if (!getChartChildren().contains(label)) {
-            getChartChildren().add(label);
+        if (!getChart().getPlotForeground().getChildren().contains(label)) {
+//            getChartChildren().add(label);
+            getChart().getPlotForeground().getChildren().add(label);
             label.requestLayout();
         }
     }

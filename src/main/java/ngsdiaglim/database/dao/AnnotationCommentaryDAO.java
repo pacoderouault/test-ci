@@ -72,4 +72,30 @@ public class AnnotationCommentaryDAO extends DAO {
         }
         return commentaries;
     }
+
+    public ObservableList<AnnotationCommentary> getUserAnnotationCommentaries(long variant_id, long analysis_id, long user_id) throws SQLException {
+        ObservableList<AnnotationCommentary> commentaries = FXCollections.observableArrayList();
+        final String sql = "SELECT id, user_name, date, commentary FROM annotationCommentary WHERE variant_id=? AND analysis_id=? AND user_id=? ORDER BY date DESC;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            int i = 0;
+            stm.setLong(++i, variant_id);
+            stm.setLong(++i, analysis_id);
+            stm.setLong(++i, user_id);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                AnnotationCommentary vc = new AnnotationCommentary(
+                        rs.getLong("id"),
+                        variant_id,
+                        analysis_id,
+                        rs.getLong("user_id"),
+                        rs.getString("user_name"),
+                        rs.getString("commentary"),
+                        rs.getTimestamp("date").toLocalDateTime()
+                );
+                commentaries.add(vc);
+            }
+        }
+        return commentaries;
+    }
 }

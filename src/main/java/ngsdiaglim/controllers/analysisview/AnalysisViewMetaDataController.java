@@ -48,6 +48,7 @@ public class AnalysisViewMetaDataController  extends VBox {
     @FXML private TextField paramsGenesTf;
     @FXML private TextField paramsMinDepthTf;
     @FXML private TextField paramsWarningDepthTf;
+    @FXML private TextField paramsSpecificDepthTf;
     @FXML private TextField paramsMinVafTf;
     @FXML private TextField paramsLibraryTf;
     @FXML private CustomTextField searchInVCFTf;
@@ -156,6 +157,7 @@ public class AnalysisViewMetaDataController  extends VBox {
         paramsHotspotsTf.setText(analysis.get().getAnalysisParameters().getHotspotsSet() == null ? "" : analysis.get().getAnalysisParameters().getHotspotsSet().getName());
         paramsMinDepthTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getMinDepth()));
         paramsWarningDepthTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getWarningDepth()));
+        paramsSpecificDepthTf.setText(analysis.get().getAnalysisParameters().getSpecificCoverageSet() == null ? "" : analysis.get().getAnalysisParameters().getSpecificCoverageSet().getName());
         paramsMinVafTf.setText(String.valueOf(analysis.get().getAnalysisParameters().getMinVAF()));
         paramsLibraryTf.setText(analysis.get().getAnalysisParameters().getTargetEnrichment().name());
 
@@ -175,7 +177,6 @@ public class AnalysisViewMetaDataController  extends VBox {
         parametersGrid.getChildren().removeIf(n -> {
             Integer idx = GridPane.getColumnIndex(n);
             return idx != null && idx >= 2;
-//            n != null && GridPane.getColumnIndex(n) >= 2;
         });
         Map<String, String> metadata = analysis.get().getmMetadataAsMap();
         if (!metadata.isEmpty()) {

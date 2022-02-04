@@ -235,6 +235,7 @@ public class HomeController extends Module {
     public void fillAnalysesTable() throws SQLException {
         Run selectedRun = runsTable.getSelectionModel().getSelectedItem();
         if (selectedRun != null) {
+            runsTable.setDisable(true);
             analysesTable.setItems(null);
             analysesTable.setPlaceholder(progressIndicator);
             new Thread(() -> {
@@ -248,6 +249,10 @@ public class HomeController extends Module {
                     logger.error(e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                 }
+                Platform.runLater(() -> {
+                    runsTable.setDisable(false);
+                    runsTable.requestFocus();
+                });
             }).start();
 
 

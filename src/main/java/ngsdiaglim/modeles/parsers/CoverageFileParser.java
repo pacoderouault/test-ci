@@ -96,21 +96,23 @@ public class CoverageFileParser {
         coverageRegions.sort(new RegionComparator());
 
         for (SpecificCoverage sc : params.getSpecificCoverageSet().getSpecificCoverageList()) {
-
-            boolean regionFound = false;
+            SpecificCoverageRegion scr = new SpecificCoverageRegion(sc);
+//            System.out.println(sc.getName());
+//            boolean regionFound = false;
             for (CoverageRegion cr : coverageRegions) {
                 if (sc.overlaps(cr.getContig(), cr.getStart(), cr.getEnd())) {
-                    SpecificCoverageRegion scr = new SpecificCoverageRegion(sc);
-                    scr.setCoverageRegion(cr);
-                    specCoverageRegions.add(scr);
-                    regionFound = true;
+//                    SpecificCoverageRegion scr = new SpecificCoverageRegion(sc);
+//                    scr.setCoverageRegion(cr);
+                    scr.addCoverageRegions(cr);
+//                    regionFound = true;
                 }
             }
-            if (!regionFound) { // create empty region
-                System.out.println("muipigy");
-                SpecificCoverageRegion scr = new SpecificCoverageRegion(sc);
-                specCoverageRegions.add(scr);
-            }
+            specCoverageRegions.add(scr);
+//            System.out.println(regionFound);
+//            if (!regionFound) { // create empty region
+//                SpecificCoverageRegion scr = new SpecificCoverageRegion(sc);
+//                specCoverageRegions.add(scr);
+//            }
         }
 
         return specCoverageRegions;

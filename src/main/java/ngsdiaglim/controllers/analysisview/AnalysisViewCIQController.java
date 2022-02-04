@@ -75,7 +75,6 @@ public class AnalysisViewCIQController extends VBox {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         initView();
-
         analysis.addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 try {
@@ -96,6 +95,7 @@ public class AnalysisViewCIQController extends VBox {
         exportToImageBtn.setTooltip(saveToFileTp);
         copyToClipboardTp.setShowDelay(Duration.ZERO);
         copyToClipboardBtn.setTooltip(copyToClipboardTp);
+
     }
 
     private void initCIQHotspotLv() {
@@ -112,7 +112,7 @@ public class AnalysisViewCIQController extends VBox {
             sdTf.setText(null);
 
             ciqRecordTable.getItems().clear();
-            chartContainer.getChildren().clear();
+//            chartContainer.getChildren().clear();
 
         } else {
             mutationTf.setText(ciqHotspot.getHGVS());
@@ -122,6 +122,7 @@ public class AnalysisViewCIQController extends VBox {
             fillHotspotsStatsFields(dataset);
             ciqRecordTable.getItems().setAll(dataset.getCiqRecords());
             chart.setDataset(dataset);
+//            chart = new CIQChart(dataset);
             chartContainer.getChildren().setAll(chart);
         }
     }
@@ -223,8 +224,10 @@ public class AnalysisViewCIQController extends VBox {
     public void clearView() {
         ciqNameTf.setText(null);
         ciqBarcodeTf.setText(null);
-        chart.setDataset(null);
-        chart.setDisable(true);
+        if (chart != null) {
+            chart.setDataset(null);
+            chart.setDisable(true);
+        }
         ciqHotspotLv.getItems().clear();
     }
 

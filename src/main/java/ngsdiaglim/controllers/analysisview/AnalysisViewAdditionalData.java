@@ -55,7 +55,6 @@ public class AnalysisViewAdditionalData extends HBox {
     @FXML private Button pasteImageBtn;
     private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
     private ImageImporter imageImporter;
-    private final KeyCodeCombination pastKeyCombination = new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN);
 
     public AnalysisViewAdditionalData() {
 
@@ -155,19 +154,22 @@ public class AnalysisViewAdditionalData extends HBox {
 
     @FXML
     private void pasteImageHandler() {
-        Image image = Clipboard.getSystemClipboard().getImage();
-        if (image != null)
-        {
-            try {
-                File importedImage = imageImporter.importImage(image);
-                AdditionalImage ai = new AdditionalImage(importedImage);
-                imagesFp.getChildren().add(buildImageContainer(ai));
-            } catch (IOException e) {
-                logger.error(e);
-                Message.error(e.getMessage(), e);
-            }
+        if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES)) {
+            Message.error(App.getBundle().getString("app.msg.err.nopermit"));
+        } else {
+            Image image = Clipboard.getSystemClipboard().getImage();
+            if (image != null) {
+                try {
+                    File importedImage = imageImporter.importImage(image);
+                    AdditionalImage ai = new AdditionalImage(importedImage);
+                    imagesFp.getChildren().add(buildImageContainer(ai));
+                } catch (IOException e) {
+                    logger.error(e);
+                    Message.error(e.getMessage(), e);
+                }
 //            AdditionalImage ai = new AdditionalImage(image);
 //            imagesFp.getChildren().add(buildImageContainer(ai));
+            }
         }
     }
 
@@ -274,14 +276,18 @@ public class AnalysisViewAdditionalData extends HBox {
      * Remove an image from the view and the ddb
      */
     public void deleteImage(AdditionalImage ai) {
-        DialogPane.Dialog<ButtonType> dialog =  Message.confirm(App.getBundle().getString(""));
+        DialogPane.Dialog<ButtonType> dialog =  Message.confirm(App.getBundle().getString("additionaldata.msg.conf.deleteImage"));
+//        Message.showDialog(dialog);
         dialog.getButton(ButtonType.YES).setOnAction(event -> {
-            try {
-                imageImporter.removeImage(ai.getImageFile());
-                loadAnalysisImages();
-            } catch (IOException e) {
-                logger.error(e);
-                Platform.runLater(() -> Message.error(e.getMessage(), e));
+            if (App.get().getLoggedUser().isPermitted(PermissionsEnum.IMPORT_ANALYSIS_IMAGES)) {
+                try {
+                    imageImporter.removeImage(ai.getImageFile());
+                    loadAnalysisImages();
+                    Message.hideDialog(dialog);
+                } catch (IOException e) {
+                    logger.error(e);
+                    Platform.runLater(() -> Message.error(e.getMessage(), e));
+                }
             }
         });
     }

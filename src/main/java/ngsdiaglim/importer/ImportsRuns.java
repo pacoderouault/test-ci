@@ -211,19 +211,21 @@ public class ImportsRuns {
         }
 
         // Import Coverage Bed
+        File targetCoverageFile = null;
         Optional<File> covFile = Files.list(analysisDir.toPath()).map(Path::toFile).filter(f -> f.getName().equals("coverage.bed")).findAny();
         if (covFile.isPresent()) {
-            File targetCoverageFile = Paths.get(analysisDirectory.toString(), RunConstants.ANALYSIS_COVERAGE_FILENAME).toFile();
+            targetCoverageFile = Paths.get(analysisDirectory.toString(), RunConstants.ANALYSIS_COVERAGE_FILENAME).toFile();
             FileUtils.copyFile(covFile.get(), targetCoverageFile);
-//            VCFUtils.bgZipFile(covFile.get(), targetCoverageFile);
+            VCFUtils.bgZipFile(covFile.get(), targetCoverageFile);
         }
 
         // Import Depth File
         File depthFile = null;
+        File targetDepthFile = null;
         if (design.equals("CMT_Calcium_MiSeq")) {
             File localRunDir = getLocalRunDir(run.getName());
             depthFile = searchFile(localRunDir, sampleName);
-            File targetDepthFile = Paths.get(analysisDirectory.toString(), Objects.requireNonNull(depthFile).getName() + ".gz").toFile();
+            targetDepthFile = Paths.get(analysisDirectory.toString(), Objects.requireNonNull(depthFile).getName() + ".gz").toFile();
             VCFUtils.bgZipFile(depthFile, targetDepthFile);
         }
 
@@ -233,8 +235,8 @@ public class ImportsRuns {
                 analysisDirectory.getPath(),
                 targetVCFFile,
                 null,
-                depthFile,
-                covFile.isEmpty() ? null : covFile.get(),
+                targetDepthFile,
+                targetCoverageFile,
                 null,
                 LocalDateTime.now(),
                 sampleName,

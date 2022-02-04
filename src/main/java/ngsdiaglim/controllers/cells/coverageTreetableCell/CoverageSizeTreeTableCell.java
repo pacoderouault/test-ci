@@ -1,10 +1,9 @@
 package ngsdiaglim.controllers.cells.coverageTreetableCell;
 
 import javafx.scene.control.TreeTableCell;
-import ngsdiaglim.modeles.biofeatures.SpecificCoverageRegion;
 import ngsdiaglim.modeles.biofeatures.SpecificCoverageTreeItem;
 
-public class CoverageMeanDepthTreeTableCell extends TreeTableCell<SpecificCoverageTreeItem, SpecificCoverageTreeItem> {
+public class CoverageSizeTreeTableCell extends TreeTableCell<SpecificCoverageTreeItem, SpecificCoverageTreeItem> {
 
     @Override
     protected void updateItem(SpecificCoverageTreeItem item, boolean empty) {
@@ -14,9 +13,9 @@ public class CoverageMeanDepthTreeTableCell extends TreeTableCell<SpecificCovera
             setGraphic(null);
         } else {
             if (item.getCoverageRegion() == null) {
-                setText(null);
+                setText(String.valueOf(item.getSpecificCoverage().getEnd() - item.getSpecificCoverage().getStart() + 1));
             } else {
-                setText(String.valueOf(item.getCoverageRegion().getAverageDepth()));
+                setText(String.valueOf(item.getCoverageRegion().getSize()));
             }
         }
     }

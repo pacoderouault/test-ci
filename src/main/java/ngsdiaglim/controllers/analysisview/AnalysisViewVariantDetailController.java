@@ -28,10 +28,7 @@ import ngsdiaglim.controllers.charts.VAFChart;
 import ngsdiaglim.controllers.charts.VafScatterChart;
 import ngsdiaglim.controllers.dialogs.*;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.enumerations.ACMG;
-import ngsdiaglim.enumerations.HotspotType;
-import ngsdiaglim.enumerations.PredictionTools;
-import ngsdiaglim.enumerations.SangerState;
+import ngsdiaglim.enumerations.*;
 import ngsdiaglim.modeles.FastaSequenceGetter;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
@@ -58,7 +55,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AnalysisViewVariantDetailController extends ScrollPane {
 
@@ -109,6 +108,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     @FXML private Button showSameVariantsBtn;
     @FXML private Button addVariantCommentaryBtn;
     @FXML private Button addAnnotationCommentaryBtn;
+    @FXML private Button externalLinksSettingsBtn;
     @FXML private Button igvLinkBtn;
     @FXML private Button gnomadLinkBtn;
     @FXML private Button clinvarLinkBtn;
@@ -122,6 +122,8 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     @FXML private Button intogenLinkBtn;
     @FXML private Button theGenCCBtn;
     @FXML private Button alamutLinkBtn;
+
+    @FXML private CheckBox showMyCommentsCb;
 
     @FXML private ListView<VariantCommentary> variantCommentaryLv;
     @FXML private ListView<AnnotationCommentary> annotationCommentaryLv;
@@ -162,6 +164,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     private ChangeListener<Boolean> addToReportListener;
     private ChangeListener<ACMG> pathogenicityListener;
     private ChangeListener<TranscriptConsequence> transcriptListener;
+    private ChangeListener<Boolean> showMyCommentsListener;
 
 
     public AnalysisViewVariantDetailController() {
@@ -211,7 +214,6 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
         annotation.addListener(annotationListener);
 
-
         variantCommentaryLv.setCellFactory(data -> new VariantCommentaryListCell());
         annotationCommentaryLv.setCellFactory(data -> new AnnotationCommentaryListCell());
         annotationCommentaryLv.setSelectionModel(null);
@@ -222,6 +224,8 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
         addVariantCommentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
         addAnnotationCommentaryBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_ANALYSIS_COMMENT));
+
+        setExternalLinksButtonsVisibility();
     }
 
     private void initalizeTextfields() {
@@ -291,6 +295,12 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             if (newV2 != null) {
                 fillTranscriptRelatedFields();
             }
+        };
+        showMyCommentsListener = (obs, oldV, newV) -> {
+            App.get().getLoggedUser().setPreference(DefaultPreferencesEnum.SHOW_USER_COMMENTS_ONLY, String.valueOf(newV));
+            App.get().getLoggedUser().savePreferences();
+            loadVariantCommentaries();
+            loadAnnotationCommentaries();
         };
     }
 
@@ -387,6 +397,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         addToReportTs.selectedProperty().removeListener(addToReportListener);
         addToReportTs.setSelected(a.isReported());
         addToReportTs.selectedProperty().addListener(addToReportListener);
+
+        showMyCommentsCb.selectedProperty().removeListener(showMyCommentsListener);
+        showMyCommentsCb.setSelected(Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.SHOW_USER_COMMENTS_ONLY)));
+        showMyCommentsCb.selectedProperty().addListener(showMyCommentsListener);
+
         fillTranscriptRelatedFields();
         initTranscriptPopOver();
         loadVariantCommentaries();
@@ -685,7 +700,13 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
     public void loadVariantCommentaries() {
         try {
-            variantCommentaryLv.setItems(DAOController.getVariantCommentaryDAO().getVariantCommentaries(annotation.get().getVariant().getId()));
+            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.SHOW_USER_COMMENTS_ONLY))) {
+                variantCommentaryLv.getItems().setAll(DAOController.getVariantCommentaryDAO().getUserVariantCommentaries(
+                        annotation.get().getVariant().getId(), App.get().getLoggedUser().getId()));
+            } else {
+                variantCommentaryLv.getItems().setAll(DAOController.getVariantCommentaryDAO().getVariantCommentaries(
+                        annotation.get().getVariant().getId()));
+            }
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -694,9 +715,14 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 
     public void loadAnnotationCommentaries() {
         try {
-            annotationCommentaryLv.setItems(DAOController.getAnnotationCommentaryDAO().getAnnotationCommentaries(
-                    annotation.get().getVariant().getId(),
-                    ModuleManager.getAnalysisViewController().getAnalysis().getId()));
+            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.SHOW_USER_COMMENTS_ONLY))) {
+                annotationCommentaryLv.getItems().setAll(DAOController.getAnnotationCommentaryDAO().getUserAnnotationCommentaries(
+                        annotation.get().getVariant().getId(), App.get().getLoggedUser().getId(), App.get().getLoggedUser().getId()));
+            } else {
+                annotationCommentaryLv.getItems().setAll(DAOController.getAnnotationCommentaryDAO().getAnnotationCommentaries(
+                        annotation.get().getVariant().getId(),
+                        ModuleManager.getAnalysisViewController().getAnalysis().getId()));
+            }
         } catch (SQLException e) {
             logger.error(e);
             Message.error(e.getMessage(), e);
@@ -843,6 +869,41 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         });
     }
 
+
+    public void setExternalLinksButtonsVisibility() {
+        HashSet<ExternalLinksEnum> visibleLinksSet = new HashSet<>();
+        for (String s : App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.VISIBLE_EXTERNAL_LINKS).split(",")){
+            try {
+                visibleLinksSet.add(ExternalLinksEnum.valueOf(s));
+            } catch (Exception ignored) {}
+        }
+
+        setExternalLinkButtonVisibility(ExternalLinksEnum.IGV, igvLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.GNOMAD, gnomadLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.CLINVAR, clinvarLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.DBSNP, dbsnpLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.ENSEMBL, ensemblLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.COSMIC, cosmicLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.COSMIC_GENEVIEW, cosmicGeneViewerLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.VARSOME, varsomeLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.LOVD, lovdLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.ONCOKB, oncoKbLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.INTOGEN, intogenLinkBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.THE_GENCC, theGenCCBtn, visibleLinksSet);
+        setExternalLinkButtonVisibility(ExternalLinksEnum.ALAMUT, alamutLinkBtn, visibleLinksSet);
+
+    }
+
+
+    private void setExternalLinkButtonVisibility(ExternalLinksEnum externalLinksEnum, Button btn, Set<ExternalLinksEnum> visibleLinksSet) {
+        if (visibleLinksSet.contains(externalLinksEnum)) {
+            btn.setVisible(true);
+            btn.setManaged(true);
+        } else {
+            btn.setVisible(false);
+            btn.setManaged(false);
+        }
+    }
 
     private void setExternalLinksButtons() {
 
@@ -993,6 +1054,14 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         }
         vafChart.vafValueProperty().unbind();
         addToReportTs.selectedProperty().removeListener(addToReportListener);
+        showMyCommentsCb.selectedProperty().removeListener(showMyCommentsListener);
 //        annotation.removeListener(annotationListener);
+    }
+
+    @FXML
+    private void showExternalLinksSettingsMenu() {
+        ExternalLinksSettingsDropDownContent menu = new ExternalLinksSettingsDropDownContent();
+        menu.setArrowLocation(PopOver.ArrowLocation.RIGHT_BOTTOM);
+        menu.show(externalLinksSettingsBtn);
     }
 }

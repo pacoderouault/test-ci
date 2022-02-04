@@ -806,13 +806,13 @@ Text {
 
 #app-menu-bar {
     -fx-background-color: white;
-    -fx-effect: dropshadow(three-pass-box, grey, 5, 0, 0, 1);
+    -fx-border-width: 0 0 1 0;
 }
 
 #app-menu-bar .logo {
-    -fx-font-family: 'Ubuntu Mono' !important;
-    -fx-font-size: 1.5em;
-     -fx-cursor: hand;
+    -fx-font-family: 'Ubuntu Light' !important;
+    -fx-font-size: 2em;
+    -fx-cursor: hand;
 }
 
 #app-menu-bar .logo:hover {
@@ -829,9 +829,7 @@ Text {
 
 .module-title-box {
     -fx-padding: 3px;
-    -fx-background-color: white;
-    -fx-background-radius: 15px;
-    -fx-alignment: center-left;
+    -fx-alignment: baseline-left;
     -fx-spacing: 5px;
 }
 .module-title-box .label {
@@ -984,6 +982,11 @@ Text {
     -fx-cell-size: 25px;
 }
 
+.dropdown-menu .list-cell .text {
+    -fx-font-size: 13px;
+    -fx-font-family: "Ubuntu";
+}
+
 .hyperlink-label:hover .text{
     -fx-underline: true ;
 }
@@ -1031,6 +1034,12 @@ Text {
     -fx-font-family: 'Ubuntu';
     -fx-font-size: 10px;
 }
+
+.variantDetail .check-box {
+    -fx-font-family: 'Ubuntu Light';
+    -fx-font-size: 11px !important;
+}
+
 
 .variantDetail .cat_title {
     -fx-font-family: 'Ubuntu Medium';
@@ -1394,6 +1403,13 @@ Text {
 }
 
 .chart {
+}
+
+.chart-datapoint-tooltip-label {
+    -fx-background-color: #f8f8f8;
+    -fx-font-family: 'Ubuntu Medium';
+    -fx-font-weight: normal;
+    -fx-padding: 5px;
 }
 
 .deltest {

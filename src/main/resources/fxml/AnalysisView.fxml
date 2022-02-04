@@ -33,10 +33,10 @@
                   <ToggleButton fx:id="coverageViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.coverage" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="cnvViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.cnv" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="additionalDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.additionalinfo" toggleGroup="$analysisViewsToggleGroup" />
-                  <ToggleButton fx:id="metaDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.analysisInfo" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="reportViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.report" toggleGroup="$analysisViewsToggleGroup" />
-                  <ToggleButton fx:id="runinfoViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.runinfo" toggleGroup="$analysisViewsToggleGroup" />
                   <ToggleButton fx:id="ciqViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.ciq" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="metaDataViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.analysisInfo" toggleGroup="$analysisViewsToggleGroup" />
+                  <ToggleButton fx:id="runinfoViewToggleBtn" mnemonicParsing="false" styleClass="toggletab" text="%analysisview.btn.runinfo" toggleGroup="$analysisViewsToggleGroup" />
                </children>
                <HBox.margin>
                   <Insets top="5.0" />

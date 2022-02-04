@@ -243,6 +243,7 @@ public class UsersManageController extends Module {
                             if (dialog.isValid() && dialog.getValue() != null) {
                                 try {
                                     DAOController.getUsersDAO().updatePassword(user, dialog.getValue());
+                                    Message.hideDialog(dialog);
                                 } catch (SQLException ex) {
                                     logger.error("Error when updating password", ex);
                                     Message.error(ex.getMessage(), ex);

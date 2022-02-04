@@ -15,7 +15,9 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.enumerations.CoverageQuality;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.biofeatures.CoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverage;
 import ngsdiaglim.modeles.biofeatures.SpecificCoverageRegion;
+import ngsdiaglim.modeles.biofeatures.SpecificCoverageTreeItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,25 +39,16 @@ public class AnalysisViewCoverageController extends HBox {
     @FXML private TableColumn<CoverageRegion, String> genesCol;
     @FXML private TableColumn<CoverageRegion, Void> actionsCol;
     @FXML private VBox specificCoverageBox;
-    @FXML private TableView<SpecificCoverageRegion> specificCoverageTable;
-    @FXML private TableColumn<SpecificCoverageRegion, String> specificCoverageNameCol;
-    @FXML private TableColumn<SpecificCoverageRegion, String> specificCoverageContigCol;
-    @FXML private TableColumn<SpecificCoverageRegion, Integer> specificCoverageStartCol;
-    @FXML private TableColumn<SpecificCoverageRegion, Integer> specificCoverageEndCol;
-    @FXML private TableColumn<SpecificCoverageRegion, Integer> specificCoverageTargetCovCol;
-    @FXML private TableColumn<SpecificCoverageRegion, Double> specificCoverageMeanCovCol;
-    @FXML private TableColumn<SpecificCoverageRegion, Integer> specificCoverageSizeCol;
-    @FXML private TableColumn<CoverageRegion, Void> specificCoverageActionsCol;
 
-    @FXML private TreeTableView<SpecificCoverageRegion> treeTableView;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageNameTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageContigTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageStartTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageEndTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageTargetCovTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageMeanCovTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, SpecificCoverageRegion> specificCoverageSizeTreeCol;
-    @FXML private TreeTableColumn<SpecificCoverageRegion, Void> specificCoverageActionsTreeCol;
+    @FXML private TreeTableView<SpecificCoverageTreeItem> treeTableView;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageNameTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageContigTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageStartTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageEndTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageTargetCovTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageMeanCovTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageSizeTreeCol;
+    @FXML private TreeTableColumn<SpecificCoverageTreeItem, SpecificCoverageTreeItem> specificCoverageActionsTreeCol;
 
 
     @FXML private HBox coverageRegionsTableContainer;
@@ -118,9 +111,8 @@ public class AnalysisViewCoverageController extends HBox {
             }
             return new SimpleStringProperty(sj.toString());
         });
-        specificCoverageActionsCol.setCellFactory(data -> new CoverageActionTableCell());
-
-        initSpecificCoverageTable();
+        actionsCol.setCellFactory(data -> new CoverageActionTableCell());
+//        initSpecificCoverageTable();
         iniSpecificCoverageTreeTable();
     }
 
@@ -133,12 +125,10 @@ public class AnalysisViewCoverageController extends HBox {
 //        specificCoverageTargetCovCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getSpecificCoverage().getMinCov()).asObject());
 //        specificCoverageMeanCovCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getAverageDepth()).asObject());
 //        specificCoverageSizeCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getSize()).asObject());
-//        actionsCol.setCellFactory(data -> new CoverageActionTableCell());
     }
 
     private void iniSpecificCoverageTreeTable() {
-        System.out.println(specificCoverageNameTreeCol);
-        specificCoverageNameTreeCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
+        specificCoverageNameTreeCol.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getValue()));
         specificCoverageNameTreeCol.setCellFactory(data -> new CoverageNameTreeTableCell());
         specificCoverageContigTreeCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
         specificCoverageContigTreeCol.setCellFactory(data -> new CoverageContigTreeTableCell());
@@ -150,14 +140,26 @@ public class AnalysisViewCoverageController extends HBox {
         specificCoverageTargetCovTreeCol.setCellFactory(data -> new CoverageTargetDepthTreeTableCell());
         specificCoverageMeanCovTreeCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
         specificCoverageMeanCovTreeCol.setCellFactory(data -> new CoverageMeanDepthTreeTableCell());
+        specificCoverageSizeTreeCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
+        specificCoverageSizeTreeCol.setCellFactory(data -> new CoverageSizeTreeTableCell());
+        specificCoverageActionsTreeCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getValue()));
+        specificCoverageActionsTreeCol.setCellFactory(data -> new CoverageActionsTreeTableCell());
+
     }
 
     private void fillSpecificCoverageTreeTable(ObservableList<SpecificCoverageRegion> specificCoverageRegions) {
-        TreeItem<SpecificCoverageRegion> itemRoot = new TreeItem<>(null);
-
+        TreeItem<SpecificCoverageTreeItem> itemRoot = new TreeItem<>(null);
         for (SpecificCoverageRegion scr : specificCoverageRegions) {
-            TreeItem<SpecificCoverageRegion> item = new TreeItem<>(scr);
+            TreeItem<SpecificCoverageTreeItem> item = new TreeItem<>(new SpecificCoverageTreeItem(scr.getSpecificCoverage()));
             itemRoot.getChildren().add(item);
+            if (scr.getCoverageRegions() != null) {
+                for (CoverageRegion sc : scr.getCoverageRegions()) {
+                    TreeItem<SpecificCoverageTreeItem> item_c = new TreeItem<>(new SpecificCoverageTreeItem(scr.getSpecificCoverage(), sc));
+                    item.getChildren().add(item_c);
+                }
+            }
+            item.setExpanded(true);
+            item.getValue().setNoCovRegion(!(scr.getCoverageRegions() == null || scr.getCoverageRegions().isEmpty()));
         }
         treeTableView.setRoot(itemRoot);
     }
@@ -180,13 +182,13 @@ public class AnalysisViewCoverageController extends HBox {
         if (analysis.get().getSpecCoverageFile() == null || !analysis.get().getSpecCoverageFile().exists()) {
             noSpecificCoverageAnalysisLb.setVisible(true);
             noSpecificCoverageAnalysisLb.setManaged(true);
-            specificCoverageTable.setManaged(false);
-            specificCoverageTable.setVisible(false);
+            treeTableView.setManaged(false);
+            treeTableView.setVisible(false);
         } else {
             noSpecificCoverageAnalysisLb.setVisible(false);
             noSpecificCoverageAnalysisLb.setManaged(false);
-            specificCoverageTable.setManaged(true);
-            specificCoverageTable.setVisible(true);
+            treeTableView.setManaged(true);
+            treeTableView.setVisible(true);
         }
 
 
@@ -195,10 +197,8 @@ public class AnalysisViewCoverageController extends HBox {
         specificCoverageBox.setManaged(analysis.get().getAnalysisParameters().getSpecificCoverageSet() != null);
 
         if (analysis.get().getAnalysisParameters().getSpecificCoverageSet() == null || analysis.get().getSpecificCoverageRegions() == null) {
-            specificCoverageTable.getItems().clear();
             treeTableView.setRoot(null);
         } else {
-            specificCoverageTable.getItems().setAll(analysis.get().getSpecificCoverageRegions());
             fillSpecificCoverageTreeTable(analysis.get().getSpecificCoverageRegions());
         }
     }

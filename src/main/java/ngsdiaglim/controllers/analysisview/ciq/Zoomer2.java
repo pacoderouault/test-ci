@@ -1178,11 +1178,11 @@ public class Zoomer2 extends ChartPlugin {
     }
 
     private static void zoomOnAxis(final Axis axis, final ScrollEvent event) {
-        System.out.println("zoomOnAxis");
         if (hasBoundedRange(axis) || event.getDeltaY() == 0) {
             return;
         }
         final boolean isZoomIn = event.getDeltaY() > 0;
+
         final boolean isHorizontal = axis.getSide().isHorizontal();
 
         final double mousePos = isHorizontal ? event.getX() : event.getY();
@@ -1192,7 +1192,17 @@ public class Zoomer2 extends ChartPlugin {
         final double scaling = isZoomIn ? 0.9 : 1 / 0.9;
         final double diffHalf1 = scaling * Math.abs(posOnAxis - min);
         final double diffHalf2 = scaling * Math.abs(max - posOnAxis);
-
+        if (!isHorizontal) {
+            System.out.println("isZoomIn : " + isZoomIn);
+            System.out.println("isHorizontal : " + isHorizontal);
+            System.out.println("mousePos : " + mousePos);
+            System.out.println("posOnAxis : " + posOnAxis);
+            System.out.println("axe : " + min + " => " + max);
+            System.out.println("diffHalf1 : " + diffHalf1);
+            System.out.println("diffHalf2 : " + diffHalf2);
+            System.out.println("new axe : " + (posOnAxis - diffHalf1) + " => " + (posOnAxis + diffHalf2));
+            System.out.println();
+        }
         axis.set(posOnAxis - diffHalf1, posOnAxis + diffHalf2);
 
         axis.forceRedraw();

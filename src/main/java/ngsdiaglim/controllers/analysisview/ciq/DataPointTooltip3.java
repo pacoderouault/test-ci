@@ -1,4 +1,9 @@
 package ngsdiaglim.controllers.analysisview.ciq;
+
+
+
+
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,7 +76,7 @@ public class DataPointTooltip3 extends AbstractDataFormattingPlugin {
      * initialized to {@value #DEFAULT_PICKING_DISTANCE}.
      */
     public DataPointTooltip3() {
-        label.getStyleClass().add(DataPointTooltip.STYLE_CLASS_LABEL);
+        label.getStyleClass().add(STYLE_CLASS_LABEL);
         label.setWrapText(true);
         label.setMinWidth(0);
         registerInputEventHandler(MouseEvent.MOUSE_MOVED, mouseMoveHandler);
@@ -273,13 +278,17 @@ public class DataPointTooltip3 extends AbstractDataFormattingPlugin {
 
         if (dataPoint.isEmpty()) {
             getChartChildren().remove(label);
+            getChart().getCanvas().toFront();
             return;
         }
         updateLabel(event, plotAreaBounds, dataPoint.get());
         if (!getChartChildren().contains(label)) {
             getChartChildren().add(label);
+            getChart().getCanvas().toBack();
         }
         label.layout();
+
+
     }
 
     public static class DataPoint {
