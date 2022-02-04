@@ -39,7 +39,7 @@ public class CIQChart extends XYChart {
     private final List<String> categories = new ArrayList<>();
     private final ErrorDataSetRenderer recordRenderer = new ErrorDataSetRenderer();
     private DefaultErrorDataSet recordDataSet;
-    private Zoomer2 zoomer = new Zoomer2();
+    private final Zoomer2 zoomer = new Zoomer2();
     private TargetVAFIndicator targetVafIndicator;
     private MeanIndicator meanTargetIndicator;
     private SDLowIndicator lowSDIndicatorMin;
@@ -50,7 +50,7 @@ public class CIQChart extends XYChart {
     private final DataPointTooltip3 dataPointTooltip = new DataPointTooltip3();
     private final ScreenShotPlugin screenshot = new ScreenShotPlugin();
 
-    public CIQChart() {
+    public CIQChart(CIQVariantDataSet dataset) {
 
         super(new CategoryAxis(App.getBundle().getString("ciqchart.lb.axis.x")), new DefaultNumericAxis(App.getBundle().getString("ciqchart.lb.axis.y")));
 
@@ -58,16 +58,16 @@ public class CIQChart extends XYChart {
         this.yAxis = (DefaultNumericAxis) getYAxis();
 
         init();
-//        this.dataset.set(dataset);
-//        drawChart();
+        this.dataset.set(dataset);
+        drawChart();
 
-        dataset.addListener((obs, oldV, newV) -> {
-            if (newV != null) {
-                drawChart();
-            } else {
-                clearChart();
-            }
-        });
+//        dataset.addListener((obs, oldV, newV) -> {
+//            if (newV != null) {
+//                drawChart();
+//            } else {
+//                clearChart();
+//            }
+//        });
     }
 
     public CIQVariantDataSet getDataset() {

@@ -58,7 +58,7 @@ public class AnalysisViewCIQController extends VBox {
     private final static Tooltip saveToFileTp = new Tooltip(App.getBundle().getString("cnvnormalizedview.btn.exportToFile"));
     private final static Tooltip copyToClipboardTp = new Tooltip(App.getBundle().getString("cnvnormalizedview.btn.exportToClipboard"));
 
-    private final CIQChart chart = new CIQChart();
+    private CIQChart chart;
     private final HashMap<CIQHotspot, CIQVariantDataSet> recordMap = new HashMap<>();
 
     private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
@@ -96,6 +96,7 @@ public class AnalysisViewCIQController extends VBox {
         copyToClipboardTp.setShowDelay(Duration.ZERO);
         copyToClipboardBtn.setTooltip(copyToClipboardTp);
 
+
     }
 
     private void initCIQHotspotLv() {
@@ -121,8 +122,8 @@ public class AnalysisViewCIQController extends VBox {
             CIQVariantDataSet dataset = recordMap.get(ciqHotspot);
             fillHotspotsStatsFields(dataset);
             ciqRecordTable.getItems().setAll(dataset.getCiqRecords());
-            chart.setDataset(dataset);
-//            chart = new CIQChart(dataset);
+//            chart.setDataset(dataset);
+            chart = new CIQChart(dataset);
             chartContainer.getChildren().setAll(chart);
         }
     }

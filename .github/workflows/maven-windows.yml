@@ -21,8 +21,8 @@ jobs:
       # GraalVM GitHub Actions image
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.0.0.2'
-          java-version: '11'
+          version: '22.0.0'
+          java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
