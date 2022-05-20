@@ -48,8 +48,8 @@ class UserTest {
                 )
 
         );
-        user1 = new User(1, "user1", roles1, LocalDate.parse("01/04/1987", dateTimeFormatter));
-        user2 = new User(2, "user2", roles2, LocalDate.parse("08/08/2001", dateTimeFormatter), false);
+        user1 = new User(1, "user1", roles1, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
+        user2 = new User(2, "user2", roles2, LocalDate.parse("08/08/2001", dateTimeFormatter), null, false);
     }
 
     @Test
@@ -66,7 +66,7 @@ class UserTest {
 
     @Test
     void setUsername() {
-        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
+        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
         u.setUsername("userRenamed");
         assertEquals("userRenamed", u.getUsername());
     }
@@ -78,7 +78,7 @@ class UserTest {
 
     @Test
     void setRoles() {
-        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
+        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
         u.setRoles(roles1);
         assertEquals(roles1, u.getRoles());
     }
@@ -124,20 +124,20 @@ class UserTest {
 
     @Test
     void setActive() {
-        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
+        User u = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
         u.setActive(false);
         assertFalse(u.isActive());
 
-        User u2 = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter), false);
+        User u2 = new User(1, "user", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null, false);
         u2.setActive(true);
         assertTrue(u2.isActive());
     }
 
     @Test
     void testEquals() {
-        User u1 = new User(1, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
-        User u2 = new User(1, "user2", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
-        User u3 = new User(2, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
+        User u1 = new User(1, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
+        User u2 = new User(1, "user2", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
+        User u3 = new User(2, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
 
         assertEquals(u1, u1);
         assertEquals(u1, u2);
@@ -149,9 +149,9 @@ class UserTest {
 
     @Test
     void testHashCode() {
-        User u1 = new User(1, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
-        User u2 = new User(1, "user2", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
-        User u3 = new User(2, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter));
+        User u1 = new User(1, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
+        User u2 = new User(1, "user2", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
+        User u3 = new User(2, "user1", null, LocalDate.parse("01/04/1987", dateTimeFormatter), null);
 
         assertEquals(u1.hashCode(), u2.hashCode());
         assertNotEquals(u1.hashCode(), u3.hashCode());

@@ -4,9 +4,11 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.Zygotie;
 import ngsdiaglim.modeles.analyse.AnnotationSangerCheck;
 import ngsdiaglim.modeles.biofeatures.Gene;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
 import ngsdiaglim.modeles.variants.predictions.GnomADFrequencies;
 
 import java.util.Collection;
@@ -14,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.StringJoiner;
 
 public class Annotation {
-
+    private final Genome genome;
     private final Variant variant;
     private SimpleIntegerProperty depth;
     private SimpleIntegerProperty alleleDepth;
@@ -30,12 +32,16 @@ public class Annotation {
     private final ObservableSet<String> geneNameSet = FXCollections.observableSet();
     private SimpleStringProperty geneNames;
     private SimpleObjectProperty<AnnotationSangerCheck> sangerState;
-    private final GnomADFrequencies gnomADFrequencies;
+//    private final GnomADFrequencies gnomADFrequencies;
+
+    private GnomAD gnomAD;
     private final SimpleBooleanProperty reported = new SimpleBooleanProperty(false);
 
-    public Annotation(Variant variant) {
+    public Annotation(Genome genome, Variant variant) {
+        this.genome = genome;
         this.variant = variant;
-        gnomADFrequencies = new GnomADFrequencies(this);
+//        gnomADFrequencies = new GnomADFrequencies(this);
+        this.gnomAD = new GnomAD();
         geneNameSet.addListener((SetChangeListener<String>) change -> {
             StringJoiner sj = new StringJoiner(";");
             for (String gene : geneNameSet) {
@@ -45,7 +51,18 @@ public class Annotation {
         });
     }
 
+    public Genome getGenome() {return genome;}
+
     public Variant getVariant() {return variant;}
+
+    public GenomicVariant getGenomicVariant() {
+        GenomicVariant o1;
+        if (genome.equals(Genome.GRCh38)) {
+            return variant.getGrch38PositionVariant();
+        } else {
+            return variant.getGrch37PositionVariant();
+        }
+    }
 
     public Integer getDepth() {
         if (depth == null) return null;
@@ -217,7 +234,13 @@ public class Annotation {
         this.transcriptConsequence.set(transcriptConsequence);
     }
 
-    public GnomADFrequencies getGnomADFrequencies() {return gnomADFrequencies;}
+    public GnomAD getGnomAD() {return gnomAD;}
+
+    public void setGnomAD(GnomAD gnomAD) {
+        this.gnomAD = gnomAD;
+    }
+
+//    public GnomADFrequencies getGnomADFrequencies() {return gnomADFrequencies;}
 
     public boolean isReported() {
         return reported.get();

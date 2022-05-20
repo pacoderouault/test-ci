@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import ngsdiaglim.cnv.*;
 import ngsdiaglim.comparators.RegionComparator;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.exceptions.FileFormatException;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.Panel;
@@ -82,27 +83,26 @@ public class AmpliconMatrixParser {
             String geneName = row[0];
 
             PanelRegion panelRegion = panel.getRegion(ampliconName);
-            if (panelRegion == null) {
-                throw new FileFormatException("The amplicon : " + ampliconName + " isn't fond in the panel " + panel.getName());
-            }
+            if (panelRegion != null) {
 
-            CovCopRegion covCopRegion = new CovCopRegion(panelRegion.getContig(), panelRegion.getStart(), panelRegion.getEnd(),
-                    ampliconName, panelRegion.getPoolAmplification(), geneName);
-            for (int k : columnsIndexToRead) {
-                if (!row[k].isEmpty() && !NumberUtils.isInt(row[k])) {
-                    throw new FileFormatException("Incorrect value : " + String.join("\t", row));
+
+                CovCopRegion covCopRegion = new CovCopRegion(panelRegion.getContig(), panelRegion.getStart(), panelRegion.getEnd(),
+                        ampliconName, panelRegion.getPoolAmplification(), geneName);
+                for (int k : columnsIndexToRead) {
+                    if (!row[k].isEmpty() && !NumberUtils.isInt(row[k])) {
+                        throw new FileFormatException("Incorrect value : " + String.join("\t", row));
+                    }
+                    Integer depth = null;
+                    if (!row[k].isEmpty()) {
+                        depth = Integer.parseInt(row[k]);
+                    }
+                    covCopRegion.addRawValue(depth);
                 }
-                Integer depth = null;
-                if (!row[k].isEmpty()) {
-                    depth = Integer.parseInt(row[k]);
+                if (ampliconsMap.containsKey(covCopRegion.getName())) {
+                    throw new FileFormatException("Duplicate amplicon : " + covCopRegion.getName());
+                } else {
+                    ampliconsMap.put(covCopRegion.getName(), covCopRegion);
                 }
-                covCopRegion.addRawValue(depth);
-            }
-            if (ampliconsMap.containsKey(covCopRegion.getName())) {
-                throw new FileFormatException("Duplicate amplicon : " + covCopRegion.getName());
-            }
-            else {
-                ampliconsMap.put(covCopRegion.getName(), covCopRegion);
             }
 
         }
@@ -118,7 +118,7 @@ public class AmpliconMatrixParser {
         RegionComparator regionComparator = new RegionComparator();
         ampliconsByPool.values().forEach(o -> o.sort(regionComparator));
 
-        CovCopCNVData covCopCNVData = new CovCopCNVData(panel);
+        CovCopCNVData covCopCNVData = new CovCopCNVData(analysis.getAnalysisParameters().getGenome(), panel);
         covCopCNVData.setSamples(samples);
         covCopCNVData.setCovcopRegions(ampliconsByPool);
 
@@ -214,7 +214,7 @@ public class AmpliconMatrixParser {
     }
 
 
-    public static CovCopCNVData getCNVSamples(File matrixFile, Panel panel) throws FileFormatException, SQLException {
+    public static CovCopCNVData getCNVSamples(File matrixFile, Genome genome, Panel panel) throws FileFormatException, SQLException {
         final int LABEL_COLUMNS_NUMBER = 2;
         TsvParserSettings parserSettings = new TsvParserSettings();
 
@@ -283,7 +283,7 @@ public class AmpliconMatrixParser {
         RegionComparator regionComparator = new RegionComparator();
         ampliconsByPool.values().forEach(o -> o.sort(regionComparator));
 
-        CovCopCNVData covCopCNVData = new CovCopCNVData(panel);
+        CovCopCNVData covCopCNVData = new CovCopCNVData(genome, panel);
         covCopCNVData.setSamples(samples);
         covCopCNVData.setCovcopRegions(ampliconsByPool);
 

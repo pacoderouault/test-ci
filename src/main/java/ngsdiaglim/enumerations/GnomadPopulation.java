@@ -2,6 +2,8 @@ package ngsdiaglim.enumerations;
 
 public enum GnomadPopulation {
 
+    GLOBAL("Gnomad global"),
+    MAX_POP("Gnomad max pop "),
     AFR("African/African American"),
     AMR("American Admixed/Latino"),
     ASJ("Ashkenazi Jewish"),

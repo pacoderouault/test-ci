@@ -65,13 +65,14 @@ public class AnalysesSharingVariantDialog extends DialogPane.Dialog<Void> {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         initView();
+        setTitle(App.getBundle().getString("sharingvariantdialog.title"));
         setContent(dialogContainer);
     }
 
     private void initView() {
 
         variantLb.setText(
-                annotation.getVariant().getContig() + ":" + annotation.getVariant().getStart() + annotation.getVariant().getRef() + ">" + annotation.getVariant().getAlt()
+                annotation.getGenomicVariant().getContig() + ":" + annotation.getGenomicVariant().getStart() + annotation.getGenomicVariant().getRef() + ">" + annotation.getGenomicVariant().getAlt()
         );
         initTable();
 

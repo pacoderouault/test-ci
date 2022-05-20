@@ -12,9 +12,8 @@ class FastaSequenceGetterTest {
 
     @Test
     void getSequence() {
-
         try {
-            FastaSequenceGetter fastaSequenceGetter = new FastaSequenceGetter(new File(AppSettings.DefaultAppSettings.REFERENCE_HG19.getValue()));
+            FastaSequenceGetter fastaSequenceGetter = new FastaSequenceGetter(new File(AppSettings.DefaultAppSettings.REFERENCE_GRCH37.getValue()));
             assertEquals("AGACAAAGGA", fastaSequenceGetter.getSequence("chr17", 53456780, 53456789));
         } catch (Exception e) {
             e.printStackTrace();

@@ -56,7 +56,7 @@ public class AddSpecificCoverageDialog extends DialogPane.Dialog<AddSpecificCove
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
-        setTitle(App.getBundle().getString("addgenepaneldialog.title"));
+        setTitle(App.getBundle().getString("addspecificdialog.title"));
         setContent(dialogContainer);
         setValue(new SpecificCoverageCreationData());
 

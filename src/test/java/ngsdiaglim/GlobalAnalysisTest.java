@@ -206,10 +206,10 @@ public class GlobalAnalysisTest extends BaseSetup {
             assertEquals(2, vcfParser.getVariantParserReportData().getVafFilteredCount());
             assertEquals(977, analysis.getAnnotations().size());
 
-            Optional<Annotation> filteredVariant1 = analysis.getAnnotations().stream().filter(a -> VariantUtils.getHashVariant(a.getVariant()).equals("chr2:241696840ATCC>A")).findAny();
+            Optional<Annotation> filteredVariant1 = analysis.getAnnotations().stream().filter(a -> VariantUtils.getHashVariant(a.getGenomicVariant()).equals("chr2:241696840ATCC>A")).findAny();
             assertFalse(filteredVariant1.isPresent());
 
-            Optional<Annotation> filteredVariant2 = analysis.getAnnotations().stream().filter(a -> VariantUtils.getHashVariant(a.getVariant()).equals("chr11:68080214CGCT>C")).findAny();
+            Optional<Annotation> filteredVariant2 = analysis.getAnnotations().stream().filter(a -> VariantUtils.getHashVariant(a.getGenomicVariant()).equals("chr11:68080214CGCT>C")).findAny();
             assertFalse(filteredVariant2.isPresent());
 
             // check coverage
@@ -221,7 +221,7 @@ public class GlobalAnalysisTest extends BaseSetup {
             CoverageRegion regionTest2 = new CoverageRegion("chr14", 105173930, 105174006, null, CoverageQuality.NO_COVERED);
             assertEquals(regionTest2, analysis.getCoverageRegions().get(3));
 
-        } catch (SQLException | IOException | NotBiallelicVariant | MalformedCoverageFile e) {
+        } catch (Exception e) {
             fail(e);
         }
 

@@ -8,6 +8,7 @@ import ngsdiaglim.modeles.users.PasswordAuthentication;
 import ngsdiaglim.modeles.users.Roles.Role;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.users.UserPreferences;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -25,15 +26,21 @@ public class UsersDAO extends DAO {
     }
 
 
-    public void addUser(String username, String password, Set<Role> roles) throws SQLException {
+    public void addUser(String username, String password, Set<Role> roles, LocalDate expirationDate) throws SQLException {
         PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
         String hash = passwordAuthentication.createHash(password);
         long user_id;
-        final String sql = "INSERT INTO users (username, password, creation_date, is_active, preferences) VALUES (?, ?, NOW(), True, '');";
+        final String sql = "INSERT INTO users (username, password, creation_date, expiration_date, is_active, preferences) VALUES (?, ?, NOW(), ?, True, '');";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int i = 0;
             stm.setString(++i, username.trim());
             stm.setString(++i, hash);
+            if (expirationDate != null) {
+                stm.setDate(++i, Date.valueOf(expirationDate));
+            }
+            else {
+                stm.setNull(++i, Types.DATE);
+            }
             stm.executeUpdate();
             ResultSet generatedKeys = stm.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -59,6 +66,49 @@ public class UsersDAO extends DAO {
         }
     }
 
+    /**
+     * For import only
+     */
+    public void addUser(String username, String password, Set<Role> roles, LocalDate creationDate, LocalDate expirationDate) throws SQLException {
+        PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
+        String hash = passwordAuthentication.createHash(password);
+        long user_id;
+        final String sql = "INSERT INTO users (username, password, creation_date, expiration_date, is_active, preferences) VALUES (?, ?, ?, ?, True, '');";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            int i = 0;
+            stm.setString(++i, username.trim());
+            stm.setString(++i, hash);
+            stm.setDate(++i, Date.valueOf(creationDate));
+            if (expirationDate != null) {
+                stm.setDate(++i, Date.valueOf(expirationDate));
+            }
+            else {
+                stm.setNull(++i, Types.DATE);
+            }
+            stm.executeUpdate();
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                user_id = generatedKeys.getLong(1);
+            } else {
+                throw new SQLException("No user inserted in the database");
+            }
+        }
+
+        // Set roles for the user
+        if (user_id >= 0) {
+            if (roles != null) {
+                for (Role role : roles) {
+                    final String sql_role = "INSERT INTO userRoles (user_id, role_id) VALUES(?, ?);";
+                    try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql_role)) {
+                        int i = 0;
+                        stm.setLong(++i, user_id);
+                        stm.setLong(++i, role.getId());
+                        stm.executeUpdate();
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Check if a user is the last admin in the database
@@ -84,9 +134,34 @@ public class UsersDAO extends DAO {
         }
     }
 
+
+    /**
+     * Check if a user is the last admin in the database
+     */
+    public boolean isLastAdminWithoutExpirationDate(String username) throws SQLException {
+        final String sql = "SELECT r.id AS roleId, r.role_name AS roleName, ur.user_id AS userId, u.username AS userName " +
+                "FROM users AS u " +
+                "JOIN userRoles AS ur " +
+                "JOIN roles AS r " +
+                "WHERE u.id = ur.user_id AND r.id = ur.role_id AND r.role_name = 'Admin' AND is_active=True AND u.expiration_date IS NULL;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            ResultSet rs = stm.executeQuery();
+            int admin_Nb = 0;
+            boolean user_found = false;
+            while (rs.next()) {
+                admin_Nb += 1;
+                String name = rs.getString("userName");
+                if (name.equals(username)) {
+                    user_found = true;
+                }
+            }
+            return admin_Nb == 1 && user_found;
+        }
+    }
+
     public User checkUserConnection(String loginName, String loginPassword) throws SQLException {
         loginName = loginName.trim();
-        String sql = "SELECT id, username, password, creation_date, is_active, preferences FROM users WHERE lower(username)=lower(?) AND is_active=True;";
+        String sql = "SELECT id, username, password, creation_date, expiration_date, is_active, preferences FROM users WHERE lower(username)=lower(?) AND is_active=True;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             int i = 0;
             stm.setString(++i, loginName);
@@ -94,16 +169,21 @@ public class UsersDAO extends DAO {
             if (rs.next()) {
                 // check password
                 String password = rs.getString("password");
+
                 PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
                 if (passwordAuthentication.validatePassword(loginPassword, password)) {
-
                     // create user
                     long userId = rs.getLong("id");
                     String username = rs.getString("username");
                     LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
+                    Date expirationSQLDate = rs.getDate("expiration_date");
+                    LocalDate expirationDate = null;
+                    if (!rs.wasNull()) {
+                        expirationDate = expirationSQLDate.toLocalDate();
+                    }
                     UserPreferences preferences = new UserPreferences(rs.getString("preferences"));
                     ObservableSet<Role> userRoles = DAOController.getUserRolesDAO().getRoles(userId);
-                    User user = new User(userId, username, userRoles, creationDate);
+                    User user = new User(userId, username, userRoles, creationDate, expirationDate);
                     user.setPreferences(preferences);
                     return user;
                 }
@@ -115,16 +195,21 @@ public class UsersDAO extends DAO {
 
     public User getUser(String username) throws SQLException {
         username = username.trim();
-        final String sql = "SELECT id, username, creation_date, preferences FROM users WHERE lower(username)=lower(?);";
+        final String sql = "SELECT id, username, creation_date, expiration_date, preferences FROM users WHERE lower(username)=lower(?);";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 long userId = rs.getLong("id");
                 LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
+                Date expirationSQLDate = rs.getDate("expiration_date");
+                LocalDate expirationDate = null;
+                if (!rs.wasNull()) {
+                    expirationDate = expirationSQLDate.toLocalDate();
+                }
                 UserPreferences preferences = new UserPreferences(rs.getString("preferences"));
                 ObservableSet<Role> userRoles = DAOController.getUserRolesDAO().getRoles(userId);
-                User user = new User(userId, username, userRoles, creationDate);
+                User user = new User(userId, username, userRoles, creationDate, expirationDate);
                 user.setPreferences(preferences);
                 return user;
             }
@@ -132,19 +217,32 @@ public class UsersDAO extends DAO {
         return null;
     }
 
-    public ObservableList<User> getUsers() throws SQLException {
+    public ObservableList<User> getUsers(String filter) throws SQLException {
+
         ObservableList<User> users = FXCollections.observableArrayList();
-        final String sql = "SELECT id, username, creation_date, preferences FROM users ORDER BY creation_date DESC;";
+        String sql = "SELECT id, username, creation_date, expiration_date, preferences FROM users";
+        if (StringUtils.isNotBlank(filter)) {
+            sql += " WHERE instr(lower(username), ?) > 0";
+        }
+        sql += " ORDER BY creation_date DESC;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            if (StringUtils.isNotBlank(filter)) {
+                stm.setString(1, filter.toLowerCase());
+            }
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 long userId = rs.getLong("id");
                 String username = rs.getString("username");
                 LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
+                Date expirationSQLDate = rs.getDate("expiration_date");
+                LocalDate expirationDate = null;
+                if (!rs.wasNull()) {
+                    expirationDate = expirationSQLDate.toLocalDate();
+                }
                 UserPreferences preferences = new UserPreferences(rs.getString("preferences"));
                 ObservableSet<Role> userRoles = DAOController.getUserRolesDAO().getRoles(userId);
 
-                User user = new User(userId, username, userRoles, creationDate);
+                User user = new User(userId, username, userRoles, creationDate, expirationDate);
                 user.setPreferences(preferences);
                 users.add(user);
             }
@@ -154,17 +252,22 @@ public class UsersDAO extends DAO {
 
     public ObservableList<User> getActiveUsers() throws SQLException {
         ObservableList<User> users = FXCollections.observableArrayList();
-        final String sql = "SELECT id, username, creation_date, preferences FROM users WHERE is_active=True ORDER BY creation_date DESC;";
+        final String sql = "SELECT id, username, creation_date, expiration_date, preferences FROM users WHERE is_active=True ORDER BY creation_date DESC;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 long userId = rs.getLong("id");
                 String username = rs.getString("username");
                 LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
+                Date expirationSQLDate = rs.getDate("expiration_date");
+                LocalDate expirationDate = null;
+                if (!rs.wasNull()) {
+                    expirationDate = expirationSQLDate.toLocalDate();
+                }
                 UserPreferences preferences = new UserPreferences(rs.getString("preferences"));
                 ObservableSet<Role> userRoles = DAOController.getUserRolesDAO().getRoles(userId);
 
-                User user = new User(userId, username, userRoles, creationDate);
+                User user = new User(userId, username, userRoles, creationDate, expirationDate);
                 user.setPreferences(preferences);
                 users.add(user);
             }
@@ -213,10 +316,25 @@ public class UsersDAO extends DAO {
     public void updatePassword(User user, String newPassword) throws SQLException{
         PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
         String hash = passwordAuthentication.createHash(newPassword);
-        final String sql = "UPDATE users SET password=? WHERE id = ?;";
+        final String sql = "UPDATE users SET password=? WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             int i = 0;
             stm.setString(++i, hash);
+            stm.setLong(++i, user.getId());
+            stm.executeUpdate();
+        }
+    }
+
+    public void updateExpirationDate(User user, LocalDate newDate) throws SQLException{
+        final String sql = "UPDATE users SET expiration_date=? WHERE id=?;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            int i = 0;
+            if (newDate != null) {
+                stm.setDate(++i, Date.valueOf(newDate));
+            }
+            else {
+                stm.setNull(++i, Types.DATE);
+            }
             stm.setLong(++i, user.getId());
             stm.executeUpdate();
         }

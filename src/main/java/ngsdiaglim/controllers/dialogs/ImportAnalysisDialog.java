@@ -214,9 +214,9 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                     for (RunFile runFile : runFiles) {
                         Platform.runLater(() -> runFilesFp.getChildren().add(new RunFileNode(runFile)));
                     }
-                } catch (IOException | DuplicateSampleInRun ex) {
+                } catch (IOException | DuplicateSampleInRun | SQLException ex) {
                     logger.error(ex);
-                    Message.error(ex.getMessage(), ex);
+                    Platform.runLater(() ->Message.error(ex.getMessage(), ex));
                     return 1;
                 }
                 return 0;

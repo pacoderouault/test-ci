@@ -1,5 +1,6 @@
 package ngsdiaglim.utils;
 
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
 import ngsdiaglim.modeles.variants.Annotation;
 import org.apache.commons.lang3.StringUtils;
@@ -13,17 +14,19 @@ public class ExternalDatabasesUtils {
     private static final String gnomadURL = "http://gnomad.broadinstitute.org/variant/";
     private static final String alamutURL = "http://localhost:10000/show?request=";
     private static final String hgmdURL = "http://www.hgmd.cf.ac.uk/ac/gene.php?gene=";
-    private static final String ensemblURL = "http://grch37.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=";
-    private static final String ensemblVariationURL = "http://grch37.ensembl.org/Homo_sapiens/Variation/Explore?db=core;r=";
+    private static final String ensemblURL37 = "http://grch37.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=";
+    private static final String ensemblURL = "http://ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=";
+    private static final String ensemblVariationURL37 = "http://grch37.ensembl.org/Homo_sapiens/Variation/Explore?db=core;r=";
+    private static final String ensemblVariationURL = "http://ensembl.org/Homo_sapiens/Variation/Explore?db=core;r=";
     private static final String omimURL = "https://www.omim.org/search/?index=entry&sort=score+desc%2C+prefix_sort+desc&start=1&limit=10&search=";
     private static final String igvURL = "http://localhost:60151/load?genome=hg19&file=";
     private static final String googleURL = "https://www.google.com/search?q=";
-//    private static final String cosmicURL = "https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=";
+    //    private static final String cosmicURL = "https://cancer.sanger.ac.uk/cosmic/mutation/overview?id=";
     private static final String cosmicSearchURL = "https://cancer.sanger.ac.uk/cosmic/search?q=";
     private static final String cosmicGenViewURL = "https://cancer.sanger.ac.uk/cosmic/gene/analysis?coords=AA%%3AAA&wgs=off&id=354503&ln=%1$s&start=%2$s&end=%3$s";
     private static final String litvarURL = "https://www.ncbi.nlm.nih.gov/CBBresearch/Lu/Demo/LitVar/#!?query=";
     private static final String nuccore = "https://www.ncbi.nlm.nih.gov/nuccore/";
-    private static final String varsomeURL = "https://varsome.com/variant/hg19/";
+    private static final String varsomeURL = "https://varsome.com/variant";
     private static final String clinvarURL = "https://www.ncbi.nlm.nih.gov/clinvar/variation/";
     private static final String clinvarTermURL = "https://www.ncbi.nlm.nih.gov/clinvar?term=";
     private static final String lovdURL = "https://databases.lovd.nl/shared/variants/in_gene?search_geneid=\"%1$s\"&search_VariantOnTranscript/DNA=\"%2$s\"";
@@ -31,6 +34,7 @@ public class ExternalDatabasesUtils {
     private static final String pubmed = "https://pubmed.ncbi.nlm.nih.gov/";
     private static final String intogen = "https://www.intogen.org/search?gene=";
     private static final String thegencc = "https://search.thegencc.org/genes/HGNC:";
+    private static final String franklin = "https://franklin.genoox.com/clinical-db/variant/snp/";
 
     /**
      *
@@ -61,8 +65,13 @@ public class ExternalDatabasesUtils {
         }
 
         // construct from position
-        return dbSnpURL + "term=" + a.getVariant().getStart() + "[POSITION_GRCH37]+AND+" + a.getVariant().getContigWithoutChr() + "[CHR]";
-
+        String positionTag = "";
+        if (a.getGenome().equals(Genome.GRCh38)) {
+            positionTag = "[POSITION_GRCH38]";
+        } else {
+            positionTag = "[POSITION_GRCH37]";
+        }
+        return dbSnpURL + "term=" + a.getGenomicVariant().getStart() + positionTag + "+AND+" + a.getGenomicVariant().getContigWithoutChr() + "[CHR]";
     }
 
 
@@ -71,7 +80,7 @@ public class ExternalDatabasesUtils {
      * @return An outlink to GnomAD from the Annotation
      */
     public static String getGnomADLink(Annotation ann) {
-        return gnomadURL + ann.getVariant().getContig() + "-" + ann.getVariant().getStart() + "-" + ann.getVariant().getRef() + "-" + ann.getVariant().getAlt();
+        return gnomadURL + ann.getGenomicVariant().getContig() + "-" + ann.getGenomicVariant().getStart() + "-" + ann.getGenomicVariant().getRef() + "-" + ann.getGenomicVariant().getAlt();
     }
 
 
@@ -88,7 +97,13 @@ public class ExternalDatabasesUtils {
             return clinvarTermURL + ann.getTranscriptConsequence().getHgvsc();
         }
 
-        return clinvarTermURL + ann.getVariant().getContigWithoutChr() + "[chr]+AND+" + ann.getVariant().getStart() + "[chrpos37]";
+        String r = clinvarTermURL + ann.getGenomicVariant().getContigWithoutChr() + "[chr]+AND+" + ann.getGenomicVariant().getStart();
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            r += "[chrpos38]";
+        } else {
+            r += "[chrpos37]";
+        }
+        return r;
     }
 
 
@@ -100,7 +115,13 @@ public class ExternalDatabasesUtils {
      * /example query : hg19:3:37025319T>G
      */
     public static String getAlamutGenomicQuery(Annotation ann) {
-        return "hg19:" + ann.getVariant().getContig() + ":" + ann.getVariant().getStart() + ann.getVariant().getRef() + ">" + ann.getVariant().getAlt();
+        String r = "";
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            r += "hg38:";
+        } else {
+            r += "hg19:";
+        }
+        return r + ann.getGenomicVariant().getContig() + ":" + ann.getGenomicVariant().getStart() + ann.getGenomicVariant().getRef() + ">" + ann.getGenomicVariant().getAlt();
     }
 
     /**
@@ -108,7 +129,13 @@ public class ExternalDatabasesUtils {
      */
     public static String getAlamutGeneQuery(Annotation ann) {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
-        return "hg19:" + ann.getGene().getGeneName()+ ":" + ann.getTranscriptConsequence().getHgvsc();
+        String r = "";
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            r += "hg38:";
+        } else {
+            r += "hg19:";
+        }
+        return r + ann.getGene().getGeneName()+ ":" + ann.getTranscriptConsequence().getHgvsc();
     }
 
     /**
@@ -116,15 +143,27 @@ public class ExternalDatabasesUtils {
      */
     public static String getAlamutTranscriptQuery(Annotation ann) {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
-        return "hg19:" + ann.getTranscriptConsequence().getHgvsc();
+        String r = "";
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            r += "hg38:";
+        } else {
+            r += "hg19:";
+        }
+        return r + ann.getTranscriptConsequence().getHgvsc();
     }
 
     public static String getAlamutQuery(Annotation ann) {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
-        if (ann.getTranscriptConsequence().getHgvsc() != null) {
-            return "hg19:" + ann.getTranscriptConsequence().getHgvsc();
+        String r = "";
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            r += "hg38:";
         } else {
-            return "hg19:" + ann.getVariant().getContig() + ":" + ann.getVariant().getStart() + ann.getVariant().getRef() + ">" + ann.getVariant().getAlt();
+            r += "hg19:";
+        }
+        if (ann.getTranscriptConsequence().getHgvsc() != null) {
+            return r +ann.getTranscriptConsequence().getHgvsc();
+        } else {
+            return r +ann.getGenomicVariant().getContig() + ":" + ann.getGenomicVariant().getStart() + ann.getGenomicVariant().getRef() + ">" + ann.getGenomicVariant().getAlt();
         }
     }
 
@@ -137,15 +176,27 @@ public class ExternalDatabasesUtils {
         if (ann == null || ann.getTranscriptConsequence() == null) return null;
 
         if (ann.getTranscriptConsequence().getHgvsc() != null) {
-            return ensemblVariationURL + ";v="+ann.getTranscriptConsequence().getHgvsc();
+            if (ann.getGenome().equals(Genome.GRCh38)) {
+                return ensemblVariationURL + ";v="+ann.getTranscriptConsequence().getHgvsc();
+            } else {
+                return ensemblVariationURL37 + ";v="+ann.getTranscriptConsequence().getHgvsc();
+            }
         }
 
         if (ann.getTranscriptConsequence().getExternalVariations() != null) {
             for (ExternalVariation av : ann.getTranscriptConsequence().getExternalVariations(ExternalVariation.ExternalVariationDb.DBSNP)) {
-                return ensemblVariationURL + ";v=" + av.getId();
+                if (ann.getGenome().equals(Genome.GRCh38)) {
+                    return ensemblVariationURL + ";v=" + av.getId();
+                } else {
+                    return ensemblVariationURL37 + ";v=" + av.getId();
+                }
             }
         }
-        return ensemblURL + ann.getGene().getGeneName();
+        if (ann.getGenome().equals(Genome.GRCh38)) {
+            return ensemblURL + ann.getGene().getGeneName();
+        } else {
+            return ensemblURL37 + ann.getGene().getGeneName();
+        }
     }
 
     public static String getOMIMLink(Annotation ann) {
@@ -241,10 +292,16 @@ public class ExternalDatabasesUtils {
 
     public static String getVarsomeLink(Annotation a) {
         if (a != null) {
-            if (a.getTranscriptConsequence() != null && a.getTranscriptConsequence().getHgvsc() != null && !a.getTranscriptConsequence().getHgvsc().isEmpty()) {
-                return varsomeURL + a.getTranscriptConsequence().getHgvscWithoutVersion();
+            String url = varsomeURL;
+            if (a.getGenome().equals(Genome.GRCh38)) {
+                url += "/hg38/";
             } else {
-                return varsomeURL + a.getVariant().getContig() + " " + a.getVariant().getStart() + " . " + a.getVariant().getRef() + " " + a.getVariant().getAlt();
+                url += "/hg19/";
+            }
+            if (a.getTranscriptConsequence() != null && a.getTranscriptConsequence().getHgvsc() != null && !a.getTranscriptConsequence().getHgvsc().isEmpty()) {
+                return url + a.getTranscriptConsequence().getHgvscWithoutVersion();
+            } else {
+                return url + a.getGenomicVariant().getContig() + " " + a.getGenomicVariant().getStart() + " . " + a.getGenomicVariant().getRef() + " " + a.getGenomicVariant().getAlt();
             }
         }
         return null;
@@ -276,5 +333,26 @@ public class ExternalDatabasesUtils {
             return thegencc + a.getTranscriptConsequence().getHgncId();
         }
         return null;
+    }
+
+    public static String getFranklinLink(Annotation a) {
+        String url = "";
+        if (a.getGenome().equals(Genome.GRCh38)) {
+            url = a.getVariant().getGrch38PositionVariant().getContig() + "-" +
+                    a.getVariant().getGrch38PositionVariant().getContig() + "-" +
+                    a.getVariant().getGrch38PositionVariant().getStart() + "-" +
+                    a.getVariant().getGrch38PositionVariant().getRef() + "-" +
+                    a.getVariant().getGrch38PositionVariant().getAlt() + "-" +
+                    "-hg38";
+        } else {
+            if (a.getGenome().equals(Genome.GRCh38)) {
+                url = a.getVariant().getGrch37PositionVariant().getContig() + "-" +
+                        a.getVariant().getGrch37PositionVariant().getContig() + "-" +
+                        a.getVariant().getGrch37PositionVariant().getStart() + "-" +
+                        a.getVariant().getGrch37PositionVariant().getRef() + "-" +
+                        a.getVariant().getGrch37PositionVariant().getAlt();
+            }
+        }
+        return franklin + url;
     }
 }

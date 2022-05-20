@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.cells.AnalysisParametersPanelDeleteCell;
 import ngsdiaglim.controllers.dialogs.AddPanelDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
@@ -39,6 +40,7 @@ public class AnalysisParametersPanelsController extends HBox {
     @FXML private TableColumn<Panel, String> panelsNameCol;
     @FXML private TableColumn<Panel, Integer> panelsSizeCol;
     @FXML private TableColumn<Panel, Boolean> panelsActiveCol;
+    @FXML private TableColumn<Panel, Void> panelsDeleteCol;
 
     @FXML private TableView<PanelRegion> regionsTable;
     @FXML private TableColumn<PanelRegion, String> regionsContigCol;
@@ -105,6 +107,8 @@ public class AnalysisParametersPanelsController extends HBox {
             checkBox.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> validatePanelActivation(checkBox, tableCell.getTableRow().getItem(), event));
             return tableCell;
         });
+
+        panelsDeleteCol.setCellFactory(c -> new AnalysisParametersPanelDeleteCell());
     }
 
     private void initRegionsTable() {

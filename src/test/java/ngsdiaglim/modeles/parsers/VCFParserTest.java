@@ -92,7 +92,7 @@ class VCFParserTest extends BaseSetup {
         VCFParser vcfParser = new VCFParser(vcfFile, params, run);
         try {
             vcfParser.parseVCF(true);
-        } catch (IOException | NotBiallelicVariant | SQLException e) {
+        } catch (Exception e) {
             fail(e.getMessage());
         }
     }

@@ -1,5 +1,6 @@
 package ngsdiaglim.database.dao;
 
+import ngsdiaglim.database.DAOController;
 import org.apache.commons.math3.util.Pair;
 
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class RunsStatisticsDAO extends DAO {
 
     public RunsStatistics getRunsStatistics() throws SQLException {
+
         final String sql = "SELECT A.run_id AS aRunId, L.name as lName " +
                 "FROM analysis AS A " +
                 "JOIN analysisparameters AS AP " +
@@ -21,22 +23,20 @@ public class RunsStatisticsDAO extends DAO {
 
         try (Connection connection=getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             ResultSet rs = stm.executeQuery();
-            Set<Long> runIds = new HashSet<>();
             int analysisIdsCount = 0;
             HashMap<String, Integer> analysisByPanelNb = new HashMap<>();
             HashMap<String, Set<Long>> runsByPanelNb = new HashMap<>();
+            int runCount = DAOController.getRunsDAO().getRunsCount(null);
             while(rs.next()) {
                 long runId = rs.getLong("aRunId");
                 String panelName = rs.getString("lName");
-
                 analysisIdsCount++;
-                runIds.add(runId);
                 analysisByPanelNb.putIfAbsent(panelName, 0);
                 analysisByPanelNb.put(panelName, analysisByPanelNb.get(panelName)+1);
                 runsByPanelNb.putIfAbsent(panelName, new HashSet<>());
                 runsByPanelNb.get(panelName).add(runId);
             }
-            RunsStatistics runsStatistics = new RunsStatistics(runIds.size(), analysisIdsCount);
+            RunsStatistics runsStatistics = new RunsStatistics(runCount, analysisIdsCount);
             for (String panelName : analysisByPanelNb.keySet()) {
                 int runNb = runsByPanelNb.get(panelName).size();
                 int analysisNb = analysisByPanelNb.get(panelName);

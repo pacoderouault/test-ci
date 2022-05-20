@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 public class ImportPrescibers {
 
-    public static void importUsers(File file) throws IOException, SQLException {
+    public static void importPrescribers(File file) throws IOException, SQLException {
         BufferedReader reader = null;
 
         reader = new BufferedReader(new FileReader(file));

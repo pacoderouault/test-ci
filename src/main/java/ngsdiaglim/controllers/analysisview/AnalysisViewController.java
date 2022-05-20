@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.util.StringConverter;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.Module;
 import ngsdiaglim.controllers.analysisview.cnv.AnalysisViewCNVController;
@@ -269,11 +270,44 @@ public class AnalysisViewController extends Module {
 //            if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
 //                ScrollBarUtil.smoothScrollingTableView(variantsViewController.getVariantsTable(), (1.0 / variantsViewController.getVariantsTable().getItems().size()) * 2.0);
 //            }
+
+            if (!analysis.get().isImportComplete()) {
+                Message.error(App.getBundle().getString("analysis.view.msg.err.analysisImportNotComplete"));
+            }
         });
     }
 
 
     private void initAnalysisCb() {
+        analysisCb.setConverter(new StringConverter<>() {
+
+            @Override
+            public String toString(Analysis analysis) {
+                if (analysis == null) {
+                    return "";
+                } else {
+                    return analysis.getRun().getName() + " - " + analysis.getName();
+                }
+            }
+
+            @Override
+            public Analysis fromString(String string) {
+                return null;
+            }
+        });
+
+        analysisCb.setCellFactory(c -> new ListCell<>() {
+            @Override
+            protected void updateItem(Analysis item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(null);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getName());
+                }
+            }
+        });
         try {
             analysisCb.valueProperty().removeListener(analysisCbValueListener);
             analysisCb.setItems(analysis.get().getRun().getAnalyses());

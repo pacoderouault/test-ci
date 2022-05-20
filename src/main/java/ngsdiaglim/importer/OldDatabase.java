@@ -78,7 +78,7 @@ public class OldDatabase {
                     } else {
                         roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
                     }
-                    DAOController.getUsersDAO().addUser(name, name, roles);
+                    DAOController.getUsersDAO().addUser(name, name, roles, null);
                 }
             }
         }

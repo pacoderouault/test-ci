@@ -5,21 +5,20 @@ import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.vcf.VCFReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ngsdiaglim.App;
+import ngsdiaglim.AppSettings;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.enumerations.EnsemblConsequence;
-import ngsdiaglim.enumerations.GnomadPopulation;
-import ngsdiaglim.enumerations.PredictionTools;
-import ngsdiaglim.enumerations.VepTag;
+import ngsdiaglim.enumerations.*;
 import ngsdiaglim.exceptions.NotBiallelicVariant;
+import ngsdiaglim.modeles.LiftOverMapper;
 import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
 import ngsdiaglim.modeles.analyse.Run;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.biofeatures.Transcript;
-import ngsdiaglim.modeles.variants.Annotation;
-import ngsdiaglim.modeles.variants.Hotspot;
-import ngsdiaglim.modeles.variants.TranscriptConsequence;
-import ngsdiaglim.modeles.variants.Variant;
+import ngsdiaglim.modeles.variants.*;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomADData;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modeles.variants.predictions.DbscSNVPredictions;
 import ngsdiaglim.modeles.variants.predictions.SpliceAIPredictions;
@@ -57,8 +56,14 @@ public class VCFParser {
 
     public ObservableList<Annotation> getAnnotations() {return annotations;}
 
-    public void parseVCF(boolean parseVep) throws IOException, NotBiallelicVariant, SQLException {
+    public void parseVCF(boolean parseVep) throws Exception {
         if (vcfFile.exists()) {
+            LiftOverMapper liftOverMapper = new LiftOverMapper(
+                    new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH37.name())),
+                    new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH38.name())),
+                    new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.GRCH37_TO_GRCH38_CHAIN.name())),
+                    new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.GRCH38_TO_GRCH37_CHAIN.name()))
+            );
             VCFReader reader = VCFUtils.getVCFReader(vcfFile);
             VepPredictionParser vepPredictionParser = new VepPredictionParser(reader.getHeader());
 
@@ -77,16 +82,31 @@ public class VCFParser {
                 }
 
                 variantParserReportData.incrementNbVariants();
-                Variant variant = DAOController.getVariantsDAO().getVariant(ctx.getContig(), ctx.getStart(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+
+                Variant variant = DAOController.getVariantsDAO().getVariant(params.getGenome(), ctx.getContig(), ctx.getStart(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
                 if (variant == null) {
-                    long variant_id = DAOController.getVariantsDAO().addVariant(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
-                    variant = new Variant(variant_id, ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+
+                    GenomicVariant grch37Variant;
+                    GenomicVariant grch38Variant;
+
+                    GenomicVariant genomicVariant = new GenomicVariant(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+                    if (params.getGenome().equals(Genome.GRCh38)) {
+                        grch38Variant = genomicVariant;
+                        grch37Variant = liftOverMapper.grch38ToGrch37(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+                    } else {
+                        grch37Variant = genomicVariant;
+                        grch38Variant = liftOverMapper.grch37ToGrch38(ctx.getContig(), ctx.getStart(), ctx.getEnd(), ctx.getReference().getBaseString(), ctx.getAlternateAllele(0).getBaseString());
+                    }
+                    long variant_id = DAOController.getVariantsDAO().addVariant(
+                            grch37Variant.getContig(), grch37Variant.getStart(), grch37Variant.getEnd(), grch37Variant.getRef(), grch37Variant.getAlt(),
+                            grch38Variant.getContig(), grch38Variant.getStart(), grch38Variant.getEnd(), grch38Variant.getRef(), grch38Variant.getAlt()
+                            );
+                    variant = new Variant(variant_id, grch37Variant, grch38Variant);
                 }
 
-                Annotation annotation = variantContextToAnnotation(variant, ctx);
+                Annotation annotation = variantContextToAnnotation(params.getGenome(), variant, ctx);
 
-
-                Hotspot hotspot = params.getHotspotsSet() == null ? null : params.getHotspotsSet().getHotspot(annotation.getVariant());
+                Hotspot hotspot = params.getHotspotsSet() == null ? null : params.getHotspotsSet().getHotspot(annotation.getGenome(), annotation.getVariant());
 
                 if (hotspot != null || annotation.getVaf() >= params.getMinVAF()) {
 
@@ -96,7 +116,9 @@ public class VCFParser {
                         for (int i = 0; i < run.getAnalyses().size(); i++) {
                             analysisIds[i] = (int) run.getAnalyses().get(i).getId();
                         }
-                        variant.setOccurrenceInRun(DAOController.getVariantAnalysisDAO().countRunOccurrence(variant.getId(), analysisIds));
+                        List<Long> analysesInRunWithVariants = DAOController.getVariantAnalysisDAO().getAnalysesWithVariantInRun(variant.getId(), analysisIds);
+                        variant.setAnalysesInRun(analysesInRunWithVariants);
+                        variant.setOccurrenceInRun(analysesInRunWithVariants.size());
                         parseTranscriptsConsequences(annotation, ctx, vepPredictionParser, params);
 //                        List<VepPredictionParser.VepPrediction> predictions = vepPredictionParser.getPredictions(ctx);
 //                        HashSet<String> geneNames = new HashSet<>();
@@ -174,8 +196,8 @@ public class VCFParser {
     }
 
 
-    public static Annotation variantContextToAnnotation(Variant variant, VariantContext ctx) {
-        Annotation annotation = new Annotation(variant);
+    public static Annotation variantContextToAnnotation(Genome genome, Variant variant, VariantContext ctx) {
+        Annotation annotation = new Annotation(genome, variant);
         Genotype genotype = ctx.getGenotype(0);
         int dp = genotype.getDP();
         annotation.setDepth(dp);
@@ -307,6 +329,7 @@ public class VCFParser {
                 } else if (cons.equalsIgnoreCase("3_prime_UTR_variant")) {
                     cons = "PRIME_3_UTR_VARIANT";
                 }
+                cons = cons.replaceAll("framshift_variant", "frameshift_variant");
                 EnsemblConsequence ensemblCons = EnsemblConsequence.fromString(cons.toUpperCase());
                 if (ensemblCons != null) {
                     transcriptConsequence.addConsequence(ensemblCons);
@@ -456,98 +479,325 @@ public class VCFParser {
             }
         }
 
-        String gnomAD_AFR_AF = vepPrediction.getByCol(VepTag.gnomAD_AFR_AF.getColumnName());
-        String gnomAD_AFR_AC = vepPrediction.getByCol(VepTag.gnomAD_AFR_AC.getColumnName());
-        String gnomAD_AFR_AN = vepPrediction.getByCol(VepTag.gnomAD_AFR_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_AFR_AF) && NumberUtils.isInt(gnomAD_AFR_AC) && NumberUtils.isInt(gnomAD_AFR_AN)) {
-            GnomadPopulationFreq afr = new GnomadPopulationFreq(
+        // gnomad
+//        GnomAD gnomad = new GnomAD();
+        GnomADData gnomADexomes = new GnomADData(GnomAD.GnomadSource.EXOME, "2.1.1");
+        annotation.getGnomAD().setGnomadExomesData2_1_1(gnomADexomes);
+        String gnomADe_af = vepPrediction.getByCol(VepTag.gnomADe_AF.getColumnName());
+        String gnomADe_ac = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC.getColumnName(), "0");
+        String gnomADe_an = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_af) && NumberUtils.isInt(gnomADe_ac) && NumberUtils.isInt(gnomADe_an)) {
+            gnomADexomes.addPopulationsFrequency(
+                    GnomadPopulation.GLOBAL,
+                    Float.parseFloat(gnomADe_af),
+                    Integer.parseInt(gnomADe_ac),
+                    Integer.parseInt(gnomADe_an)
+            );
+        }
+
+        String gnomADe_af_max = vepPrediction.getByCol(VepTag.gnomADe_AF_POPMAX.getColumnName());
+        String gnomADe_ac_max = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_POPMAX.getColumnName(), "0");
+        String gnomADe_an_max = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_POPMAX.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_af_max) && NumberUtils.isInt(gnomADe_ac_max) && NumberUtils.isInt(gnomADe_an_max)) {
+            gnomADexomes.addPopulationsFrequency(
+                    GnomadPopulation.MAX_POP,
+                    Float.parseFloat(gnomADe_af_max),
+                    Integer.parseInt(gnomADe_ac_max),
+                    Integer.parseInt(gnomADe_an_max)
+            );
+        }
+
+
+        String gnomADe_AFR_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_AFR.getColumnName());
+        String gnomADe_AFR_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_AFR.getColumnName(), "0");
+        String gnomADe_AFR_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_AFR.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_AFR_AF) && NumberUtils.isInt(gnomADe_AFR_AC) && NumberUtils.isInt(gnomADe_AFR_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.AFR,
-                    Float.parseFloat(gnomAD_AFR_AF),
-                    Integer.parseInt(gnomAD_AFR_AC),
-                    Integer.parseInt(gnomAD_AFR_AN)
-                    );
-            annotation.getGnomADFrequencies().setAfr(afr);
+                    Float.parseFloat(gnomADe_AFR_AF),
+                    Integer.parseInt(gnomADe_AFR_AC),
+                    Integer.parseInt(gnomADe_AFR_AN)
+            );
         }
 
-        String gnomAD_AMR_AF = vepPrediction.getByCol(VepTag.gnomAD_AMR_AF.getColumnName());
-        String gnomAD_AMR_AC = vepPrediction.getByCol(VepTag.gnomAD_AMR_AC.getColumnName());
-        String gnomAD_AMR_AN = vepPrediction.getByCol(VepTag.gnomAD_AMR_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_AMR_AF) && NumberUtils.isInt(gnomAD_AMR_AC) && NumberUtils.isInt(gnomAD_AMR_AN)) {
-            GnomadPopulationFreq amr = new GnomadPopulationFreq(
+        String gnomADe_AMR_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_AMR.getColumnName());
+        String gnomADe_AMR_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_AMR.getColumnName(), "0");
+        String gnomADe_AMR_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_AMR.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_AMR_AF) && NumberUtils.isInt(gnomADe_AMR_AC) && NumberUtils.isInt(gnomADe_AMR_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.AMR,
-                    Float.parseFloat(gnomAD_AMR_AF),
-                    Integer.parseInt(gnomAD_AMR_AC),
-                    Integer.parseInt(gnomAD_AMR_AN)
+                    Float.parseFloat(gnomADe_AMR_AF),
+                    Integer.parseInt(gnomADe_AMR_AC),
+                    Integer.parseInt(gnomADe_AMR_AN)
             );
-            annotation.getGnomADFrequencies().setAmr(amr);
         }
-
-        String gnomAD_ASJ_AF = vepPrediction.getByCol(VepTag.gnomAD_ASJ_AF.getColumnName());
-        String gnomAD_ASJ_AC = vepPrediction.getByCol(VepTag.gnomAD_ASJ_AC.getColumnName());
-        String gnomAD_ASJ_AN = vepPrediction.getByCol(VepTag.gnomAD_ASJ_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_ASJ_AF) && NumberUtils.isInt(gnomAD_ASJ_AC) && NumberUtils.isInt(gnomAD_ASJ_AN)) {
-            GnomadPopulationFreq asj = new GnomadPopulationFreq(
+        
+        String gnomADe_ASJ_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_ASJ.getColumnName());
+        String gnomADe_ASJ_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_ASJ.getColumnName(), "0");
+        String gnomADe_ASJ_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_ASJ.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_ASJ_AF) && NumberUtils.isInt(gnomADe_ASJ_AC) && NumberUtils.isInt(gnomADe_ASJ_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.ASJ,
-                    Float.parseFloat(gnomAD_ASJ_AF),
-                    Integer.parseInt(gnomAD_ASJ_AC),
-                    Integer.parseInt(gnomAD_ASJ_AN)
+                    Float.parseFloat(gnomADe_ASJ_AF),
+                    Integer.parseInt(gnomADe_ASJ_AC),
+                    Integer.parseInt(gnomADe_ASJ_AN)
             );
-            annotation.getGnomADFrequencies().setAsj(asj);
         }
 
-        String gnomAD_EAS_AF = vepPrediction.getByCol(VepTag.gnomAD_EAS_AF.getColumnName());
-        String gnomAD_EAS_AC = vepPrediction.getByCol(VepTag.gnomAD_EAS_AC.getColumnName());
-        String gnomAD_EAS_AN = vepPrediction.getByCol(VepTag.gnomAD_EAS_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_EAS_AF) && NumberUtils.isInt(gnomAD_EAS_AC) && NumberUtils.isInt(gnomAD_EAS_AN)) {
-            GnomadPopulationFreq eas = new GnomadPopulationFreq(
+        String gnomADe_EAS_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_EAS.getColumnName());
+        String gnomADe_EAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_EAS.getColumnName(), "0");
+        String gnomADe_EAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_EAS.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_EAS_AF) && NumberUtils.isInt(gnomADe_EAS_AC) && NumberUtils.isInt(gnomADe_EAS_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.EAS,
-                    Float.parseFloat(gnomAD_EAS_AF),
-                    Integer.parseInt(gnomAD_EAS_AC),
-                    Integer.parseInt(gnomAD_EAS_AN)
+                    Float.parseFloat(gnomADe_EAS_AF),
+                    Integer.parseInt(gnomADe_EAS_AC),
+                    Integer.parseInt(gnomADe_EAS_AN)
             );
-            annotation.getGnomADFrequencies().setEas(eas);
         }
 
-        String gnomAD_FIN_AF = vepPrediction.getByCol(VepTag.gnomAD_FIN_AF.getColumnName());
-        String gnomAD_FIN_AC = vepPrediction.getByCol(VepTag.gnomAD_FIN_AC.getColumnName());
-        String gnomAD_FIN_AN = vepPrediction.getByCol(VepTag.gnomAD_FIN_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_FIN_AF) && NumberUtils.isInt(gnomAD_FIN_AC) && NumberUtils.isInt(gnomAD_FIN_AN)) {
-            GnomadPopulationFreq fin = new GnomadPopulationFreq(
+        String gnomADe_FIN_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_FIN.getColumnName());
+        String gnomADe_FIN_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_FIN.getColumnName(), "0");
+        String gnomADe_FIN_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_FIN.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_FIN_AF) && NumberUtils.isInt(gnomADe_FIN_AC) && NumberUtils.isInt(gnomADe_FIN_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.FIN,
-                    Float.parseFloat(gnomAD_FIN_AF),
-                    Integer.parseInt(gnomAD_FIN_AC),
-                    Integer.parseInt(gnomAD_FIN_AN)
+                    Float.parseFloat(gnomADe_FIN_AF),
+                    Integer.parseInt(gnomADe_FIN_AC),
+                    Integer.parseInt(gnomADe_FIN_AN)
             );
-            annotation.getGnomADFrequencies().setFin(fin);
         }
 
-        String gnomAD_NFE_AF = vepPrediction.getByCol(VepTag.gnomAD_NFE_AF.getColumnName());
-        String gnomAD_NFE_AC = vepPrediction.getByCol(VepTag.gnomAD_NFE_AC.getColumnName());
-        String gnomAD_NFE_AN = vepPrediction.getByCol(VepTag.gnomAD_NFE_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_NFE_AF) && NumberUtils.isInt(gnomAD_NFE_AC) && NumberUtils.isInt(gnomAD_NFE_AN)) {
-            GnomadPopulationFreq nfe = new GnomadPopulationFreq(
+        String gnomADe_NFE_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_NFE.getColumnName());
+        String gnomADe_NFE_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_NFE.getColumnName(), "0");
+        String gnomADe_NFE_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_NFE.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_NFE_AF) && NumberUtils.isInt(gnomADe_NFE_AC) && NumberUtils.isInt(gnomADe_NFE_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.NFE,
-                    Float.parseFloat(gnomAD_NFE_AF),
-                    Integer.parseInt(gnomAD_NFE_AC),
-                    Integer.parseInt(gnomAD_NFE_AN)
+                    Float.parseFloat(gnomADe_NFE_AF),
+                    Integer.parseInt(gnomADe_NFE_AC),
+                    Integer.parseInt(gnomADe_NFE_AN)
             );
-            annotation.getGnomADFrequencies().setNfe(nfe);
         }
 
-        String gnomAD_SAS_AF = vepPrediction.getByCol(VepTag.gnomAD_SAS_AF.getColumnName());
-        String gnomAD_SAS_AC = vepPrediction.getByCol(VepTag.gnomAD_SAS_AC.getColumnName());
-        String gnomAD_SAS_AN = vepPrediction.getByCol(VepTag.gnomAD_SAS_AN.getColumnName());
-        if (NumberUtils.isFloat(gnomAD_SAS_AF) && NumberUtils.isInt(gnomAD_SAS_AC) && NumberUtils.isInt(gnomAD_SAS_AN)) {
-            GnomadPopulationFreq sas = new GnomadPopulationFreq(
+        String gnomADe_SAS_AF = vepPrediction.getByCol(VepTag.gnomADe_AF_SAS.getColumnName());
+        String gnomADe_SAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomADe_AC_SAS.getColumnName(), "0");
+        String gnomADe_SAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomADe_AN_SAS.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADe_SAS_AF) && NumberUtils.isInt(gnomADe_SAS_AC) && NumberUtils.isInt(gnomADe_SAS_AN)) {
+            gnomADexomes.addPopulationsFrequency(
                     GnomadPopulation.SAS,
-                    Float.parseFloat(gnomAD_SAS_AF),
-                    Integer.parseInt(gnomAD_SAS_AC),
-                    Integer.parseInt(gnomAD_SAS_AN)
+                    Float.parseFloat(gnomADe_SAS_AF),
+                    Integer.parseInt(gnomADe_SAS_AC),
+                    Integer.parseInt(gnomADe_SAS_AN)
             );
-            annotation.getGnomADFrequencies().setSas(sas);
         }
 
-        annotation.getGnomADFrequencies().computeMaxGnomad();
+
+        GnomADData gnomADgenomes = new GnomADData(GnomAD.GnomadSource.GENOME, "2.1.1");
+        annotation.getGnomAD().setGnomadGenomesData2_1_1(gnomADgenomes);
+
+        String gnomADg_af = vepPrediction.getByCol(VepTag.gnomADg_AF.getColumnName());
+        String gnomADg_ac = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC.getColumnName(), "0");
+        String gnomADg_an = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_af) && NumberUtils.isInt(gnomADg_ac) && NumberUtils.isInt(gnomADg_an)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.GLOBAL,
+                    Float.parseFloat(gnomADg_af),
+                    Integer.parseInt(gnomADg_ac),
+                    Integer.parseInt(gnomADg_an)
+            );
+        }
+
+        String gnomADg_af_max = vepPrediction.getByCol(VepTag.gnomADg_AF_POPMAX.getColumnName());
+        String gnomADg_ac_max = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_POPMAX.getColumnName(), "0");
+        String gnomADg_an_max = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_POPMAX.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_af_max) && NumberUtils.isInt(gnomADg_ac_max) && NumberUtils.isInt(gnomADg_an_max)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.MAX_POP,
+                    Float.parseFloat(gnomADg_af_max),
+                    Integer.parseInt(gnomADg_ac_max),
+                    Integer.parseInt(gnomADg_an_max)
+            );
+        }
+
+        String gnomADg_AFR_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_AFR.getColumnName());
+        String gnomADg_AFR_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_AFR.getColumnName(), "0");
+        String gnomADg_AFR_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_AFR.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_AFR_AF) && NumberUtils.isInt(gnomADg_AFR_AC) && NumberUtils.isInt(gnomADg_AFR_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.AFR,
+                    Float.parseFloat(gnomADg_AFR_AF),
+                    Integer.parseInt(gnomADg_AFR_AC),
+                    Integer.parseInt(gnomADg_AFR_AN)
+            );
+        }
+
+        String gnomADg_AMR_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_AMR.getColumnName());
+        String gnomADg_AMR_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_AMR.getColumnName(), "0");
+        String gnomADg_AMR_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_AMR.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_AMR_AF) && NumberUtils.isInt(gnomADg_AMR_AC) && NumberUtils.isInt(gnomADg_AMR_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.AMR,
+                    Float.parseFloat(gnomADg_AMR_AF),
+                    Integer.parseInt(gnomADg_AMR_AC),
+                    Integer.parseInt(gnomADg_AMR_AN)
+            );
+        }
+
+        String gnomADg_ASJ_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_ASJ.getColumnName());
+        String gnomADg_ASJ_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_ASJ.getColumnName(), "0");
+        String gnomADg_ASJ_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_ASJ.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_ASJ_AF) && NumberUtils.isInt(gnomADg_ASJ_AC) && NumberUtils.isInt(gnomADg_ASJ_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.ASJ,
+                    Float.parseFloat(gnomADg_ASJ_AF),
+                    Integer.parseInt(gnomADg_ASJ_AC),
+                    Integer.parseInt(gnomADg_ASJ_AN)
+            );
+        }
+
+        String gnomADg_EAS_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_EAS.getColumnName());
+        String gnomADg_EAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_EAS.getColumnName(), "0");
+        String gnomADg_EAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_EAS.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_EAS_AF) && NumberUtils.isInt(gnomADg_EAS_AC) && NumberUtils.isInt(gnomADg_EAS_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.EAS,
+                    Float.parseFloat(gnomADg_EAS_AF),
+                    Integer.parseInt(gnomADg_EAS_AC),
+                    Integer.parseInt(gnomADg_EAS_AN)
+            );
+        }
+
+        String gnomADg_FIN_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_FIN.getColumnName());
+        String gnomADg_FIN_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_FIN.getColumnName(), "0");
+        String gnomADg_FIN_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_FIN.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_FIN_AF) && NumberUtils.isInt(gnomADg_FIN_AC) && NumberUtils.isInt(gnomADg_FIN_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.FIN,
+                    Float.parseFloat(gnomADg_FIN_AF),
+                    Integer.parseInt(gnomADg_FIN_AC),
+                    Integer.parseInt(gnomADg_FIN_AN)
+            );
+        }
+
+        String gnomADg_NFE_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_NFE.getColumnName());
+        String gnomADg_NFE_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_NFE.getColumnName(), "0");
+        String gnomADg_NFE_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_NFE.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_NFE_AF) && NumberUtils.isInt(gnomADg_NFE_AC) && NumberUtils.isInt(gnomADg_NFE_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.NFE,
+                    Float.parseFloat(gnomADg_NFE_AF),
+                    Integer.parseInt(gnomADg_NFE_AC),
+                    Integer.parseInt(gnomADg_NFE_AN)
+            );
+        }
+
+        String gnomADg_SAS_AF = vepPrediction.getByCol(VepTag.gnomADg_AF_SAS.getColumnName());
+        String gnomADg_SAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomADg_AC_SAS.getColumnName(), "0");
+        String gnomADg_SAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomADg_AN_SAS.getColumnName(), "0");
+        if (NumberUtils.isFloat(gnomADg_SAS_AF) && NumberUtils.isInt(gnomADg_SAS_AC) && NumberUtils.isInt(gnomADg_SAS_AN)) {
+            gnomADgenomes.addPopulationsFrequency(
+                    GnomadPopulation.SAS,
+                    Float.parseFloat(gnomADg_SAS_AF),
+                    Integer.parseInt(gnomADg_SAS_AC),
+                    Integer.parseInt(gnomADg_SAS_AN)
+            );
+        }
+
+//        annotation.setGnomAD(gnomad);
+
+//        String gnomAD_AFR_AF = vepPrediction.getByCol(VepTag.gnomAD_AFR_AF.getColumnName());
+//        String gnomAD_AFR_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_AFR_AC.getColumnName(), "0");
+//        String gnomAD_AFR_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_AFR_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_AFR_AF) && NumberUtils.isInt(gnomAD_AFR_AC) && NumberUtils.isInt(gnomAD_AFR_AN)) {
+//            GnomadPopulationFreq afr = new GnomadPopulationFreq(
+//                    GnomadPopulation.AFR,
+//                    Float.parseFloat(gnomAD_AFR_AF),
+//                    Integer.parseInt(gnomAD_AFR_AC),
+//                    Integer.parseInt(gnomAD_AFR_AN)
+//            );
+//            annotation.getGnomADFrequencies().setAfr(afr);
+//        }
+
+//        String gnomAD_AMR_AF = vepPrediction.getByCol(VepTag.gnomAD_AMR_AF.getColumnName());
+//        String gnomAD_AMR_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_AMR_AC.getColumnName(), "0");
+//        String gnomAD_AMR_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_AMR_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_AMR_AF) && NumberUtils.isInt(gnomAD_AMR_AC) && NumberUtils.isInt(gnomAD_AMR_AN)) {
+//            GnomadPopulationFreq amr = new GnomadPopulationFreq(
+//                    GnomadPopulation.AMR,
+//                    Float.parseFloat(gnomAD_AMR_AF),
+//                    Integer.parseInt(gnomAD_AMR_AC),
+//                    Integer.parseInt(gnomAD_AMR_AN)
+//            );
+//            annotation.getGnomADFrequencies().setAmr(amr);
+//        }
+
+//        String gnomAD_ASJ_AF = vepPrediction.getByCol(VepTag.gnomAD_ASJ_AF.getColumnName());
+//        String gnomAD_ASJ_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_ASJ_AC.getColumnName(), "0");
+//        String gnomAD_ASJ_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_ASJ_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_ASJ_AF) && NumberUtils.isInt(gnomAD_ASJ_AC) && NumberUtils.isInt(gnomAD_ASJ_AN)) {
+//            GnomadPopulationFreq asj = new GnomadPopulationFreq(
+//                    GnomadPopulation.ASJ,
+//                    Float.parseFloat(gnomAD_ASJ_AF),
+//                    Integer.parseInt(gnomAD_ASJ_AC),
+//                    Integer.parseInt(gnomAD_ASJ_AN)
+//            );
+//            annotation.getGnomADFrequencies().setAsj(asj);
+//        }
+
+//        String gnomAD_EAS_AF = vepPrediction.getByCol(VepTag.gnomAD_EAS_AF.getColumnName());
+//        String gnomAD_EAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_EAS_AC.getColumnName(), "0");
+//        String gnomAD_EAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_EAS_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_EAS_AF) && NumberUtils.isInt(gnomAD_EAS_AC) && NumberUtils.isInt(gnomAD_EAS_AN)) {
+//            GnomadPopulationFreq eas = new GnomadPopulationFreq(
+//                    GnomadPopulation.EAS,
+//                    Float.parseFloat(gnomAD_EAS_AF),
+//                    Integer.parseInt(gnomAD_EAS_AC),
+//                    Integer.parseInt(gnomAD_EAS_AN)
+//            );
+//            annotation.getGnomADFrequencies().setEas(eas);
+//        }
+
+//        String gnomAD_FIN_AF = vepPrediction.getByCol(VepTag.gnomAD_FIN_AF.getColumnName());
+//        String gnomAD_FIN_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_FIN_AC.getColumnName(), "0");
+//        String gnomAD_FIN_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_FIN_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_FIN_AF) && NumberUtils.isInt(gnomAD_FIN_AC) && NumberUtils.isInt(gnomAD_FIN_AN)) {
+//            GnomadPopulationFreq fin = new GnomadPopulationFreq(
+//                    GnomadPopulation.FIN,
+//                    Float.parseFloat(gnomAD_FIN_AF),
+//                    Integer.parseInt(gnomAD_FIN_AC),
+//                    Integer.parseInt(gnomAD_FIN_AN)
+//            );
+//            annotation.getGnomADFrequencies().setFin(fin);
+//        }
+
+//        String gnomAD_NFE_AF = vepPrediction.getByCol(VepTag.gnomAD_NFE_AF.getColumnName());
+//        String gnomAD_NFE_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_NFE_AC.getColumnName(), "0");
+//        String gnomAD_NFE_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_NFE_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_NFE_AF) && NumberUtils.isInt(gnomAD_NFE_AC) && NumberUtils.isInt(gnomAD_NFE_AN)) {
+//            GnomadPopulationFreq nfe = new GnomadPopulationFreq(
+//                    GnomadPopulation.NFE,
+//                    Float.parseFloat(gnomAD_NFE_AF),
+//                    Integer.parseInt(gnomAD_NFE_AC),
+//                    Integer.parseInt(gnomAD_NFE_AN)
+//            );
+//            annotation.getGnomADFrequencies().setNfe(nfe);
+//        }
+
+//        String gnomAD_SAS_AF = vepPrediction.getByCol(VepTag.gnomAD_SAS_AF.getColumnName());
+//        String gnomAD_SAS_AC = vepPrediction.getByColOrDefault(VepTag.gnomAD_SAS_AC.getColumnName(), "0");
+//        String gnomAD_SAS_AN = vepPrediction.getByColOrDefault(VepTag.gnomAD_SAS_AN.getColumnName(), "0");
+//        if (NumberUtils.isFloat(gnomAD_SAS_AF) && NumberUtils.isInt(gnomAD_SAS_AC) && NumberUtils.isInt(gnomAD_SAS_AN)) {
+//            GnomadPopulationFreq sas = new GnomadPopulationFreq(
+//                    GnomadPopulation.SAS,
+//                    Float.parseFloat(gnomAD_SAS_AF),
+//                    Integer.parseInt(gnomAD_SAS_AC),
+//                    Integer.parseInt(gnomAD_SAS_AN)
+//            );
+//            annotation.getGnomADFrequencies().setSas(sas);
+//        }
+
+//        annotation.getGnomADFrequencies().computeMaxGnomad();
 
         String clinvarSig = vepPrediction.getByCol(VepTag.CLIN_SIG.getColumnName());
         if (clinvarSig != null) {

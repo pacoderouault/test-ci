@@ -20,6 +20,7 @@
                                 <TableColumn fx:id="panelsNameCol" prefWidth="170.0" text="%createAnalasisParameters.module.panels.panelcol.panelName" />
                                 <TableColumn fx:id="panelsSizeCol" prefWidth="100.0" text="%createAnalasisParameters.module.panels.panelcol.panelSize" />
                                 <TableColumn fx:id="panelsActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.panels.panelcol.panelActive" />
+                                <TableColumn fx:id="panelsDeleteCol" prefWidth="75.0" text="%createAnalasisParameters.module.panels.panelcol.panelDelete" />
                             </columns>
                         </TableView>
                     </children>

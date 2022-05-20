@@ -26,6 +26,7 @@
                                 <TableColumn fx:id="hotspotsSetNameCol" prefWidth="150.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.name" />
                                 <TableColumn fx:id="hotspotsSetCountCol" prefWidth="100.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.nb" />
                                 <TableColumn fx:id="hotspotsSetActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.active" />
+                                <TableColumn fx:id="hotspotsSetDeleteCol" prefWidth="75.0" text="%createAnalasisParameters.module.hotspots.hotspotsCol.delete" />
                             </columns>
                         </TableView>
                     </children>

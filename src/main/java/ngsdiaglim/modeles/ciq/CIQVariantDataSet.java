@@ -22,29 +22,61 @@ public class CIQVariantDataSet {
 
     public ObservableList<CIQVariantRecord> getCiqRecords() {return ciqRecords;}
 
-    public double getMin() {return min;}
+    public double getMin() {
+        if (Double.isNaN(min)) {
+            return ciqHotspot.getVafTarget();
+        }
+        return min;
+    }
 
-    public double getMax() {return max;}
+    public double getMax() {
+        if (Double.isNaN(max)) {
+            return ciqHotspot.getVafTarget();
+        }
+        return max;
+    }
 
-    public double getMean() {return mean;}
+    public double getMean() {
+        if (Double.isNaN(mean)) {
+            return ciqHotspot.getVafTarget();
+        }
+        return mean;
+    }
 
-    public double getSd() {return sd;}
+    public double getSd() {
+        if (Double.isNaN(sd)) {
+            return 0;
+        }
+        return sd;
+    }
 
     public double getCv() {return cv;}
 
     public double getHighMaxValue() {
+        if (Double.isNaN(mean) || Double.isNaN(sd)) {
+            return ciqHotspot.getVafTarget();
+        }
         return mean + 3 * sd;
     }
 
     public double getHighMinValue() {
+        if (Double.isNaN(mean) || Double.isNaN(sd)) {
+            return ciqHotspot.getVafTarget();
+        }
         return mean - 3 * sd;
     }
 
     public double getLowMaxValue() {
+        if (Double.isNaN(mean) || Double.isNaN(sd)) {
+            return ciqHotspot.getVafTarget();
+        }
         return mean + 2 * sd;
     }
 
     public double getLowMinValue() {
+        if (Double.isNaN(mean) || Double.isNaN(sd)) {
+            return ciqHotspot.getVafTarget();
+        }
         return mean - 2 * sd;
     }
 

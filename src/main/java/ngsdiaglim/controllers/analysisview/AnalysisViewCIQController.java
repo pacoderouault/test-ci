@@ -213,8 +213,8 @@ public class AnalysisViewCIQController extends VBox {
 
     public void fillHotspotsStatsFields(CIQVariantDataSet dataset) {
         if (dataset != null) {
-            meanTf.setText(String.valueOf(NumberUtils.round(dataset.getMean(), 3)));
-            sdTf.setText(String.valueOf(NumberUtils.round(dataset.getSd(), 3)));
+            meanTf.setText(Double.isNaN(dataset.getMean()) ? "NaN" : String.valueOf(NumberUtils.round(dataset.getMean(), 3)));
+            sdTf.setText(Double.isNaN(dataset.getSd()) ? "NaN" : String.valueOf(NumberUtils.round(dataset.getSd(), 3)));
         } else {
             meanTf.setText(null);
             sdTf.setText(null);

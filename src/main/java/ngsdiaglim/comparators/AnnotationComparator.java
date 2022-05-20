@@ -1,6 +1,8 @@
 package ngsdiaglim.comparators;
 
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modeles.variants.predictions.PathogenicScoreCalculator;
 
 import java.util.Comparator;
@@ -33,10 +35,12 @@ public class AnnotationComparator implements Comparator<Annotation> {
         // Then move variant with gnomad value <0.01 to the top
         Integer freq1 = 1;
         int freq2 = 1;
-        if (o1.getGnomADFrequencies().getMax() == null || o1.getGnomADFrequencies().getMax().getAf() < 0.01) {
+        GnomadPopulationFreq maxPop1 = o1.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+        GnomadPopulationFreq maxPop2 = o2.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+        if (maxPop1 == null || maxPop1.getAf() < 0.01) {
             freq1 = 0;
         }
-        if (o2.getGnomADFrequencies().getMax() == null || o2.getGnomADFrequencies().getMax().getAf() < 0.01) {
+        if (maxPop2 == null || maxPop2.getAf() < 0.01) {
             freq2 = 0;
         }
         int freqComp = freq1.compareTo(freq2);
@@ -47,9 +51,9 @@ public class AnnotationComparator implements Comparator<Annotation> {
         if (consequenceComp != 0) return consequenceComp;
 
         // Finally sort by genomic position
-        int contigComp = naturalSortComparator.compare(o1.getVariant().getContig(), o2.getVariant().getContig());
+        int contigComp = naturalSortComparator.compare(o1.getGenomicVariant().getContig(), o2.getGenomicVariant().getContig());
         if (contigComp != 0) return contigComp;
 
-        return Integer.compare(o1.getVariant().getStart(), o2.getVariant().getStart());
+        return Integer.compare(o1.getGenomicVariant().getStart(), o2.getGenomicVariant().getStart());
     }
 }

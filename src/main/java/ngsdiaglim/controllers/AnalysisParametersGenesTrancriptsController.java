@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.cells.AnalysisParametersGeneSetDeleteCell;
 import ngsdiaglim.controllers.cells.GeneTranscriptsCell;
 import ngsdiaglim.controllers.dialogs.AddGeneTranscriptSetDialog;
 import ngsdiaglim.controllers.dialogs.Message;
@@ -39,6 +40,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
     @FXML private TableColumn<GeneSet, String> geneSetNameCol;
     @FXML private TableColumn<GeneSet, Integer> geneSetSizeCol;
     @FXML private TableColumn<GeneSet, Boolean> geneSetActiveCol;
+    @FXML private TableColumn<GeneSet, Void> geneSetDeleteCol;
 
     @FXML private TableView<Gene> geneTranscriptTable;
     @FXML private TableColumn<Gene, String> genesCol;
@@ -118,6 +120,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
             checkBox.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> validateGeneTranscriptSetActivation(checkBox, tableCell.getTableRow().getItem(), event));
             return tableCell;
         });
+        geneSetDeleteCol.setCellFactory(c -> new AnalysisParametersGeneSetDeleteCell());
     }
 
 

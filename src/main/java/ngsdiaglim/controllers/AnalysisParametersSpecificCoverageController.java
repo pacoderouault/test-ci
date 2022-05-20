@@ -38,6 +38,7 @@ public class AnalysisParametersSpecificCoverageController extends HBox {
     @FXML private TableColumn<SpecificCoverageSet, String> specCovNameCol;
     @FXML private TableColumn<SpecificCoverageSet, Integer> specCovNbCol;
     @FXML private TableColumn<SpecificCoverageSet, Boolean> specCovActiveCol;
+    @FXML private TableColumn<SpecificCoverageSet, Void> specCovDeleteCol;
     @FXML private TableColumn<SpecificCoverageSet, Void> specCovActionsCol;
     @FXML private TableView<SpecificCoverage> regionsTable;
     @FXML private TableColumn<SpecificCoverage, String> regionNameCol;

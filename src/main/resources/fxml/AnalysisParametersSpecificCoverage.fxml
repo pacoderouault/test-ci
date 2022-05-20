@@ -28,6 +28,7 @@
                       <TableColumn fx:id="specCovNameCol" prefWidth="150.0" text="%createAnalasisParameters.module.specificcov.table.specov.nameCol" />
                       <TableColumn fx:id="specCovNbCol" prefWidth="100.0" text="%createAnalasisParameters.module.specificcov.table.specov.nbCol" />
                         <TableColumn fx:id="specCovActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.specificcov.table.specov.activeCol" />
+                        <TableColumn fx:id="specCovDeleteCol" prefWidth="75.0" text="%createAnalasisParameters.module.specificcov.table.specov.deleteCol" />
                         <TableColumn fx:id="specCovActionsCol" prefWidth="150.0" text=" " />
                     </columns>
                   </TableView>

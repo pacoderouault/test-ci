@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import ngsdiaglim.App;
+import ngsdiaglim.controllers.cells.AnalysisParametersHotspotDeleteCell;
 import ngsdiaglim.controllers.dialogs.AddHotspotsSetDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
@@ -34,6 +35,7 @@ public class AnalysisParametersHotspotsController extends HBox {
     @FXML private TableColumn<HotspotsSet, String> hotspotsSetNameCol;
     @FXML private TableColumn<HotspotsSet, Integer> hotspotsSetCountCol;
     @FXML private TableColumn<HotspotsSet, Boolean> hotspotsSetActiveCol;
+    @FXML private TableColumn<HotspotsSet, Void> hotspotsSetDeleteCol;
 
     @FXML private TableView<Hotspot> hotspotsTable;
     @FXML private TableColumn<Hotspot, String> hotspotsIdCol;
@@ -97,6 +99,7 @@ public class AnalysisParametersHotspotsController extends HBox {
             checkBox.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> validateHostpotsSetActivation(checkBox, tableCell.getTableRow().getItem(), event));
             return tableCell;
         });
+        hotspotsSetDeleteCol.setCellFactory(c -> new AnalysisParametersHotspotDeleteCell());
     }
 
 

@@ -2,20 +2,30 @@ package ngsdiaglim.database.dao;
 
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.ACMG;
+import ngsdiaglim.enumerations.Genome;
+import ngsdiaglim.modeles.variants.GenomicVariant;
 import ngsdiaglim.modeles.variants.Variant;
 
 import java.sql.*;
 
 public class VariantsDAO extends DAO {
 
-    public long addVariant(String contig, int start, int end, String ref, String alt) throws SQLException {
-        final String sql = "INSERT INTO variants (contig, start, end_, ref, alt) VALUES (?, ?, ?, ?, ?);";
+    public long addVariant(String contig_grch37, int start_grch37, int end_grch37, String ref_grch37, String alt_grch37,
+                           String contig_grch38, int start_grch38, int end_grch38, String ref_grch38, String alt_grch38) throws SQLException {
+        final String sql = "INSERT INTO variants (contig_grch37, start_grch37, end_grch37, ref_grch37, alt_grch37, " +
+                "contig_grch38, start_grch38, end_grch38, ref_grch38, alt_grch38) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try(Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stm.setString(1, contig);
-            stm.setInt(2, start);
-            stm.setInt(3, end);
-            stm.setString(4, ref);
-            stm.setString(5, alt);
+            int i = 0;
+            stm.setString(++i, contig_grch37);
+            stm.setInt(++i, start_grch37);
+            stm.setInt(++i, end_grch37);
+            stm.setString(++i, ref_grch37);
+            stm.setString(++i, alt_grch37);
+            stm.setString(++i, contig_grch38);
+            stm.setInt(++i, start_grch38);
+            stm.setInt(++i, end_grch38);
+            stm.setString(++i, ref_grch38);
+            stm.setString(++i, alt_grch38);
             stm.executeUpdate();
 
             try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
@@ -37,9 +47,16 @@ public class VariantsDAO extends DAO {
      * @param alt Alternative Allele
      * @return The Variant matches with the params
      */
-    public Variant getVariant(String contig, int start, String ref, String alt) throws SQLException {
-        final String sql = "SELECT id, contig, start, end_, ref, alt, pathogenicity_value, pathogenicity_confirmed, false_positive" +
-                " FROM variants WHERE contig=? AND start=? AND ref=? AND alt=?;";
+    public Variant getVariant(Genome genome, String contig, int start, String ref, String alt) throws SQLException {
+        String sql = "SELECT id, contig_grch37, start_grch37, end_grch37, ref_grch37, alt_grch37," +
+                " contig_grch38, start_grch38, end_grch38, ref_grch38, alt_grch38," +
+                " pathogenicity_value, pathogenicity_confirmed, false_positive FROM variants WHERE ";
+
+        if (genome.equals(Genome.GRCh38)) {
+            sql += "contig_grch38=? AND start_grch38=? AND ref_grch38=? AND alt_grch38=?;";
+        } else {
+            sql += "contig_grch37=? AND start_grch37=? AND ref_grch37=? AND alt_grch37=?;";
+        }
 
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, contig);
@@ -49,13 +66,24 @@ public class VariantsDAO extends DAO {
             ResultSet rs = stm.executeQuery();
             Variant variant = null;
             if (rs.next()) {
+                GenomicVariant grch37Variant = new GenomicVariant(
+                        rs.getString("contig_grch37"),
+                        rs.getInt("start_grch37"),
+                        rs.getInt("end_grch37"),
+                        rs.getString("ref_grch37"),
+                        rs.getString("alt_grch37")
+                );
+                GenomicVariant grch38Variant = new GenomicVariant(
+                        rs.getString("contig_grch38"),
+                        rs.getInt("start_grch38"),
+                        rs.getInt("end_grch38"),
+                        rs.getString("ref_grch38"),
+                        rs.getString("alt_grch38")
+                );
                 variant = new Variant(
                         rs.getInt("id"),
-                        rs.getString("contig"),
-                        rs.getInt("start"),
-                        rs.getInt("end_"),
-                        rs.getString("ref"),
-                        rs.getString("alt")
+                        grch37Variant,
+                        grch38Variant
                 );
                 variant.setAcmg(ACMG.getFromPathogenicityValue(rs.getInt("pathogenicity_value")));
                 variant.setPathogenicityConfirmed(rs.getBoolean("pathogenicity_confirmed"));
@@ -70,22 +98,34 @@ public class VariantsDAO extends DAO {
      * Get variant from his id
      */
     public Variant getVariant(Long id) throws SQLException {
-        final String sql = "SELECT id, contig, start, end_, ref, alt, pathogenicity_value, pathogenicity_confirmed, false_positive" +
-                " FROM variants WHERE id=?;";
+        final String sql = "SELECT contig_grch37, start_grch37, end_grch37, ref_grch37, alt_grch37," +
+                " contig_grch38, start_grch38, end_grch38, ref_grch38, alt_grch38," +
+                " pathogenicity_value, pathogenicity_confirmed, false_positive FROM variants WHERE id=?;";
 
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
             ResultSet rs = stm.executeQuery();
             Variant variant = null;
             if (rs.next()) {
+                GenomicVariant grch37Variant = new GenomicVariant(
+                        rs.getString("contig_grch37"),
+                        rs.getInt("start_grch37"),
+                        rs.getInt("end_grch37"),
+                        rs.getString("ref_grch37"),
+                        rs.getString("alt_grch37")
+                );
+                GenomicVariant grch38Variant = new GenomicVariant(
+                        rs.getString("contig_grch38"),
+                        rs.getInt("start_grch38"),
+                        rs.getInt("end_grch38"),
+                        rs.getString("ref_grch38"),
+                        rs.getString("alt_grch38")
+                );
                 variant = new Variant(
-                        rs.getInt("id"),
-                        rs.getString("contig"),
-                        rs.getInt("start"),
-                        rs.getInt("end_"),
-                        rs.getString("ref"),
-                        rs.getString("alt")
-                        );
+                        id,
+                        grch37Variant,
+                        grch38Variant
+                );
                 variant.setAcmg(ACMG.getFromPathogenicityValue(rs.getInt("pathogenicity_value")));
                 variant.setPathogenicityConfirmed(rs.getBoolean("pathogenicity_confirmed"));
                 variant.setFalsePositive(rs.getBoolean("false_positive"));

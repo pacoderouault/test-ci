@@ -20,17 +20,17 @@ public class PositionPopupFilter extends NumberPopupFilter {
             getTableColumn().setPredicate(a -> {
                 switch (op) {
                     case EQUALS:
-                        return a.getVariant().getStart() == value.doubleValue();
+                        return a.getGenomicVariant().getStart() == value.doubleValue();
                     case NOT_EQUALS:
-                        return a.getVariant().getStart() != value.doubleValue();
+                        return a.getGenomicVariant().getStart() != value.doubleValue();
                     case GREATER_THAN:
-                        return a.getVariant().getStart() > value.doubleValue();
+                        return a.getGenomicVariant().getStart() > value.doubleValue();
                     case GREATER_OR_EQUALS_THAN:
-                        return a.getVariant().getStart() >= value.doubleValue();
+                        return a.getGenomicVariant().getStart() >= value.doubleValue();
                     case LOWER_THAN:
-                        return a.getVariant().getStart() < value.doubleValue();
+                        return a.getGenomicVariant().getStart() < value.doubleValue();
                     case LOWER_OR_EQUALS_THAN:
-                        return a.getVariant().getStart() <= value.doubleValue();
+                        return a.getGenomicVariant().getStart() <= value.doubleValue();
                     default:
                         return false;
                 }

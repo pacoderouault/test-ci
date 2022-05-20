@@ -23,9 +23,9 @@ class UserRolesDAOTest extends BaseSetup {
     @BeforeAll
     static void insertUsers() throws SQLException {
         // add users
-        usersDAO.addUser("username1", "password", FXCollections.observableSet());
-        usersDAO.addUser("username2", "password", FXCollections.observableSet());
-        usersDAO.addUser("username3", "password", FXCollections.observableSet());
+        usersDAO.addUser("username1", "password", FXCollections.observableSet(), null);
+        usersDAO.addUser("username2", "password", FXCollections.observableSet(), null);
+        usersDAO.addUser("username3", "password", FXCollections.observableSet(), null);
 
         // add roles
         rolesDAO.addRole("role1");

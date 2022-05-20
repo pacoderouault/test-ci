@@ -24,10 +24,7 @@ import ngsdiaglim.controllers.ui.popupfilters.*;
 import ngsdiaglim.controllers.ui.rowfactories.Theme1;
 import ngsdiaglim.controllers.ui.rowfactories.Theme2;
 import ngsdiaglim.database.DAOController;
-import ngsdiaglim.enumerations.ACMG;
-import ngsdiaglim.enumerations.EnsemblConsequence;
-import ngsdiaglim.enumerations.VariantsTableColumns;
-import ngsdiaglim.enumerations.VariantsTableTheme;
+import ngsdiaglim.enumerations.*;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
 import ngsdiaglim.modeles.biofeatures.Transcript;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
@@ -35,6 +32,7 @@ import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.users.UserVariantTableColumns;
 import ngsdiaglim.modeles.variants.Annotation;
 import ngsdiaglim.modeles.variants.Hotspot;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modeles.variants.predictions.SpliceAIPredictions;
 import ngsdiaglim.modeles.variants.predictions.VariantPrediction;
@@ -143,23 +141,47 @@ public class VariantTableBuilder {
         columnsMap.put(VariantsTableColumns.HOTSPOT, hotspotColumn);
 
         FilterTableColumn<Annotation, String> contigColumn = new FilterTableColumn<>(VariantsTableColumns.CONTIG.getName());
-        contigColumn.setCellValueFactory(data -> data.getValue().getVariant().contigProperty());
+        contigColumn.setCellValueFactory(data -> {
+            if (data.getValue().getGenome().equals(Genome.GRCh38)) {
+                return data.getValue().getVariant().getGrch38PositionVariant().contigProperty();
+            } else {
+                return data.getValue().getVariant().getGrch37PositionVariant().contigProperty();
+            }
+        });
         contigColumn.setPopupFilter(new ContigPopupFilter(contigColumn));
         contigColumn.setComparator(naturalSortComparator);
         columnsMap.put(VariantsTableColumns.CONTIG, contigColumn);
 
         FilterTableColumn<Annotation, Number> posColumn = new FilterTableColumn<>(VariantsTableColumns.POSITION.getName());
-        posColumn.setCellValueFactory(data -> data.getValue().getVariant().startProperty());
+        posColumn.setCellValueFactory(data -> {
+            if (data.getValue().getGenome().equals(Genome.GRCh38)) {
+                return data.getValue().getVariant().getGrch38PositionVariant().startProperty();
+            } else {
+                return data.getValue().getVariant().getGrch37PositionVariant().startProperty();
+            }
+        });
 //        posColumn.setPopupFilter(new PositionPopupFilter(posColumn));
         columnsMap.put(VariantsTableColumns.POSITION, posColumn);
 
         FilterTableColumn<Annotation, String> refColumn = new FilterTableColumn<>(VariantsTableColumns.REF.getName());
-        refColumn.setCellValueFactory(data -> data.getValue().getVariant().refProperty());
+        refColumn.setCellValueFactory(data -> {
+            if (data.getValue().getGenome().equals(Genome.GRCh38)) {
+                return data.getValue().getVariant().getGrch38PositionVariant().refProperty();
+            } else {
+                return data.getValue().getVariant().getGrch37PositionVariant().refProperty();
+            }
+        });
 //        refColumn.setPopupFilter(new RefPopUpFilter(refColumn));
         columnsMap.put(VariantsTableColumns.REF, refColumn);
 
         FilterTableColumn<Annotation, String> altColumn = new FilterTableColumn<>(VariantsTableColumns.ALT.getName());
-        altColumn.setCellValueFactory(data -> data.getValue().getVariant().altProperty());
+        altColumn.setCellValueFactory(data -> {
+            if (data.getValue().getGenome().equals(Genome.GRCh38)) {
+                return data.getValue().getVariant().getGrch38PositionVariant().altProperty();
+            } else {
+                return data.getValue().getVariant().getGrch37PositionVariant().altProperty();
+            }
+        });
 //        altColumn.setPopupFilter(new AltPopupFilter(altColumn));
         columnsMap.put(VariantsTableColumns.ALT, altColumn);
 
@@ -307,7 +329,7 @@ public class VariantTableBuilder {
         columnsMap.put(VariantsTableColumns.SPLICE_AI, spliceAIColumn);
 
         FilterTableColumn<Annotation, GnomadPopulationFreq> gnomadMaxColumn = new FilterTableColumn<>(VariantsTableColumns.GNOMAD_MAX.getName());
-        gnomadMaxColumn.setCellValueFactory(data -> data.getValue().getTranscriptConsequence().getAnnotation().getGnomADFrequencies().maxProperty());
+        gnomadMaxColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME)));
         gnomadMaxColumn.setCellFactory(data -> new PopulationFrequencyTableCell());
         gnomadMaxColumn.setPopupFilter(new GnomadPopupFilter(gnomadMaxColumn));
         columnsMap.put(VariantsTableColumns.GNOMAD_MAX, gnomadMaxColumn);

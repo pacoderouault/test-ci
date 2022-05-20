@@ -1,5 +1,6 @@
 package ngsdiaglim.controllers.analysisview.reports.bgm;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +21,7 @@ import ngsdiaglim.enumerations.EnsemblConsequence;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.NumberUtils;
@@ -151,7 +153,7 @@ public class ReportVous extends ReportPane {
         vafCol.setCellValueFactory(data -> data.getValue().vafProperty().asObject());
         depthCol.setCellValueFactory(data -> data.getValue().depthProperty().asObject());
         occurenceCol.setCellValueFactory(data -> data.getValue().getVariant().occurrenceProperty().asObject());
-        maxGnomadCol.setCellValueFactory(data -> data.getValue().getGnomADFrequencies().maxProperty());
+        maxGnomadCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME)));
         maxGnomadCol.setCellFactory(data -> new PopulationFrequencyTableCell());
         deleteCol.setCellFactory(data -> new TableCell<>() {
             private final CheckBox cb = new CheckBox();
@@ -270,7 +272,8 @@ public class ReportVous extends ReportPane {
 
             if (filterGnomadCb.isSelected() && NumberUtils.isDouble(filterGnomadTf.getText())) {
                 double maxGnomad = Double.parseDouble(filterGnomadTf.getText());
-                if (a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() > maxGnomad)
+                GnomadPopulationFreq maxPop = a.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+                if (maxPop != null && maxPop.getAf() > maxGnomad)
                     return false;
             }
             if (!filterSynonymousCb.isSelected()) {

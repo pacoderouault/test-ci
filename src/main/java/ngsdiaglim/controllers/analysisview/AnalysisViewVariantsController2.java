@@ -152,6 +152,7 @@ public class AnalysisViewVariantsController2 extends VBox {
 
 
     private void updateView() {
+        variantDetailController.updateReferenceSequence();
         setTableItems();
         setAnnotationsFilters();
         try {
@@ -165,6 +166,8 @@ public class AnalysisViewVariantsController2 extends VBox {
         }
 
         addgenePanelBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_EDIT_GENEPANEL));
+
+
 
         Platform.runLater(() -> {
             if (Boolean.parseBoolean(App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.USE_SMOOTH_SCROLLING))) {
@@ -545,7 +548,7 @@ public class AnalysisViewVariantsController2 extends VBox {
     public AnchorPane getVariantDetailContainer() {return variantDetailContainer;}
 
     public void setDividerPosition() {
-        double divPos = (splitPane.getHeight() - (variantDetailController.getTest().getHeight() + 8)) / splitPane.getHeight();
+        double divPos = (splitPane.getHeight() - (340 + 8)) / splitPane.getHeight();
         splitPane.setDividerPositions(divPos);
     }
 

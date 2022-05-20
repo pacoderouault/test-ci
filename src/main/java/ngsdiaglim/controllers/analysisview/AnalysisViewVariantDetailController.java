@@ -32,10 +32,13 @@ import ngsdiaglim.enumerations.*;
 import ngsdiaglim.modeles.FastaSequenceGetter;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.ExternalVariation;
+import ngsdiaglim.modeles.reports.ReportGeneCommentary;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.*;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modeles.variants.predictions.PredictionToolsScore;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.BrowserUtils;
@@ -75,6 +78,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     @FXML private Label clinvarLb;
     @FXML private TextField databaseFqTf;
     @FXML private TextField runFqTf;
+    @FXML private TextField gnomadExomeTf;
     @FXML private TextField gnomadMaxTf;
     @FXML private TextField gnomadAfricanTf;
     @FXML private TextField gnomadJewishTf;
@@ -106,6 +110,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     @FXML private Button editFalsePositiveBtn;
     @FXML private Button editSangerStateBtn;
     @FXML private Button showSameVariantsBtn;
+    @FXML private Button showSameVariantsInRunBtn;
     @FXML private Button addVariantCommentaryBtn;
     @FXML private Button addAnnotationCommentaryBtn;
     @FXML private Button externalLinksSettingsBtn;
@@ -179,11 +184,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             Platform.runLater(() -> Message.error(e.getMessage(), e));
         }
 
-        try {
-            fastaSequenceGetter = new FastaSequenceGetter(new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_HG19.name())));
-        } catch (Exception e) {
-            logger.error("Error when getting fasta sequence", e);
-        }
+//        try {
+//            fastaSequenceGetter = new FastaSequenceGetter(new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_HG19.name())));
+//        } catch (Exception e) {
+//            logger.error("Error when getting fasta sequence", e);
+//        }
     }
 
     @FXML
@@ -251,6 +256,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         textFieldsFitToText.add(gnomadEuropenan_nonFTf);
         textFieldsFitToText.add(gnomadLatinoTf);
         textFieldsFitToText.add(gnomadMaxTf);
+        textFieldsFitToText.add(gnomadExomeTf);
         textFieldsFitToText.add(gnomadSouthAsianTf);
         textFieldsFitToText.add(alleleDepthTf);
         textFieldsFitToText.add(depthTf);
@@ -362,20 +368,28 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         } catch (IOException e) {
             logger.error(e);
         }
-        positionTf.setText(VariantUtils.getHashVariant(a.getVariant()));
+        positionTf.setText(VariantUtils.getHashVariant(a.getGenomicVariant()));
         depthTf.setText(String.valueOf(a.getDepth()));
         alleleDepthTf.setText(a.getAllelesDepth());
 
         databaseFqTf.setText(String.valueOf(a.getVariant().getOccurrence()));
         runFqTf.setText(String.valueOf(a.getVariant().getOccurrenceInRun()));
-        gnomadMaxTf.setText(a.getGnomADFrequencies().getMax() == null ? null : a.getGnomADFrequencies().getMax().toString());
-        gnomadAfricanTf.setText(a.getGnomADFrequencies().getAfr() == null ? null : a.getGnomADFrequencies().getAfr().toString());
-        gnomadJewishTf.setText(a.getGnomADFrequencies().getAsj() == null ? null : a.getGnomADFrequencies().getAsj().toString());
-        gnomadEastAsianTf.setText(a.getGnomADFrequencies().getEas() == null ? null : a.getGnomADFrequencies().getEas().toString());
-        gnomadSouthAsianTf.setText(a.getGnomADFrequencies().getSas() == null ? null : a.getGnomADFrequencies().getSas().toString());
-        gnomadEuropenan_nonFTf.setText(a.getGnomADFrequencies().getNfe() == null ? null : a.getGnomADFrequencies().getNfe().toString());
-        gnomadEuropean_FTf.setText(a.getGnomADFrequencies().getFin() == null ? null : a.getGnomADFrequencies().getFin().toString());
-        gnomadLatinoTf.setText(a.getGnomADFrequencies().getAmr() == null ? null : a.getGnomADFrequencies().getAmr().toString());
+//        gnomadMaxTf.setText(a.getGnomADFrequencies().getMax() == null ? null : a.getGnomADFrequencies().getMax().toString());
+//        gnomadAfricanTf.setText(a.getGnomADFrequencies().getAfr() == null ? null : a.getGnomADFrequencies().getAfr().toString());
+//        gnomadJewishTf.setText(a.getGnomADFrequencies().getAsj() == null ? null : a.getGnomADFrequencies().getAsj().toString());
+//        gnomadEastAsianTf.setText(a.getGnomADFrequencies().getEas() == null ? null : a.getGnomADFrequencies().getEas().toString());
+//        gnomadSouthAsianTf.setText(a.getGnomADFrequencies().getSas() == null ? null : a.getGnomADFrequencies().getSas().toString());
+//        gnomadEuropenan_nonFTf.setText(a.getGnomADFrequencies().getNfe() == null ? null : a.getGnomADFrequencies().getNfe().toString());
+//        gnomadEuropean_FTf.setText(a.getGnomADFrequencies().getFin() == null ? null : a.getGnomADFrequencies().getFin().toString());
+        gnomadExomeTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.GLOBAL));
+        gnomadMaxTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.MAX_POP));
+        gnomadAfricanTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.AFR));
+        gnomadJewishTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.ASJ));
+        gnomadEastAsianTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.EAS));
+        gnomadSouthAsianTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.SAS));
+        gnomadEuropenan_nonFTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.NFE));
+        gnomadEuropean_FTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.FIN));
+        gnomadLatinoTf.setText(getGnomadPopulationFrequency(a, GnomadPopulation.AMR));
         pathogenicityTf.setText(a.getVariant().getAcmg().getName());
 
         if (annotation.get().getVariant().isHotspot()) {
@@ -434,7 +448,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         }
         drawPathogenicChart();
         fillExternalVariations();
-        fillPubmedIds();
+        fillPubmedIds(3);
     }
 
     private void drawPathogenicChart() {
@@ -546,10 +560,11 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         float gnomad_score = 1;
         String gnomad_subtitle = "N/A";
         Color gnomad_color = PredictionToolsScore.getGnomadFreqColor(0f);
-        if (annotation.get().getGnomADFrequencies().maxProperty() != null) {
-            float gnomad_freq = annotation.get().getGnomADFrequencies().maxProperty().get().getAf();
+        GnomadPopulationFreq maxPop = annotation.get().getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+        if (maxPop != null) {
+            float gnomad_freq = maxPop.getAf();
             gnomad_score = PredictionToolsScore.scalePopulationFrequencie(gnomad_freq);
-            gnomad_subtitle = String.valueOf(NumberUtils.round(gnomad_freq, 4));
+            gnomad_subtitle = Float.isNaN(gnomad_freq) ? "NaN" : String.valueOf(NumberUtils.round(gnomad_freq, 4));
             gnomad_color = PredictionToolsScore.getGnomadFreqColor(gnomad_freq);
         }
         PredictionChartItem gnomadItem = new PredictionChartItem("Gnomad",
@@ -602,6 +617,26 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     }
 
 
+    public void updateReferenceSequence() {
+        File fastaFile;
+        if (annotation.get() != null) {
+            if (annotation.get().getGenome().equals(Genome.GRCh38)) {
+                fastaFile = new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH38.name()));
+            } else {
+                fastaFile = new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH37.name()));
+            }
+
+            if (fastaSequenceGetter == null || !fastaFile.equals(fastaSequenceGetter.getFastaFile())) {
+                try {
+                    fastaSequenceGetter = new FastaSequenceGetter(fastaFile);
+                } catch (Exception e) {
+                    logger.error("Error when getting fasta sequence", e);
+                }
+            }
+        }
+    }
+
+
     @FXML
     private void editPathogenicity() {
         EditVariantPathogenicityDialog editVariantPathogenicityDialog = new EditVariantPathogenicityDialog(App.get().getAppController().getDialogPane());
@@ -640,21 +675,24 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         }
 
         leftSeqTf.setText(null);
-        alt1SeqTf.setText(annotation.get().getVariant().getRef());
-        alt2SeqTf.setText(annotation.get().getVariant().getAlt());
+        alt1SeqTf.setText(annotation.get().getGenomicVariant().getRef());
+        alt2SeqTf.setText(annotation.get().getGenomicVariant().getAlt());
         rightSeqTf.setText(null);
 
         int margin = 8;
-        int start = annotation.get().getVariant().getStart() - margin;
-        int end = annotation.get().getVariant().getStart() + annotation.get().getVariant().getRef().length() + margin - 1;
+        int start = annotation.get().getGenomicVariant().getStart() - margin;
+        int end = annotation.get().getGenomicVariant().getStart() + annotation.get().getGenomicVariant().getRef().length() + margin - 1;
 
         Runnable task = () -> {
             String seq;
             try {
-                seq = fastaSequenceGetter.getSequence(annotation.get().getVariant().getContig(), start, end);
+                if (fastaSequenceGetter == null) {
+                    updateReferenceSequence();
+                }
+                seq = fastaSequenceGetter.getSequence(annotation.get().getGenomicVariant().getContig(), start, end);
                 if (!Thread.currentThread().isInterrupted() && seq != null) {
                     Platform.runLater(() -> {
-                        int lenVariant = annotation.get().getVariant().getRef().length() + margin;
+                        int lenVariant = annotation.get().getGenomicVariant().getRef().length() + margin;
                         String t_left = seq.substring(0, margin);
                         String t_right = seq.substring(lenVariant);
                         leftSeqTf.setText(t_left);
@@ -850,11 +888,13 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
     }
 
 
-    private void fillPubmedIds() {
+    private void fillPubmedIds(int max) {
         Platform.runLater(() -> {
             pubmedIdsContainer.getChildren().clear();
             if (annotation.get().getTranscriptConsequence() != null && annotation.get().getTranscriptConsequence().getPubmedIds() != null) {
+                int i = 0;
                 for (String pubmedId : annotation.get().getTranscriptConsequence().getPubmedIds()) {
+                    if (max > 0 && i++ >= max) break;
                     Label l = new Label(pubmedId);
                     l.getStyleClass().add("hyperlink-label");
                     l.setOnMouseClicked(e -> {
@@ -868,6 +908,24 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             }
         });
     }
+
+
+    @FXML
+    private void showGnomadDialog() {
+        if (annotation.get() != null) {
+            GnomadDialog dialog = new GnomadDialog(annotation.get());
+            Message.showDialog(dialog);
+            dialog.getButton(ButtonType.OK).setOnAction(event -> Message.hideDialog(dialog));
+        }
+    }
+
+
+
+    @FXML
+    private void expandPubMedId() {
+        fillPubmedIds(-1);
+    }
+
 
 
     public void setExternalLinksButtonsVisibility() {
@@ -910,8 +968,14 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         igvLinkBtn.setOnAction(e -> {
             try {
 //                App.get().getIgvHandler().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
-                App.get().getIgvLinks2().goTo(ModuleManager.getAnalysisViewController().getAnalysis(), annotation.get().getVariant().getContig(), annotation.get().getVariant().getStart());
-            } catch (IOException ex) {
+                App.get().getIgvLinks2().goTo(ModuleManager.getAnalysisViewController().getAnalysis(),
+                        annotation.get().getGenomicVariant().getContig(),
+                        annotation.get().getGenomicVariant().getStart());
+//                App.get().getIgvPort().goTo(ModuleManager.getAnalysisViewController().getAnalysis(),
+//                        annotation.get().getGenomicVariant().getContig(),
+//                        annotation.get().getGenomicVariant().getStart());
+            } catch (Exception ex) {
+                logger.error(ex);
                 Message.error(ex.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
         });
@@ -999,7 +1063,32 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         wid.exec("loadingAnalyses", inputParams -> {
             try {
                 if (searchVariantResults == null) {
-                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
+                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get());
+                }
+            } catch (Exception e) {
+                logger.error(e);
+                Platform.runLater(() -> Message.error(e.getMessage(), e));
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+
+    @FXML
+    private void showSharingVariantRunDialog() {
+        WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("sharingvariantdialog.msg.loadingAnalyses"));
+        wid.addTaskEndNotification(r -> {
+            if (r == 0) {
+                Analysis analysis = ModuleManager.getAnalysisViewController().getAnalysis();
+                AnalysesSharingVariantDialog analysesSharingVariantDialog = new AnalysesSharingVariantDialog(analysis, annotation.get(), searchVariantResults);
+                Message.showDialog(analysesSharingVariantDialog);
+            }
+        });
+        wid.exec("loadingAnalyses", inputParams -> {
+            try {
+                if (searchVariantResults == null) {
+                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get(), annotation.get().getVariant().getAnalysesInRun());
                 }
             } catch (Exception e) {
                 logger.error(e);
@@ -1027,7 +1116,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         wid.exec("loadingAnalyses", inputParams -> {
             try {
                 if (searchVariantResults == null) {
-                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get().getVariant());
+                    searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get());
                 }
             } catch (Exception e) {
                 logger.error(e);
@@ -1044,7 +1133,8 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         Message.showDialog(predictionsDetailDialog);
     }
 
-    public HBox getTest() {return test;}
+    public HBox getTest() {
+        return test;}
 
     public void clear() {
         if (annotation.get() != null) {
@@ -1063,5 +1153,15 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         ExternalLinksSettingsDropDownContent menu = new ExternalLinksSettingsDropDownContent();
         menu.setArrowLocation(PopOver.ArrowLocation.RIGHT_BOTTOM);
         menu.show(externalLinksSettingsBtn);
+    }
+
+    private String getGnomadPopulationFrequency(Annotation a, GnomadPopulation pop) {
+        if (a.getGnomAD() == null
+                || a.getGnomAD().getGnomadExomesData2_1_1() == null
+                || a.getGnomAD().getGnomadExomesData2_1_1().getPopulationFrequency(pop) == null) {
+            return "";
+        } else {
+            return a.getGnomAD().getGnomadExomesData2_1_1().getPopulationFrequency(pop).toString();
+        }
     }
 }

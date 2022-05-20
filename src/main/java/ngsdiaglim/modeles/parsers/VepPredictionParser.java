@@ -121,6 +121,14 @@ public class VepPredictionParser {
             }
             return this.tokens[idx];
         }
+        public String getByColOrDefault(final String col, String defaultValue) {
+            if(col == null || col.isEmpty()) return defaultValue;
+            final Integer idx = VepPredictionParser.this.col2colidx.get(col);
+            if(idx == null || idx >= tokens.length || tokens[idx].isEmpty()) {
+                return defaultValue;
+            }
+            return this.tokens[idx];
+        }
 
         /** alias of getByColl */
         public String get(final String col) {

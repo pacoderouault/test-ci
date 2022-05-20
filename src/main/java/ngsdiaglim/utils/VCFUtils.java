@@ -6,6 +6,8 @@ import htsjdk.tribble.index.IndexFactory;
 import htsjdk.tribble.index.tabix.TabixFormat;
 import htsjdk.tribble.index.tabix.TabixIndex;
 import htsjdk.variant.vcf.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -17,6 +19,7 @@ import java.util.zip.GZIPInputStream;
 
 public class VCFUtils {
 
+    private static final Logger logger = LogManager.getLogger(VCFUtils.class);
     private static final String TABIX_INDEX_EXTENSION = ".tbi";
     private static final Charset LATIN1 = StandardCharsets.ISO_8859_1;
 
@@ -98,7 +101,7 @@ public class VCFUtils {
             new VCFFileReader(file, false);
             return true;
         } catch (TribbleException e) {
-            e.printStackTrace();
+            logger.error(e);
             return false;
         }
     }

@@ -9,6 +9,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -45,6 +46,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
     @FXML private TextField genePanelNameTf;
     @FXML private TextField geneFilterTf;
     @FXML private ListSelectionView<Gene> listSelectionView;
+    @FXML private ComboBox<GenePanel> genePanelCb;
     @FXML private Label errorLabel;
 
     private final static NaturalSortComparator naturalSortComparator = new NaturalSortComparator();
@@ -97,6 +99,17 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
         geneFilterTf.setOnAction(e -> filterGenes(geneFilterTf.getText()));
 
         ListSelectionViewUtils.rewriteButtons(listSelectionView);
+
+        try {
+            genePanelCb.setItems(DAOController.getGenesPanelDAO().getGenesPanels());
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        genePanelCb.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newV) -> {
+            if (newV != null) {
+                listSelectionView.getTargetItems().setAll(newV.getGenes());
+            }
+         });
     }
 
 

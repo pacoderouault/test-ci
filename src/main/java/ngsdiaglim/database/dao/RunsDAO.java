@@ -2,7 +2,10 @@ package ngsdiaglim.database.dao;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ngsdiaglim.enumerations.Order;
+import ngsdiaglim.enumerations.RunOrder;
 import ngsdiaglim.modeles.analyse.Run;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -53,10 +56,73 @@ public class RunsDAO extends DAO {
     }
 
 
+    public int getRunsCount(String runNameFilter) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM runs";
+        if (StringUtils.isNotBlank(runNameFilter)) {
+            sql += " WHERE instr(lower(name), ?) > 0";
+        }
+        sql += ";";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            if (StringUtils.isNotBlank(runNameFilter)) {
+                stm.setString(1, runNameFilter);
+            }
+            ResultSet rs = stm.executeQuery();
+            int count = -1;
+            if (rs.next())
+            {
+                count = rs.getInt(1);
+            }
+            return count;
+        }
+    }
+
+
     public ObservableList<Run> getRuns() throws SQLException {
         ObservableList<Run> runs = FXCollections.observableArrayList();
         final String sql = "SELECT id, path, name, date, creation_date, creation_user FROM runs ORDER BY date DESC;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            ResultSet rs = stm.executeQuery();
+            while(rs.next()) {
+                long id = rs.getLong("id");
+                String name = rs.getString("name");
+                String path = rs.getString("path");
+                LocalDate date = rs.getDate("date").toLocalDate();
+                LocalDate creationDate = rs.getDate("creation_date").toLocalDate();
+                String creationUser = rs.getString("creation_user");
+                runs.add(new Run(id, path, name, date, creationDate, creationUser));
+            }
+        }
+        return runs;
+    }
+
+
+    public ObservableList<Run> getRuns(String filterName, Order order, RunOrder runOrder, int leftLimit, int rightLimit) throws SQLException {
+        ObservableList<Run> runs = FXCollections.observableArrayList();
+        String sql = "SELECT id, path, name, date, creation_date, creation_user FROM runs ";
+
+        if (StringUtils.isNotBlank(filterName)) {
+            sql += " WHERE instr(lower(name), ?) > 0 ";
+        }
+
+        if (runOrder.equals(RunOrder.NAME)) {
+            sql += "ORDER BY name";
+        } else if (runOrder.equals(RunOrder.DATE)) {
+            sql += "ORDER BY date";
+        }
+        if (order.equals(Order.ASC)) {
+            sql += " ASC";
+        } else if (order.equals(Order.DESC)) {
+            sql += " DESC";
+        }
+        sql += " LIMIT ?,?;";
+
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            int i = 0;
+            if (StringUtils.isNotBlank(filterName)) {
+                stm.setString(++i, filterName.toLowerCase());
+            }
+            stm.setInt(++i, leftLimit);
+            stm.setInt(++i, rightLimit);
             ResultSet rs = stm.executeQuery();
             while(rs.next()) {
                 long id = rs.getLong("id");

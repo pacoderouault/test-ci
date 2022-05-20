@@ -27,7 +27,10 @@ public class GnomadPopulationFreq {
 
     @Override
     public String toString() {
-        return NumberUtils.round(af, 4) + " (" + ac + "/" + an + ")";
+        if (Float.isNaN(af)) {
+            return "";
+        }
+        return NumberUtils.round(af, 3) + " (" + ac + "/" + an + ")";
     }
 
 }

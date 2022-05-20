@@ -824,7 +824,7 @@ Button {
     -fx-font-size: 1em;
     -fx-padding: 0.333333em 0 0.333333em 0.416667em; /* 4 0 4 5 */
 
-    -fx-background-color: list_cell_color;
+    -fx-background-color: transparent;
 
     -fx-text-fill: text_color;
 }

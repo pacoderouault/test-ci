@@ -15,7 +15,7 @@ public class DatabaseCreatorDAOTest extends BaseSetup {
     @Test
     void createTables() throws SQLException {
         Assertions.assertTrue(DAOController.getUsersDAO().userExists("admin"));
-        assertEquals(1, DAOController.getUsersDAO().getUsers().size());
+        assertEquals(1, DAOController.getUsersDAO().getUsers(null).size());
         assertEquals(1, DAOController.getUsersDAO().getActiveUsers().size());
 
         assertNotNull(DAOController.getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name()));

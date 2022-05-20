@@ -4,10 +4,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ngsdiaglim.modeles.variants.Variant;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import ngsdiaglim.modeles.variants.Annotation;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class CIQModel {
@@ -16,7 +14,7 @@ public class CIQModel {
     private final SimpleStringProperty name = new SimpleStringProperty();
     private final SimpleStringProperty barcode = new SimpleStringProperty();
     private final SimpleBooleanProperty active = new SimpleBooleanProperty();
-    private ObservableList<CIQHotspot> hotspots = FXCollections.observableArrayList();
+    private final ObservableList<CIQHotspot> hotspots = FXCollections.observableArrayList();
 
     public CIQModel(long id, String name, String barcode, boolean isActive) {
         this.id = id;
@@ -73,17 +71,24 @@ public class CIQModel {
         this.hotspots.setAll(hotspots);
     }
 
-    public CIQHotspot getHotspot(Variant variant) {
-        Optional<CIQHotspot> opt = hotspots.stream().filter(h -> h.getContig().equalsIgnoreCase(variant.getContig())
-                && h.getPosition() == variant.getStart()
-                && h.getRef().equalsIgnoreCase(variant.getRef())
-                && h.getAlt().equalsIgnoreCase(variant.getAlt())).findAny();
+    public CIQHotspot getHotspot(Annotation annotation) {
+//        if (annotation.toString().equals("(JAK2) NP_001309123.1:p.Val617Phe")) {
+//            System.out.println(hotspots.size());
+//            System.out.println(annotation.getGenomicVariant().getContig());
+//            System.out.println(annotation.getGenomicVariant().getStart());
+//            System.out.println(annotation.getGenomicVariant().getRef());
+//            System.out.println(annotation.getGenomicVariant().getAlt());
+//        }
+        Optional<CIQHotspot> opt = hotspots.stream().filter(h -> h.getContig().equalsIgnoreCase(annotation.getGenomicVariant().getContig())
+                && h.getPosition() == annotation.getGenomicVariant().getStart()
+                && h.getRef().equalsIgnoreCase(annotation.getGenomicVariant().getRef())
+                && h.getAlt().equalsIgnoreCase(annotation.getGenomicVariant().getAlt())).findAny();
         return opt.orElse(null);
     }
 
     @Override
     public String toString() {
-        return barcode.get();
+        return name.get();
     }
 
     @Override

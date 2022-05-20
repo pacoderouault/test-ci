@@ -110,11 +110,40 @@ public class GeneSetDAO extends DAO {
     }
 
 
+    public GeneSet getGeneSet(String name) throws SQLException {
+        final String sql = "SELECT id, name, is_active FROM geneSet WHERE name=?;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setString(1, name);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                boolean isActive = rs.getBoolean("is_active");
+                GeneSet geneSet = new GeneSet(id, name, isActive);
+                List<Gene> genes = DAOController.getGeneDAO().getGenes(id);
+                for (Gene gene : genes) {
+                    geneSet.addGene(gene);
+                }
+                return geneSet;
+            }
+            return null;
+        }
+    }
+
+
     public void deleteGeneSet(long id) throws SQLException {
         final String sql = "DELETE FROM geneSet WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
             stm.executeUpdate();
+        }
+    }
+
+    public boolean isUsed(long id) throws SQLException {
+        final String sql = "SELECT id FROM analysisParameters WHERE geneSet_id=? LIMIT 1;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setLong(1, id);
+            ResultSet rs = stm.executeQuery();
+            return rs.next();
         }
     }
 }

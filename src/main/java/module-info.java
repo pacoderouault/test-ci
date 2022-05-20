@@ -4,6 +4,7 @@ module NGSDiagLim {
     requires javafx.swing;
     requires javafx.web;
     requires java.sql;
+    requires java.net.http;
     requires org.apache.logging.log4j;
     requires com.dlsc.gemsfx;
     requires com.h2database;
@@ -64,6 +65,7 @@ module NGSDiagLim {
     exports ngsdiaglim.cnv;
     exports ngsdiaglim.cnv.parsers;
     exports ngsdiaglim.cnv.caller;
+    exports ngsdiaglim.controllers.analysisview.ciq;
 
     opens ngsdiaglim to javafx.fxml;
     opens ngsdiaglim.controllers to javafx.fxml;
@@ -77,6 +79,5 @@ module NGSDiagLim {
     opens ngsdiaglim.modules to javafx.fxml;
     opens ngsdiaglim.controllers.charts to javafx.fxml;
     opens ngsdiaglim.modeles.reports.bgm to javafx.fxml;
-    exports ngsdiaglim.controllers.analysisview.ciq;
     opens ngsdiaglim.controllers.analysisview.ciq to javafx.fxml;
 }

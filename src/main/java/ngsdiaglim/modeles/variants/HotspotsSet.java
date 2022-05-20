@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import ngsdiaglim.comparators.HotspotComparator;
 import ngsdiaglim.comparators.NaturalSortComparator;
+import ngsdiaglim.enumerations.Genome;
 
 public class HotspotsSet {
 
@@ -59,7 +60,7 @@ public class HotspotsSet {
     /**
      * Recherche dichotomique
      */
-    public Hotspot getHotspot(Variant variant) {
+    public Hotspot getHotspot(Genome genome, Variant variant) {
         int low = 0;
         int high = hotspots.size() - 1;
         // find the index of the variant position
@@ -69,7 +70,7 @@ public class HotspotsSet {
             int mid = (low + high) / 2;
 
             Hotspot h = hotspots.get(mid);
-            int comp = compare(variant, h);
+            int comp = compare(genome, variant, h);
             if (comp < 0) {
                 high = mid - 1;
             }
@@ -86,22 +87,22 @@ public class HotspotsSet {
         // if not, look if there is hot spot at the same genomic position (flanking hotspots in the list)
         if (pos != -1) {
             Hotspot h = hotspots.get(pos);
-            if (h.isHotspot(variant)) {
+            if (h.isHotspot(genome, variant)) {
                 return h;
             }
             else {
                 // look for lower positions
                 int m = pos - 1;
-                while (m >= 0 && compare(variant, hotspots.get(m)) == 0) {
-                    if (hotspots.get(m).isHotspot(variant)) {
+                while (m >= 0 && compare(genome, variant, hotspots.get(m)) == 0) {
+                    if (hotspots.get(m).isHotspot(genome, variant)) {
                         return hotspots.get(m);
                     }
                     m--;
                 }
                 // look for higher positions
                 m = pos + 1;
-                while (m < hotspots.size() && compare(variant, hotspots.get(m)) == 0) {
-                    if (hotspots.get(m).isHotspot(variant)) {
+                while (m < hotspots.size() && compare(genome, variant, hotspots.get(m)) == 0) {
+                    if (hotspots.get(m).isHotspot(genome, variant)) {
                         return hotspots.get(m);
                     }
                     m++;
@@ -112,8 +113,14 @@ public class HotspotsSet {
     }
 
     // compare the genomic position of the variant against the hotspot
-    private static int compare(Variant o1, Hotspot o2) {
+    private static int compare(Genome genome, Variant a1, Hotspot o2) {
         int comp;
+        GenomicVariant o1;
+        if (genome.equals(Genome.GRCh38)) {
+            o1 = a1.getGrch38PositionVariant();
+        } else {
+            o1 = a1.getGrch37PositionVariant();
+        }
         if (!o1.getContig().equalsIgnoreCase(o2.getContig())) {
             comp = naturalSortComparator.compare(o1.getContig(), o2.getContig());
         }

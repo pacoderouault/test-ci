@@ -40,9 +40,11 @@ public class CNVImportDataController extends VBox {
     @FXML private TabPane algoTabPane;
     @FXML private Tab ampliconTab;
     @FXML private Tab captureTab;
+
+    @FXML private Button importDataBtn;
     private final AnalysisViewCNVController analysisViewCNVController;
 
-    private SimpleObjectProperty<File> matrixFile = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<File> matrixFile = new SimpleObjectProperty<>();
 
     private final SimpleObjectProperty<Analysis> analysis = new SimpleObjectProperty<>();
 
@@ -65,6 +67,8 @@ public class CNVImportDataController extends VBox {
                 updateView();
             }
         });
+
+        importDataBtn.disableProperty().bind(matrixFile.isNull());
     }
 
 

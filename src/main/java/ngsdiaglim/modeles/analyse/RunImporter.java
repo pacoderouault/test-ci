@@ -17,6 +17,7 @@ import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.VCFUtils;
 import org.apache.commons.io.FileUtils;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -183,8 +184,9 @@ public class RunImporter {
                     }
 
                     for (Annotation annotation : vcfParser.getAnnotations()) {
-                        DAOController.getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
-
+                        if (!DAOController.getVariantAnalysisDAO().hasVariant(analysis_id, annotation.getVariant().getId())) {
+                            DAOController.getVariantAnalysisDAO().insertVariantAnalysis(annotation.getVariant().getId(), analysis_id);
+                        }
                         Object[] analysisIds = new Object[run.getAnalyses().size()];
                         for (int i = 0; i < run.getAnalyses().size(); i++) {
                             analysisIds[i] = (int) run.getAnalyses().get(i).getId();
@@ -193,7 +195,7 @@ public class RunImporter {
 
                         // check for CIQ hotspots variants
                         if (ciqModel != null) {
-                            CIQHotspot hotspot = ciqModel.getHotspot(annotation.getVariant());
+                            CIQHotspot hotspot = ciqModel.getHotspot(annotation);
                             if (hotspot != null) {
                                 DAOController.getCiqRecordDAO().addCIQRecord(
                                         ciqModel,
@@ -206,10 +208,7 @@ public class RunImporter {
                         }
                     }
 
-//                    // set analysis as CIQ
-//                    if (ciqModel != null) {
-//                        DAOController.getCiqAnalysisDAO().addAnalysisCIQ(analysis_id, ciqModel.getId());
-//                    }
+                    DAOController.getAnalysisDAO().updateAnalysisImportState(analysis_id, true);
                 }
 
                 // force reloading analyses of the run

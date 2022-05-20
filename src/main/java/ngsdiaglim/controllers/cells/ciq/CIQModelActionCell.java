@@ -61,8 +61,8 @@ public class CIQModelActionCell extends TableCell<CIQModel, Void> {
                             DAOController.getCiqModelDAO().deleteCIQModel(ciq.getId());
                             getTableView().getItems().remove(ciq);
                             getTableView().refresh();
-                            Message.hideDialog(dialog);
                         }
+                        Message.hideDialog(dialog);
                     } catch (SQLException e) {
                         logger.error(e);
                         Message.error(e.getMessage());

@@ -4,6 +4,7 @@ import javafx.scene.control.Skin;
 import ngsdiaglim.controllers.ui.FilterTableColumn;
 import ngsdiaglim.enumerations.Operators;
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
 import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 
 public class GnomadPopupFilter extends TableColumnPopupFilter<Annotation, GnomadPopulationFreq> {
@@ -26,19 +27,20 @@ public class GnomadPopupFilter extends TableColumnPopupFilter<Annotation, Gnomad
             getTableColumn().setPredicate(null);
         } else {
             getTableColumn().setPredicate(a -> {
+                GnomadPopulationFreq maxPop = a.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
                 switch (op) {
                     case EQUALS:
-                        return a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() == value.doubleValue();
+                        return maxPop != null && maxPop.getAf() == value.doubleValue();
                     case NOT_EQUALS:
-                        return a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() != value.doubleValue();
+                        return maxPop != null && maxPop.getAf() != value.doubleValue();
                     case GREATER_THAN:
-                        return a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() > value.doubleValue();
+                        return maxPop != null && maxPop.getAf() > value.doubleValue();
                     case GREATER_OR_EQUALS_THAN:
-                        return a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() >= value.doubleValue();
+                        return maxPop != null && maxPop.getAf() >= value.doubleValue();
                     case LOWER_THAN:
-                        return a.getGnomADFrequencies().getMax() == null || a.getGnomADFrequencies().getMax().getAf() < value.doubleValue();
+                        return maxPop == null || maxPop.getAf() < value.doubleValue();
                     case LOWER_OR_EQUALS_THAN:
-                        return a.getGnomADFrequencies().getMax() == null || a.getGnomADFrequencies().getMax().getAf() <= value.doubleValue();
+                        return maxPop == null || maxPop.getAf() <= value.doubleValue();
                     default:
                         return false;
                 }

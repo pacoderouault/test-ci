@@ -4,7 +4,9 @@ import ngsdiaglim.BaseSetup;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.HotspotDAO;
 import ngsdiaglim.database.dao.HotspotsSetDAO;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.exceptions.MalformedPanelFile;
+import ngsdiaglim.modeles.variants.GenomicVariant;
 import ngsdiaglim.modeles.variants.Hotspot;
 import ngsdiaglim.modeles.variants.HotspotsSet;
 import ngsdiaglim.modeles.variants.Variant;
@@ -34,12 +36,15 @@ class HotspotsParserTest extends BaseSetup {
             }
             HotspotsSet hotspotSet = hotspotsSetDAO.getHotspotsSet(id);
             assertEquals(1742, hotspotSet.getHotspots().size());
-            Variant v1 = new Variant("chr7", 140453137, 140453137, "C", "G");
-            Variant v2 = new Variant("chr7", 140453145, 140453145, "A", "G");
-            Variant v3 = new Variant("chr22", 38509438, 38509438, "G", "T");
-            assertNotNull(hotspotSet.getHotspot(v1));
-            assertNull(hotspotSet.getHotspot(v2));
-            assertNotNull(hotspotSet.getHotspot(v3));
+            GenomicVariant gv1 = new GenomicVariant("chr7", 140453137, 140453137, "C", "G");
+            GenomicVariant gv2 = new GenomicVariant("chr7", 140453145, 140453145, "A", "G");
+            GenomicVariant gv3 = new GenomicVariant("chr22", 38509438, 38509438, "G", "T");
+            Variant v1 = new Variant(gv1, null);
+            Variant v2 = new Variant(gv2, null);
+            Variant v3 = new Variant(gv3, null);
+            assertNotNull(hotspotSet.getHotspot(Genome.GRCh37, v1));
+            assertNull(hotspotSet.getHotspot(Genome.GRCh37, v2));
+            assertNotNull(hotspotSet.getHotspot(Genome.GRCh37, v3));
         } catch (IOException | MalformedPanelFile | SQLException e) {
            fail(e.getMessage());
         }

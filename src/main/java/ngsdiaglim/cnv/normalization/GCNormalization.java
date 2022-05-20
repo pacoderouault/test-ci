@@ -6,6 +6,7 @@ import ngsdiaglim.AppSettings;
 import ngsdiaglim.cnv.CovCopCNVData;
 import ngsdiaglim.cnv.CovCopRegion;
 import ngsdiaglim.enumerations.FitterMethod;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.modeles.FastaSequenceGetter;
 import ngsdiaglim.utils.DNAUtils;
 import ngsdiaglim.utils.MathUtils;
@@ -116,7 +117,13 @@ public class GCNormalization extends CNVNormalization {
     }
 
     private void getGCContent() throws Exception {
-        FastaSequenceGetter fastaSequenceGetter = new FastaSequenceGetter(new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_HG19.name())));
+        File fastaFile;
+        if (cnvData.getGenome().equals(Genome.GRCh38)) {
+            fastaFile = new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH38.name()));
+        } else {
+            fastaFile = new File(App.get().getAppSettings().getProperty(AppSettings.DefaultAppSettings.REFERENCE_GRCH37.name()));
+        }
+        FastaSequenceGetter fastaSequenceGetter = new FastaSequenceGetter(fastaFile);
         for (ObservableList<CovCopRegion> amplicons : cnvData.getCovcopRegions().values()) {
             for (CovCopRegion a : amplicons) {
                 String seq = fastaSequenceGetter.getSequence(a.getContig(), a.getStart(), a.getEnd());

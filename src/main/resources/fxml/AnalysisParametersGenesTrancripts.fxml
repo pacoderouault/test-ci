@@ -26,6 +26,7 @@
                                 <TableColumn fx:id="geneSetNameCol" prefWidth="170.0" text="%createAnalasisParameters.module.genes.geneSetCol.name" />
                                 <TableColumn fx:id="geneSetSizeCol" prefWidth="100.0" text="%createAnalasisParameters.module.genes.geneSetSizeCol.geneNb" />
                                 <TableColumn fx:id="geneSetActiveCol" prefWidth="75.0" text="%createAnalasisParameters.module.genes.geneSetCol.active" />
+                                <TableColumn fx:id="geneSetDeleteCol" prefWidth="75.0" text="%createAnalasisParameters.module.genes.geneSetCol.delete" />
                             </columns>
                         </TableView>
                     </children>

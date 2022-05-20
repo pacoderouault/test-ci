@@ -9,6 +9,7 @@ import ngsdiaglim.modeles.users.Roles.Role;
 
 import java.io.File;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,6 +77,7 @@ public class DatabaseCreatorDAO extends DAO {
                 "password VARCHAR(255), " +
                 "is_active BOOLEAN DEFAULT True, " +
                 "creation_date DATE, " +
+                "expiration_date DATE, " +
                 "preferences VARCHAR, " +
                 "UNIQUE (username));";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -154,7 +156,7 @@ public class DatabaseCreatorDAO extends DAO {
                 Role adminRole = DAOController.getRolesDAO().getRole(DefaultRolesEnum.ADMIN.name());
                 Set<Role> userRoles = new HashSet<>();
                 userRoles.add(adminRole);
-                DAOController.getUsersDAO().addUser("admin", "admin", userRoles);
+                DAOController.getUsersDAO().addUser("admin", "admin", userRoles, null);
             }
         }
 
@@ -462,6 +464,7 @@ public class DatabaseCreatorDAO extends DAO {
                 "run_id INT, " +
                 "analysisParameters_id INT, " +
                 "status VARCHAR(255), " +
+                "import_complete BOOLEAN DEFAULT FALSE, " +
                 "metadata VARCHAR, " +
                 "FOREIGN KEY (run_id) REFERENCES runs(id) ON DELETE CASCADE, " +
                 "FOREIGN KEY (analysisParameters_id) REFERENCES analysisParameters(id) ON DELETE CASCADE);";
@@ -475,15 +478,21 @@ public class DatabaseCreatorDAO extends DAO {
     private void createVariantTable() throws SQLException {
         final String sql = "CREATE TABLE IF NOT EXISTS variants ( " +
                 "id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, " +
-                "contig VARCHAR_IGNORECASE(10), " +
-                "start INT, " +
-                "end_ INT, " +
-                "ref VARCHAR_IGNORECASE, " +
-                "alt VARCHAR_IGNORECASE, " +
+                "contig_grch37 VARCHAR_IGNORECASE(10), " +
+                "start_grch37 INT, " +
+                "end_grch37 INT, " +
+                "ref_grch37 VARCHAR_IGNORECASE, " +
+                "alt_grch37 VARCHAR_IGNORECASE, " +
+                "contig_grch38 VARCHAR_IGNORECASE(10), " +
+                "start_grch38 INT, " +
+                "end_grch38 INT, " +
+                "ref_grch38 VARCHAR_IGNORECASE, " +
+                "alt_grch38 VARCHAR_IGNORECASE, " +
                 "pathogenicity_value INT DEFAULT 3, " +
                 "pathogenicity_confirmed BOOLEAN DEFAULT TRUE, " +
                 "false_positive BOOLEAN DEFAULT FALSE, " +
-                "UNIQUE (contig, start, end_, ref, alt));";
+                "UNIQUE (contig_grch37, start_grch37, end_grch37, ref_grch37, alt_grch37), " +
+                "UNIQUE (contig_grch38, start_grch38, end_grch38, ref_grch38, alt_grch38));";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.executeUpdate();
         }

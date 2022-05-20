@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import ngsdiaglim.cnv.*;
 import ngsdiaglim.comparators.RegionComparator;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.modeles.analyse.Analysis;
 import ngsdiaglim.modeles.analyse.Panel;
 import ngsdiaglim.modeles.analyse.PanelRegion;
@@ -123,7 +124,7 @@ public class CaptureDepthParser {
         });
         regionByPool.forEach((pool, regionsList) -> regionsList.sort(new RegionComparator()));
 
-        CovCopCNVData cnvData = new CovCopCNVData(panel);
+        CovCopCNVData cnvData = new CovCopCNVData(analysis.getAnalysisParameters().getGenome(), panel);
         cnvData.setSamples(samples);
         cnvData.setCovcopRegions(regionByPool);
 
@@ -134,7 +135,7 @@ public class CaptureDepthParser {
     }
 
 
-    public static CovCopCNVData getCNVSample(CNVControlGroup cnvControlGroup, int windowSize) throws IOException, SQLException {
+    public static CovCopCNVData getCNVSample(Genome genome, CNVControlGroup cnvControlGroup, int windowSize) throws IOException, SQLException {
         LinkedHashMap<String, CNVSample> samples = new LinkedHashMap<>();
         HashMap<String, CovCopRegion> regions = new HashMap<>();
 
@@ -219,7 +220,7 @@ public class CaptureDepthParser {
         });
         regionByPool.forEach((pool, regionsList) -> regionsList.sort(new RegionComparator()));
 
-        CovCopCNVData covCopCNVData = new CovCopCNVData(cnvControlGroup.getPanel());
+        CovCopCNVData covCopCNVData = new CovCopCNVData(genome, cnvControlGroup.getPanel());
         covCopCNVData.setSamples(samples);
         covCopCNVData.setCovcopRegions(regionByPool);
 

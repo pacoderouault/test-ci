@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.ChangePasswordDialog;
+import ngsdiaglim.controllers.dialogs.ChangeUserExpirationDateDialog;
 import ngsdiaglim.controllers.dialogs.ChangeUsernameDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
@@ -117,4 +118,6 @@ public class AccountController extends Module {
             }
         });
     }
+
+
 }

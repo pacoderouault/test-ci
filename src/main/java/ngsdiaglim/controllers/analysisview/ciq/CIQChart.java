@@ -150,6 +150,7 @@ public class CIQChart extends XYChart {
         });
 
         xAxis.maxMajorTickLabelCountProperty().bind(xAxis.maxProperty().subtract(xAxis.minProperty()));
+
     }
 
     private void updateYAxis() {
@@ -160,14 +161,14 @@ public class CIQChart extends XYChart {
     }
 
     private void updateXAxis() {
-//        xAxis.setMaxMajorTickLabelCount(Math.mdataset.get().getCiqRecords().size() - 1);
-//        xAxis.tick
-//        // show only the 30 last records
+
+        // show only the 30 last records
         if (dataset.get().getCiqRecords().size() > 30) {
-            xAxis.set(dataset.get().getCiqRecords().size() - 30.5, dataset.get().getCiqRecords().size() - 0.5);
+            xAxis.set(dataset.get().getCiqRecords().size() - 30.5, dataset.get().getCiqRecords().size() + 3.5);
         } else {
-            xAxis.set(-0.5, dataset.get().getCiqRecords().size() - 0.5);
+            xAxis.set(-0.5, dataset.get().getCiqRecords().size() + 3.5);
         }
+//        xAxis.set(-0.5, dataset.get().getCiqRecords().size() + 10);
         xAxis.getCategories().clear();
     }
 

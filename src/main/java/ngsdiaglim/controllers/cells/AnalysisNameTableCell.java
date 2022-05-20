@@ -1,5 +1,6 @@
 package ngsdiaglim.controllers.cells;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
@@ -29,10 +30,11 @@ public class AnalysisNameTableCell extends TableCell<Analysis, String>  {
         setGraphic(null);
         tooltip.setText(null);
         setTooltip(null);
+
         if (item != null && !item.isEmpty()) {
-            setTooltip(tooltip);
             setText(item);
             tooltip.setText(item);
+            setTooltip(tooltip);
             Analysis analysis = getTableRow().getItem();
             if (analysis != null) {
                 File vcfFile = analysis.getVcfFile();
@@ -53,6 +55,10 @@ public class AnalysisNameTableCell extends TableCell<Analysis, String>  {
                     messages.add(App.getBundle().getString("home.module.analyseslist.msg.err.vcfFileIsMissing"));
                     state = State.ERROR;
                 }
+                if (!analysis.isImportComplete()) {
+                    messages.add(App.getBundle().getString("home.module.analyseslist.msg.err.importNotComplete"));
+                    state = State.ERROR;
+                }
 
                 if (!state.equals(State.VALID)) {
                     FontIcon icon;
@@ -69,13 +75,9 @@ public class AnalysisNameTableCell extends TableCell<Analysis, String>  {
                     for (String m : messages) {
                         stringJoiner.add(m);
                     }
-                    Tooltip errTp = new Tooltip(stringJoiner.toString());
-                    errTp.setShowDelay(Duration.ZERO);
-                    errTp.setStyle("-fx-font-size: 13px;");
-
-                    Tooltip.install(icon, errTp);
 
                     setGraphic(icon);
+                    tooltip.setText(stringJoiner.toString());
                 }
             }
         }

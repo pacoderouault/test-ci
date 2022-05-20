@@ -31,7 +31,7 @@
             <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="module-box-header">
                <children>
                   <Label styleClass="font-medium" text="%importanalysesdialog.title.run" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#addRunFile" text="%importanalysesdialog.btn.addRunFile" />
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#addRunFile" styleClass="button-action-cell" text="%importanalysesdialog.btn.addRunFile" />
                </children>
             </HBox>
             <FlowPane fx:id="runFilesFp" hgap="5.0" rowValignment="TOP" vgap="5.0" />
@@ -50,15 +50,15 @@
             </HBox>
             <TableView fx:id="analysisTable" VBox.vgrow="ALWAYS">
               <columns>
-                  <TableColumn fx:id="colAnalysisState" prefWidth="35.0" />
-                  <TableColumn fx:id="colAnalysisName" prefWidth="200.0" text="%importanalysesdialog.table.colAnalysisName" />
-                <TableColumn fx:id="colSampleName" minWidth="0.0" prefWidth="170.0" text="%importanalysesdialog.table.colSampleName" />
-                <TableColumn fx:id="colVcfFile" prefWidth="200.0" text="%importanalysesdialog.table.colVcf" />
-                  <TableColumn fx:id="colBamFile" prefWidth="200.0" text="%importanalysesdialog.table.colBam" />
-                  <TableColumn fx:id="colDepth" prefWidth="200.0" text="%importanalysesdialog.table.colDepth" />
-                  <TableColumn fx:id="colAnalysisParameters" prefWidth="200.0" sortable="false" text="%importanalysesdialog.table.colPanel" />
-                  <TableColumn fx:id="colCIQ" prefWidth="75.0" text="%importanalysesdialog.table.colCIQ" />
-                  <TableColumn fx:id="colActions" prefWidth="50.0" sortable="false" />
+                  <TableColumn fx:id="colAnalysisState" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" />
+                  <TableColumn fx:id="colAnalysisName" maxWidth="0.0" minWidth="150.0" prefWidth="300.0" text="%importanalysesdialog.table.colAnalysisName" />
+                <TableColumn fx:id="colSampleName" minWidth="150.0" prefWidth="170.0" text="%importanalysesdialog.table.colSampleName" />
+                <TableColumn fx:id="colVcfFile" minWidth="100.0" prefWidth="200.0" text="%importanalysesdialog.table.colVcf" />
+                  <TableColumn fx:id="colBamFile" minWidth="100.0" prefWidth="200.0" text="%importanalysesdialog.table.colBam" />
+                  <TableColumn fx:id="colDepth" minWidth="100.0" prefWidth="200.0" text="%importanalysesdialog.table.colDepth" />
+                  <TableColumn fx:id="colAnalysisParameters" minWidth="100.0" prefWidth="200.0" sortable="false" text="%importanalysesdialog.table.colPanel" />
+                  <TableColumn fx:id="colCIQ" minWidth="75.0" prefWidth="75.0" text="%importanalysesdialog.table.colCIQ" />
+                  <TableColumn fx:id="colActions" minWidth="50.0" prefWidth="50.0" sortable="false" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

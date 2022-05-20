@@ -19,15 +19,15 @@ public class RefPopUpFilter extends StringPopupFilter {
             getTableColumn().setPredicate(a -> {
                 switch (op) {
                     case EQUALS:
-                        return a.getVariant().getRef().equalsIgnoreCase(value);
+                        return a.getGenomicVariant().getRef().equalsIgnoreCase(value);
                     case NOT_EQUALS:
-                        return !a.getVariant().getRef().equalsIgnoreCase(value);
+                        return !a.getGenomicVariant().getRef().equalsIgnoreCase(value);
                     case STARTS_WITH:
-                        return a.getVariant().getRef().startsWith(value);
+                        return a.getGenomicVariant().getRef().startsWith(value);
                     case ENDS_WITH:
-                        return a.getVariant().getRef().endsWith(value);
+                        return a.getGenomicVariant().getRef().endsWith(value);
                     case CONTAINS:
-                        return a.getVariant().getRef().contains(value);
+                        return a.getGenomicVariant().getRef().contains(value);
                     default:
                         return false;
                 }

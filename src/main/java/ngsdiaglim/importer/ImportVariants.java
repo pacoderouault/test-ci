@@ -1,10 +1,13 @@
 package ngsdiaglim.importer;
 
+import ngsdiaglim.App;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.ACMG;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Variant;
+import ngsdiaglim.modeles.variants.VariantFalsePositive;
 import ngsdiaglim.modeles.variants.VariantPathogenicity;
 
 import java.io.BufferedReader;
@@ -83,9 +86,9 @@ public class ImportVariants {
             if (contig == null || contig.isBlank() || start == null || end == null || ref == null || ref.isBlank() || alt == null || alt.isBlank() || acmg == null || acmg_conf == null || fp == null) {
                 throw new NullPointerException("Variant is null : " + f);
             }
-            Variant v = DAOController.getVariantsDAO().getVariant(contig, start, ref, alt);
+            Variant v = DAOController.getVariantsDAO().getVariant(Genome.GRCh37, contig, start, ref, alt);
             if (v == null) {
-                System.out.println("Variant isn't found : " + f);
+//                System.out.println("Variant isn't found : " + f);
             } else {
 
                 ACMG variant_acmg = ACMG.getFromPathogenicityValue(acmg);
@@ -124,7 +127,24 @@ public class ImportVariants {
                 }
                 v.setAcmg(variant_acmg);
                 v.setPathogenicityConfirmed(true);
+                v.setFalsePositive(fp);
                 DAOController.getVariantsDAO().updateVariant(v);
+
+                if (fp) {
+                    User user = App.get().getLoggedUser();
+                    VariantFalsePositive vfp = new VariantFalsePositive(
+                            v.getId(),
+                            true,
+                            user.getId(),
+                            user.getUsername(),
+                            LocalDateTime.now(),
+                            user.getId(),
+                            user.getUsername(),
+                            LocalDateTime.now(),
+                            "Import"
+                    );
+                    DAOController.getVariantFalsePositiveDAO().addVariantFalsePositive(vfp);
+                }
             }
         }
     }

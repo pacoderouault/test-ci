@@ -34,6 +34,7 @@ public class DatabaseConnection {
     private Datasource loadDatasource() throws IOException {
         Properties props = new Properties();
         props.load(DatabaseConnection.class.getResourceAsStream("/database.properties"));
+        System.out.println(props);
         return new Datasource(
                 props.getProperty("jdbc.driverClassName"),
                 props.getProperty("jdbc.url"),

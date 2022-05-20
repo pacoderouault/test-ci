@@ -20,6 +20,8 @@ import ngsdiaglim.modeles.users.ColumnsExport;
 import ngsdiaglim.modeles.users.DefaultPreferencesEnum;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -276,7 +278,8 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
                 } else {
                     maxGnomad = 1;
                 }
-               if (a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() > maxGnomad) return false;
+                GnomadPopulationFreq maxPop = a.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+               if (maxPop != null && maxPop.getAf() > maxGnomad) return false;
             }
             if (!filterSynonymousCb.isSelected()) {
                 if (a.getTranscriptConsequence().getConsequences().contains(EnsemblConsequence.SYNONYMOUS_VARIANT)) return false;

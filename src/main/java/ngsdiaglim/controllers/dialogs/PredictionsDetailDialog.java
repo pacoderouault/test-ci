@@ -531,8 +531,8 @@ public class PredictionsDetailDialog extends DialogPane.Dialog<Annotation> {
         if (spliceAIPrediction == null) {
             return null;
         }
-        int genomicPos = getValue().getVariant().getStart() + spliceAIPrediction.getPosition();
-        return getValue().getVariant().getContig() + ":" + genomicPos;
+        int genomicPos = getValue().getGenomicVariant().getStart() + spliceAIPrediction.getPosition();
+        return getValue().getGenomicVariant().getContig() + ":" + genomicPos;
     }
 
     private void clearFields() {

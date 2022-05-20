@@ -78,7 +78,7 @@ public class AnalysisDAO extends DAO {
 
     public ObservableList<Analysis> getAnalysis(Run run) throws SQLException {
         ObservableList<Analysis> analyses = FXCollections.observableArrayList();
-        final String sql = "SELECT id, name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
+        final String sql = "SELECT id, name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, import_complete, metadata" +
                 " FROM analysis WHERE run_id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, run.getId());
@@ -104,7 +104,7 @@ public class AnalysisDAO extends DAO {
                     logger.error(e);
                     status = AnalysisStatus.INPROGRESS;
                 }
-
+                boolean importComplete = rs.getBoolean("import_complete");
                 AnalysisParameters analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysisParametersId);
 
                 Analysis analysis = new Analysis(
@@ -122,6 +122,7 @@ public class AnalysisDAO extends DAO {
                         sampleName,
                         analysisParameters,
                         status,
+                        importComplete,
                         metadata
                 );
 
@@ -136,7 +137,7 @@ public class AnalysisDAO extends DAO {
 
 
     public Analysis getAnalysis(Run run, long id) throws SQLException {
-        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, metadata" +
+        final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, creation_user, sample_name, analysisParameters_id, status, import_complete, metadata" +
                 " FROM analysis WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
@@ -161,7 +162,7 @@ public class AnalysisDAO extends DAO {
                     logger.error(e);
                     status = AnalysisStatus.INPROGRESS;
                 }
-
+                boolean importComplete = rs.getBoolean("import_complete");
                 AnalysisParameters analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysisParametersId);
 
                 return new Analysis(
@@ -179,6 +180,7 @@ public class AnalysisDAO extends DAO {
                         sampleName,
                         analysisParameters,
                         status,
+                        importComplete,
                         metadata
                 );
 
@@ -191,7 +193,7 @@ public class AnalysisDAO extends DAO {
 
     public Analysis getAnalysis(long id) throws SQLException {
         final String sql = "SELECT name, path, vcf_path, bam_path, depth_path, coverage_path, specificCoverage_path, creation_datetime, " +
-                "creation_user, sample_name, run_id, analysisParameters_id, status, metadata" +
+                "creation_user, sample_name, run_id, analysisParameters_id, status, import_complete, metadata" +
                 " FROM analysis WHERE id=?;";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
@@ -217,7 +219,7 @@ public class AnalysisDAO extends DAO {
                     logger.error(e);
                     status = AnalysisStatus.INPROGRESS;
                 }
-
+                boolean importComplete = rs.getBoolean("import_complete");
                 AnalysisParameters analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysisParametersId);
 
                 Run run = DAOController.getRunsDAO().getRun(runID);
@@ -237,6 +239,7 @@ public class AnalysisDAO extends DAO {
                         sampleName,
                         analysisParameters,
                         status,
+                        importComplete,
                         metadata
                 );
 
@@ -302,13 +305,23 @@ public class AnalysisDAO extends DAO {
         }
     }
 
+    public void updateAnalysisImportState(long analysis_id, boolean import_complete) throws SQLException {
+        final String sql = "UPDATE analysis SET import_complete=? WHERE id=?;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            int i = 0;
+            stm.setBoolean(++i, import_complete);
+            stm.setLong(++i, analysis_id);
+            stm.executeUpdate();
+        }
+    }
+
 
     public ObservableList<Analysis> searchAnalysis(String query) throws SQLException {
         ObservableList<Analysis> analyses = FXCollections.observableArrayList();
         final String sql = "SELECT a.id AS aId, a.name AS aName, a.path AS aPath, a.vcf_path AS Avcf_path," +
                 " a.bam_path AS aBam_path, a.depth_path AS aDepth_path, a.coverage_path AS aCoverage_path, a.specificCoverage_path AS aSpecificCoverage_path," +
                 " a.creation_datetime AS aCreation_datetime, a.creation_user AS aCreation_user, a.sample_name AS aSample_name," +
-                " a.run_id AS aRun_id, a.analysisParameters_id AS aAnalysisParameters_id, a.status AS aStatus, a.metadata AS aMetadata," +
+                " a.run_id AS aRun_id, a.analysisParameters_id AS aAnalysisParameters_id, a.status AS aStatus, a.import_complete AS aImport_complete, a.metadata AS aMetadata," +
                 " r.id AS rId, r.path AS rPath, r.name AS rName, r.date AS rDate, r.creation_date AS rCreation_date, r.creation_user AS rCreation_user" +
                 " FROM analysis AS a JOIN Runs as r WHERE a.run_id=r.id AND (Upper(a.name) LIKE UPPER(?) OR UPPER(a.sample_name) LIKE UPPER(?) OR UPPER(r.name) LIKE UPPER(?));";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -354,7 +367,7 @@ public class AnalysisDAO extends DAO {
                     logger.error(e);
                     status = AnalysisStatus.INPROGRESS;
                 }
-
+                boolean importComplete = rs.getBoolean("aImport_complete");
                 AnalysisParameters analysisParameters = DAOController.getAnalysisParametersDAO().getAnalysisParameters(analysisParametersId);
 
                 Analysis analysis = new Analysis(
@@ -372,6 +385,7 @@ public class AnalysisDAO extends DAO {
                         sampleName,
                         analysisParameters,
                         status,
+                        importComplete,
                         metadata
                 );
                 analyses.add(analysis);

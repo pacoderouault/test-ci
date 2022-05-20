@@ -50,7 +50,7 @@ public class CIQModelDAO extends DAO {
                         rs.getString("barcode"),
                         rs.getBoolean("is_active")
                 );
-
+                ciqModel.setHotspots(DAOController.getCiqHotspotDAO().getCIQHotspots(ciqModel));
                 ciqModels.add(ciqModel);
             }
         }

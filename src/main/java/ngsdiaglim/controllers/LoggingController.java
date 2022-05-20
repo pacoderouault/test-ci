@@ -10,6 +10,7 @@ import ngsdiaglim.database.DAOController;
 import ngsdiaglim.modeles.users.User;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class LoggingController {
 
@@ -37,9 +38,10 @@ public class LoggingController {
         try {
             User user = DAOController.getUsersDAO().checkUserConnection(login, password);
             if (user == null) {
-                dialogPane.showError("TIELE", App.getBundle().getString("login.msg.err.badConnection"));
-            }
-            else {
+                dialogPane.showError("ERROR", App.getBundle().getString("login.msg.err.badConnection"));
+            } else if (user.getExpirationDate() != null && user.getExpirationDate().isBefore(LocalDate.now())){
+                dialogPane.showError("ERROR", App.getBundle().getString("login.msg.err.expiredAccount"));
+            } else {
                 App.get().setLoggedUser(user);
             }
         } catch (SQLException e) {

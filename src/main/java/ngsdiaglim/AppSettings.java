@@ -66,11 +66,19 @@ public class AppSettings extends Properties {
     public enum DefaultAppSettings {
 
         MAXIMIZED("True"),
-        REFERENCE_HG19("/mnt/Data/Biological_Data/References/hg19.fasta"),
+        REFERENCE_GRCH37("/mnt/Data/Biological_Data/References/hg19.fasta"),
+        REFERENCE_GRCH38("/mnt/Data/Biological_Data/References/hg38/hg38.fa"),
+        GRCH37_TO_GRCH38_CHAIN("/opt/liftOver/hg19ToHg38.over.chain.gz"),
+        GRCH38_TO_GRCH37_CHAIN("/opt/liftOver/hg38ToHg19.over.chain"),
         IGV_IP("127.0.0.1"),
         IGV_PORT("60151"),
         BGM_BLANK_REPORT("./.data/bgm_report_template.docx"),
-        SERVICE("");
+        ENSEMBL_API("https://rest.ensembl.org"),
+        SERVICE(""),
+
+        USE_PROXY("false"),
+        PROXY_HOST("proxy.chu.fr"),
+        PROXY_PORT("8080");
 
         private final String value;
 

@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import ngsdiaglim.App;
 import ngsdiaglim.AppSettings;
 import ngsdiaglim.modeles.analyse.Analysis;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,11 +41,16 @@ public class IGVLinks {
     }
 
     private void execute(String link) throws IOException {
-        System.out.println(link);
-        URL url = new URL(link);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        con.getInputStream();
+        try {
+            System.out.println(link);
+            link = "http://localhost:60151/goto?locus=egfr";
+            URL url = new URL(link);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.getInputStream();
+        } catch (Exception e) {
+
+        }
     }
 
     private String loadFiles() {

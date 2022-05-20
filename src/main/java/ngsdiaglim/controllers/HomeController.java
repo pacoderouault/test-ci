@@ -5,12 +5,13 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.VBox;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.cells.*;
 import ngsdiaglim.controllers.dialogs.AddRunDialog;
@@ -19,21 +20,27 @@ import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.RunsStatisticsDAO;
 import ngsdiaglim.enumerations.AnalysisStatus;
+import ngsdiaglim.enumerations.Order;
+import ngsdiaglim.enumerations.RunOrder;
 import ngsdiaglim.modeles.analyse.*;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class HomeController extends Module {
 
     Logger logger = LogManager.getLogger(HomeController.class);
 
+    @FXML private Pagination runsPagination;
     @FXML private TableView<Run> runsTable;
     @FXML private TableColumn<Run, String> runNameCol;
     @FXML private TableColumn<Run, LocalDate> runDateCol;
@@ -47,10 +54,15 @@ public class HomeController extends Module {
     @FXML private TableColumn<Analysis, Void> analysisActionsCol;
     @FXML private Button addRunBtn;
     @FXML private Button addAnalysesBtn;
+    @FXML private CustomTextField searchRunCtf;
+    @FXML private Button closeSearchBtn;
     @FXML private HBox statisticsContainer;
+    @FXML private Label statsRunsLb;
+    @FXML private Label statsAnalysesLb;
+    @FXML private FlowPane statsPanelsFp;
     private final ProgressIndicator progressIndicator = new ProgressIndicator();
     private final Label analysesTablePlaceholderLb = new Label(App.getBundle().getString("home.module.analyseslist.table.msg.emptyAnalyses"));
-
+    private final int runsByPage = 20;
     private Thread statisticsThread;
 
     public HomeController() {
@@ -65,6 +77,42 @@ public class HomeController extends Module {
             logger.error("Impossible to load the Home page", e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
+//        Platform.runLater(() -> {
+//            TableViewSkin<?> tableSkin = (TableViewSkin<?>) runsTable.getSkin();
+//            VirtualFlow<?> virtualFlow = (VirtualFlow<?>) tableSkin.getChildren().get(1);
+//            System.out.println(virtualFlow.getLastVisibleCell());
+//            System.out.println(runsTable.getHeight());
+//        });
+//        runsTable.heightProperty().addListener((obs, oldv, newV) -> {
+//
+//            try {
+//                loadRuns();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        });
+        Platform.runLater(() -> {
+            try {
+                initSearchRunTextField();
+                initRunsPagination();
+                loadRuns();
+                fillStatistics();
+
+            } catch (SQLException e) {
+                logger.error("Error when getting runs", e);
+                Message.error(e.getMessage(), e);
+            }
+        });
+//        getScene().getWindow().setOnShown(e -> {
+//            System.out.println(runsTable.getHeight());
+//        });
+//        runsTable.heightProperty().addListener((obs, oldV, newV) -> {
+//            try {
+//                loadRuns();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        });
     }
 
     @FXML
@@ -74,12 +122,6 @@ public class HomeController extends Module {
         initRunTable();
         initAnalysisTable();
 
-        try {
-            loadRuns();
-        } catch (SQLException e) {
-            logger.error("Error when getting runs", e);
-            Message.error(e.getMessage(), e);
-        }
 
         addRunBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.ADD_RUN));
     }
@@ -100,6 +142,17 @@ public class HomeController extends Module {
                         .subtract(17)  // a border stroke?
         );
 
+        runsTable.setOnSort(e -> {
+            Optional<TableColumn<Run, ?>> optional = runsTable.getSortOrder().stream().filter(c -> c.equals(runNameCol) || c.equals(runDateCol)).findAny();
+            if (optional.isPresent()) {
+                try {
+                    loadRuns();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        runsTable.setFixedCellSize(35);
         runsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             try {
                 fillAnalysesTable();
@@ -127,7 +180,7 @@ public class HomeController extends Module {
                         .subtract(analysisParametersCol.widthProperty())
                         .subtract(analysisStateCol.widthProperty())
                         .subtract(analysisActionsCol.widthProperty())
-                        .subtract(2)  // a border stroke?
+                        .subtract(17)  // a border stroke?
         );
 
         // Open analysis when double-clicking on row
@@ -157,6 +210,7 @@ public class HomeController extends Module {
                         runCreator = new RunCreator(dialog.getValue());
                         runId = runCreator.createRun();
                         loadRuns();
+                        fillStatistics();
                         Message.hideDialog(dialog);
                     } catch (SQLException | IOException ex) {
                         try {
@@ -227,9 +281,77 @@ public class HomeController extends Module {
     }
 
 
+    private void initSearchRunTextField() {
+        closeSearchBtn.visibleProperty().bind(searchRunCtf.textProperty().isNotEmpty());
+        searchRunCtf.setLeft(new FontIcon("mdmz-search"));
+        searchRunCtf.setOnAction(e -> {
+            try {
+                initRunsPagination();
+                loadRuns();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+
+    private void initRunsPagination() throws SQLException {
+
+        int runsCount = DAOController.getRunsDAO().getRunsCount(searchRunCtf.getText());
+//        int maxItems = (int) (runsTable.getHeight() / runsTable.getFixedCellSize()) - 2;
+//        this.runsByPage = Math.max(1, maxItems);
+        int nbPage = (int) (Math.ceil(runsCount * 1.0 / runsByPage));
+        runsPagination.setPageCount(nbPage);
+        runsPagination.setCurrentPageIndex(0);
+
+        runsPagination.currentPageIndexProperty().addListener((obs, oldV, newV) -> {
+            try {
+                loadRuns();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    @FXML
+    private void clearRunSearch() {
+        searchRunCtf.setText(null);
+        searchRunCtf.fireEvent(new ActionEvent());
+    }
+
+
     public void loadRuns() throws SQLException {
-        runsTable.getItems().setAll(DAOController.getRunsDAO().getRuns());
-        fillStatistics();
+//        int maxItems = (int) (runsTable.getHeight() / runsTable.getFixedCellSize()) - 2;
+//        this.runsByPage = Math.max(1, maxItems);
+        // check if the name col or the date col is sorted
+        runsPagination.setMaxPageIndicatorCount(10);
+        RunOrder runOrder = RunOrder.DATE;
+        Order order = Order.DESC;
+        for (TableColumn<Run, ?> tc : runsTable.getSortOrder()) {
+            if (tc.equals(runNameCol)) {
+                runOrder = RunOrder.NAME;
+                if (tc.getSortType().equals(TableColumn.SortType.ASCENDING)) {
+                    order = Order.ASC;
+                }
+                break;
+            }
+
+            if (tc.equals(runDateCol)) {
+                if (tc.getSortType().equals(TableColumn.SortType.ASCENDING)) {
+                    order = Order.ASC;
+                }
+                break;
+            }
+        }
+
+        String filterName = searchRunCtf.getText();
+
+        runsTable.getItems().setAll(DAOController.getRunsDAO().getRuns(filterName, order, runOrder, runsPagination.getCurrentPageIndex() * runsByPage, runsByPage));
+
+
+//        runsTable.getItems().setAll(DAOController.getRunsDAO().getRuns());
+//        fillStatistics();
     }
 
     public void fillAnalysesTable() throws SQLException {
@@ -271,25 +393,21 @@ public class HomeController extends Module {
             try {
                 RunsStatisticsDAO.RunsStatistics runsStatistics = DAOController.getRunsStatisticsDAO().getRunsStatistics();
                 Platform.runLater(() -> {
-                    statisticsContainer.getChildren().clear();
 
                     Object[] runNb = {runsStatistics.getRunNb()};
-                    Label runNbLb = new Label(BundleFormatter.format("home.module.statistics.lb.runNb", runNb));
-                    statisticsContainer.getChildren().add(runNbLb);
+                    statsRunsLb.setText(BundleFormatter.format("home.module.statistics.lb.runNb", runNb));
 
                     Object[] analysesNb = {runsStatistics.getAnalysisNb()};
-                    Label analysesNbLb = new Label(BundleFormatter.format("home.module.statistics.lb.analysesNb", analysesNb));
-                    statisticsContainer.getChildren().add(analysesNbLb);
+                    statsAnalysesLb.setText(BundleFormatter.format("home.module.statistics.lb.analysesNb", analysesNb));
 
-                    Rectangle sep = new Rectangle(2, 20);
-                    sep.setFill(Color.valueOf("#CCC"));
-                    statisticsContainer.getChildren().add(sep);
-
+                    statsPanelsFp.getChildren().clear();
                     for (String panelName : runsStatistics.getAnalysisByPanelNb().keySet()) {
-                        Object[] panelStat = {panelName, runsStatistics.getAnalysisByPanelNb().get(panelName).getFirst(), runsStatistics.getAnalysisByPanelNb().get(panelName).getSecond()};
-                        Label panelStatLb = new Label(BundleFormatter.format("home.module.statistics.lb.statsPanel", panelStat));
-                        statisticsContainer.getChildren().add(panelStatLb);
+                        statsPanelsFp.getChildren().add(createPanelStatsPane(
+                                panelName,
+                                runsStatistics.getAnalysisByPanelNb().get(panelName).getFirst(),
+                                runsStatistics.getAnalysisByPanelNb().get(panelName).getSecond()));
                     }
+
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -300,4 +418,25 @@ public class HomeController extends Module {
 
     }
 
+
+    private VBox createPanelStatsPane(String panelName, Integer runsCount, Integer analysesCount) {
+        VBox box = new VBox();
+        box.setSpacing(5);
+        box.getStyleClass().addAll("module-box", "module-box-container");
+
+        Label panelLb = new Label(panelName);
+        panelLb.getStyleClass().add("font-medium");
+        Label runCountLb = new Label();
+        Label analysesCountLb = new Label();
+
+        Object[] runNb = {runsCount};
+        runCountLb.setText(BundleFormatter.format("home.module.statistics.lb.panelRunNb", runNb));
+
+        Object[] analysesNb = {analysesCount};
+        analysesCountLb.setText(BundleFormatter.format("home.module.statistics.lb.panelAnalysesNb", analysesNb));
+
+        box.getChildren().addAll(panelLb, runCountLb, analysesCountLb);
+        return box;
+
+    }
 }

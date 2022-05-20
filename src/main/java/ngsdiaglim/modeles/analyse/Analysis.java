@@ -1,5 +1,6 @@
 package ngsdiaglim.modeles.analyse;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -35,6 +36,7 @@ public class Analysis {
     private final SimpleStringProperty metadata = new SimpleStringProperty();
     private final SimpleStringProperty name = new SimpleStringProperty();
     private final SimpleObjectProperty<AnalysisStatus> status = new SimpleObjectProperty<>();
+    public SimpleBooleanProperty importComplete = new SimpleBooleanProperty(false);
     private final ObservableList<Annotation> annotations = FXCollections.observableArrayList();
     private ObservableList<CoverageRegion> coverageRegions = null;
     private ObservableList<SpecificCoverageRegion> specCoverageRegions = null;
@@ -42,7 +44,7 @@ public class Analysis {
 
     public Analysis(long id, String name, String directoryPath, String vcfPath, String bamPath, String depthPath, String coveragePath, String specCoveragePath,
                     Run run, LocalDateTime creationDate, String creationUser, String sampleName, AnalysisParameters analysisParameters,
-                    AnalysisStatus status, String metadata) {
+                    AnalysisStatus status, boolean importComplete, String metadata) {
         this.id = id;
         this.name.set(name);
         this.directoryPath = directoryPath;
@@ -57,6 +59,7 @@ public class Analysis {
         this.sampleName = sampleName;
         this.analysisParameters = analysisParameters;
         this.status.set(status);
+        this.importComplete.setValue(importComplete);
         this.metadata.set(metadata);
     }
 
@@ -122,6 +125,18 @@ public class Analysis {
         this.status.set(status);
     }
 
+    public boolean isImportComplete() {
+        return importComplete.get();
+    }
+
+    public SimpleBooleanProperty importCompleteProperty() {
+        return importComplete;
+    }
+
+    public void setImportComplete(boolean importComplete) {
+        this.importComplete.set(importComplete);
+    }
+
     public File getVcfFile() {return vcfFile;}
 
     public File getBamFile() {return bamFile;}
@@ -146,7 +161,8 @@ public class Analysis {
 
     public ObservableList<SpecificCoverageRegion> getSpecificCoverageRegions() {return specCoverageRegions;}
 
-    public TabixGetter getTabixGetter() throws IOException {
+
+    public TabixGetter getTabixGetter() throws Exception {
         if (tabixGetter == null) {
             tabixGetter = new TabixGetter(this, this.getVcfFile());
         }
@@ -183,7 +199,6 @@ public class Analysis {
         }
         return map;
     }
-
 
     public void clear() {
         annotations.clear();

@@ -1,12 +1,20 @@
 package ngsdiaglim.controllers.cells;
 
 import com.dlsc.gemsfx.DialogPane;
+import com.dlsc.gemsfx.ExpandingTextArea;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.AddVariantCommentaryDialog;
 import ngsdiaglim.controllers.dialogs.Message;
@@ -17,9 +25,11 @@ import ngsdiaglim.modules.ModuleManager;
 import ngsdiaglim.utils.DateFormatterUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.tools.Utils;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Set;
 
 public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
 
@@ -28,7 +38,7 @@ public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
 
     @FXML private Label usernameLb;
     @FXML private Label dateLb;
-    @FXML private Label commentLb;
+    @FXML private TextArea commentLb;
     @FXML private Button editBtn;
     @FXML private Button deleteBtn;
 
@@ -50,14 +60,38 @@ public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
 
             usernameLb.setText(item.getUsername());
             dateLb.setText(DateFormatterUtils.formatLocalDateTime(item.getDatetime(), "dd/MM/yyyy HH:ss"));
-            commentLb.setText(item.getComment());
+//            commentLb.setText(item.getComment());
+//            commentTa.setText(item.getComment());
+////            commentLb.setWrapText(true);
+////            commentLb.setMinSize(Label.USE_PREF_SIZE, Label.USE_PREF_SIZE);
+////            commentLb.minWidthProperty().bind(getListView().widthProperty());
+//            commentTa.setWrapText(true);
+//            commentTa.setMaxSize(TextArea.USE_COMPUTED_SIZE, TextArea.USE_COMPUTED_SIZE);
+//            commentTf.getChildren().add(new Text(item.getComment()));
+            commentLb.setText(item.getComment().trim());
+//            expandingTa.requestFocus();
+//            expandingTa.autosize();
+
+//            Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/Ubuntu-Regular.ttf"), 16);
+
+//            System.out.println(computeTextHeight(font, item.getComment().trim(), 0));
+//            double textHeight = computeTextHeight(font, item.getComment().trim(), 0);
+//            commentLb.setPrefHeight(textHeight);
+
             setGraphic(mLLoader.getRoot());
 
             boolean isAdmin = App.get().getLoggedUser().hasRole(DefaultRolesEnum.ADMIN);
 
             editBtn.setDisable(!isUsersComment(item) || isAdmin);
             deleteBtn.setDisable(!isUsersComment(item) || isAdmin);
+            Platform.runLater(() -> {
 
+                commentLb.applyCss();
+                System.out.println(commentLb.getFont().getSize());
+
+                double textHeight = computeTextHeight(commentLb.getFont(), item.getComment().trim(), 0);
+                commentLb.setPrefHeight(textHeight + 20); // padding
+            });
         } else {
             getStyleClass().remove("transparent-list-cell");
             setGraphic(null);
@@ -104,5 +138,18 @@ public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
                 Message.error(ex.getMessage(), ex);
             }
         });
+    }
+
+    static double computeTextHeight(Font font, String text, double wrappingWidth) {
+        Text helper = new Text();
+
+        helper.setText(text);
+
+        helper.setFont(font);
+
+        helper.setWrappingWidth((int)wrappingWidth);
+
+        return helper.getLayoutBounds().getHeight();
+
     }
 }

@@ -3,6 +3,7 @@ package ngsdiaglim.modeles.variants;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.HotspotType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -126,15 +127,16 @@ public class Hotspot {
         return c.equalsIgnoreCase(contig.get()) && s <= end.get() && e >= start.get();
     }
 
-    public boolean isHotspot(Variant variant) {
+    public boolean isHotspot(Genome genome, Variant variant) {
+        GenomicVariant gv = variant.getGenomicVariant(genome);
         if (type.get().equals(HotspotType.REGION)) {
-            return isOverlapping(variant.getContig(), variant.getStart(), variant.getEnd());
+            return isOverlapping(gv.getContig(), gv.getStart(), gv.getEnd());
         }
         else {
-            return variant.getContig().equalsIgnoreCase(contig.get())
-                    && variant.getStart() == start.get()
-                    && variant.getRef().equalsIgnoreCase(ref.get())
-                    && variant.getAlt().equalsIgnoreCase(alt.get());
+            return gv.getContig().equalsIgnoreCase(contig.get())
+                    && gv.getStart() == start.get()
+                    && gv.getRef().equalsIgnoreCase(ref.get())
+                    && gv.getAlt().equalsIgnoreCase(alt.get());
         }
     }
 

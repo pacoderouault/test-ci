@@ -8,6 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.AboutDialog;
@@ -20,9 +22,12 @@ import ngsdiaglim.modeles.analyse.AnalysisParameters;
 import ngsdiaglim.modeles.parsers.VCFParser;
 import ngsdiaglim.modeles.users.Roles.PermissionsEnum;
 import ngsdiaglim.modules.ModuleManager;
+import ngsdiaglim.utils.BrowserUtils;
 import ngsdiaglim.utils.BundleFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.URL;
 
 public class AppController {
 
@@ -38,7 +43,6 @@ public class AppController {
     @FXML private Button genePanelsBtn;
     @FXML private AnchorPane moduleContainer;
     @FXML private Label moduleName;
-
     private static final DialogPane dialogPane = new DialogPane();
 
     public DialogPane getDialogPane() {return dialogPane;}
@@ -139,8 +143,12 @@ public class AppController {
 
     @FXML
     private void showDocumentation() {
-        DocumentationDialog dialog = new DocumentationDialog(dialogPane);
-        Message.showDialog(dialog);
+//        DocumentationDialog dialog = new DocumentationDialog(dialogPane);
+//        Message.showDialog(dialog);
+        URL is = getClass().getClassLoader().getResource("documentation.html");
+        if (is != null) {
+            BrowserUtils.openURL(is.toExternalForm());
+        }
     }
 
 

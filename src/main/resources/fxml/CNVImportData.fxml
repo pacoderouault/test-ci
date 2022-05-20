@@ -46,7 +46,7 @@
                                     <Label text="%cnv.importdata.amplicon.lb.matrix" GridPane.rowIndex="1" />
                                     <TextField fx:id="captureMatrixPathTf" editable="false" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <Button mnemonicParsing="false" onAction="#importMatrixHandler" text="%cnv.importdata.amplicon.btn.importMatrix" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <Button defaultButton="true" mnemonicParsing="false" onAction="#importAmpliconDataHandler" text="%cnv.importdata.amplicon.btn.importData" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Button fx:id="importDataBtn" defaultButton="true" mnemonicParsing="false" onAction="#importAmpliconDataHandler" text="%cnv.importdata.amplicon.btn.importData" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

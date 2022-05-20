@@ -23,18 +23,20 @@ public class User {
     private final SimpleStringProperty username = new SimpleStringProperty();
     private ObservableSet<Role> roles;
     private final LocalDate creationDate;
+    private final LocalDate expirationDate;
     private final SimpleBooleanProperty active = new SimpleBooleanProperty(true);
     private UserPreferences preferences = new UserPreferences();
 
-    public User(long id, String username, ObservableSet<Role> roles, LocalDate creationDate) {
+    public User(long id, String username, ObservableSet<Role> roles, LocalDate creationDate, LocalDate expirationDate) {
         this.id = id;
         this.username.setValue(username);
         this.roles = roles == null ? FXCollections.observableSet() : roles;
         this.creationDate = creationDate;
+        this.expirationDate = expirationDate;
     }
 
-    public User(long id, String username, ObservableSet<Role> roles, LocalDate creationDate, boolean isActive) {
-        this(id, username, roles, creationDate);
+    public User(long id, String username, ObservableSet<Role> roles, LocalDate creationDate, LocalDate expirationDate, boolean isActive) {
+        this(id, username, roles, creationDate, expirationDate);
         this.active.set(isActive);
     }
 
@@ -80,6 +82,8 @@ public class User {
     }
 
     public LocalDate getCreationDate() { return creationDate; }
+
+    public LocalDate getExpirationDate() {return expirationDate;}
 
     public boolean isActive() {
         return active.get();

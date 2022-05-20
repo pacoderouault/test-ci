@@ -106,4 +106,12 @@ public class PanelDAO extends DAO {
         }
     }
 
+    public boolean isUsed(long id) throws SQLException {
+        final String sql = "SELECT id FROM analysisParameters WHERE panel_id=? LIMIT 1;";
+        try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setLong(1, id);
+            ResultSet rs = stm.executeQuery();
+            return rs.next();
+        }
+    }
 }

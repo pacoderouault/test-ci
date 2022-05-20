@@ -11,6 +11,8 @@ import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.modeles.biofeatures.Gene;
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 import ngsdiaglim.utils.ListSelectionViewUtils;
 import ngsdiaglim.utils.NumberUtils;
 import ngsdiaglim.utils.StringUtils;
@@ -85,7 +87,8 @@ public class ReportSelectVariants extends ReportPane {
             }
             if (NumberUtils.isDouble(gnomadFreqTf.getText().replaceAll(",", "."))) {
                 double maxGnomadFreq = Double.parseDouble(gnomadFreqTf.getText().replaceAll(",", "."));
-                if (a.getGnomADFrequencies().getMax() != null && a.getGnomADFrequencies().getMax().getAf() > maxGnomadFreq) return false;
+                GnomadPopulationFreq maxPop = a.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+                if (maxPop != null && maxPop.getAf() > maxGnomadFreq) return false;
             }
             if (!otherCb.isSelected()) {
                 if (!exonicCb.isSelected() && (a.getTranscriptConsequence() != null && a.getTranscriptConsequence().getExon() != null)) {

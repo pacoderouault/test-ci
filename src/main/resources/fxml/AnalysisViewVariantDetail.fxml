@@ -19,9 +19,9 @@
 <?import org.controlsfx.control.textfield.CustomTextField?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root fitToWidth="true" pannable="true" styleClass="variantDetail" type="ScrollPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fitToHeight="true" fitToWidth="true" pannable="true" styleClass="variantDetail" type="ScrollPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <HBox fx:id="test" spacing="5.0">
+      <HBox fx:id="test" prefHeight="300.0" spacing="5.0">
          <children>
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                <children>
@@ -162,7 +162,16 @@
                                     <Insets top="10.0" />
                                  </VBox.margin>
                               </Label>
-                              <FlowPane fx:id="pubmedIdsContainer" hgap="5.0" vgap="5.0" />
+                              <HBox>
+                                 <children>
+                                    <FlowPane fx:id="pubmedIdsContainer" hgap="5.0" vgap="5.0" />
+                                    <Button mnemonicParsing="false" onAction="#expandPubMedId" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-expand_more" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                         <VBox maxWidth="280.0" minWidth="280.0" prefWidth="280.0" HBox.hgrow="NEVER">
@@ -206,6 +215,21 @@
                                  <children>
                                     <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.inrun" />
                                     <TextField fx:id="runFqTf" editable="false" styleClass="textfield-label" />
+                                    <Button fx:id="showSameVariantsInRunBtn" mnemonicParsing="false" onAction="#showSharingVariantRunDialog">
+                                       <styleClass>
+                                          <String fx:value="button-small" />
+                                          <String fx:value="button-action-cell" />
+                                       </styleClass>
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdmz-supervisor_account" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="BASELINE_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad" />
+                                    <TextField fx:id="gnomadExomeTf" editable="false" styleClass="textfield-label" />
                                  </children>
                               </HBox>
                               <HBox alignment="BASELINE_LEFT" spacing="3.0">
@@ -214,11 +238,16 @@
                                     <TextField fx:id="gnomadMaxTf" editable="false" styleClass="textfield-label" />
                                  </children>
                               </HBox>
-                              <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.gnomadDetail">
-                                 <VBox.margin>
-                                    <Insets top="10.0" />
-                                 </VBox.margin>
-                              </Label>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label styleClass="cat_title" text="%analysisview.variantdetail.lb.gnomadDetail" />
+                                    <Button mnemonicParsing="false" onAction="#showGnomadDialog" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdmz-public" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
                               <HBox alignment="BASELINE_LEFT" spacing="3.0">
                                  <children>
                                     <Label styleClass="smallLabel" text="%analysisview.variantdetail.lb.gnomad.afr" />
@@ -325,13 +354,13 @@
                               <String fx:value="module-box-container" />
                            </styleClass>
                            <children>
-                              <StackPane alignment="TOP_LEFT" minWidth="430.0" VBox.vgrow="ALWAYS">
+                              <StackPane alignment="TOP_LEFT" minWidth="430.0" VBox.vgrow="SOMETIMES">
                                  <children>
                                     <TabPane fx:id="commentariesTabpane" nodeOrientation="RIGHT_TO_LEFT" tabClosingPolicy="UNAVAILABLE">
                                        <tabs>
                                           <Tab closable="false" text="%analysisview.variantdetail.lb.specific">
                                              <content>
-                                                <VBox nodeOrientation="LEFT_TO_RIGHT">
+                                                <VBox nodeOrientation="LEFT_TO_RIGHT" spacing="3.0">
                                                    <children>
                                                       <ListView fx:id="annotationCommentaryLv" prefHeight="200.0" VBox.vgrow="ALWAYS" />
                                                       <HBox alignment="CENTER_RIGHT" spacing="10.0" VBox.vgrow="NEVER">
@@ -348,7 +377,7 @@
                                           </Tab>
                                           <Tab fx:id="variantCommentTab" closable="false" text="%analysisview.variantdetail.lb.variant">
                                              <content>
-                                                <VBox nodeOrientation="LEFT_TO_RIGHT">
+                                                <VBox nodeOrientation="LEFT_TO_RIGHT" spacing="3.0">
                                                    <children>
                                                       <ListView fx:id="variantCommentaryLv" prefHeight="200.0" VBox.vgrow="ALWAYS" />
                                                       <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">

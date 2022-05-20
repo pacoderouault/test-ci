@@ -70,10 +70,12 @@ public class AnalysisInfoDialog extends DialogPane.Dialog<Analysis> {
             analysisDepthTf.setEditable(false);
             analysisParemetersNameTf.setEditable(false);
             analysisParemetersPanelTf.setEditable(false);
+            analysisParemetersHotspotsTf.setEditable(false);
             analysisParemetersMinVAFTf.setEditable(false);
             analysisParemetersminDepthTf.setEditable(false);
             analysisParemetersWarningDepthTf.setEditable(false);
             analysisParemetersGenomeTf.setEditable(false);
+            analysisParemetersLibraryTf.setEditable(false);
 
             gridPane.setAlignment(Pos.CENTER);
             gridPane.setVgap(5);

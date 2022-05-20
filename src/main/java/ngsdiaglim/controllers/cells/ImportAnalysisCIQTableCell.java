@@ -51,10 +51,8 @@ public class ImportAnalysisCIQTableCell extends TableCell<AnalysisInputData, CIQ
     }
 
     private void setCIQModel(CIQModel ciqModel) {
-        System.out.println("ttest");
         AnalysisInputData data = getTableRow().getItem();
         if (data != null) {
-            System.out.println("ttest2");
             data.setCiqModel(ciqModel);
         }
     }

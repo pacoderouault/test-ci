@@ -31,7 +31,7 @@ public class AnalysisParametersDAO extends DAO {
                                       Long hotspotsSet_id, TargetEnrichment targetEnrichment) throws SQLException {
         long id;
         final String sql = "INSERT INTO analysisParameters (name, genome, min_depth, warning_depth, min_vaf," +
-                " is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment) VALUES(?, ?, ?, ?, ?, ?, True, ?, ?, ?, ?);";
+                " is_active, panel_id, geneSet_id, specificCoverageSet_id, hotspotsSet_id, target_enrichment) VALUES(?, ?, ?, ?, ?, True, ?, ?, ?, ?, ?);";
         try (Connection connection = getConnection(); PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int i = 0;
             stm.setString(++i, name);

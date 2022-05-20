@@ -134,9 +134,9 @@ public class CovCopCNVCaller {
 
     private CovCopCNVData loadControls() throws FileFormatException, SQLException, IOException {
         if (cnvData.getAlgorithm().equals(TargetEnrichment.AMPLICON)) {
-            return AmpliconMatrixParser.getCNVSamples(cnvData.getControlGroup().getMatrix_file(), cnvData.getPanel());
+            return AmpliconMatrixParser.getCNVSamples(cnvData.getControlGroup().getMatrix_file(), cnvData.getGenome(), cnvData.getPanel());
         } else if (cnvData.getAlgorithm().equals(TargetEnrichment.CAPTURE)) {
-            return CaptureDepthParser.getCNVSample(cnvData.getControlGroup(), cnvData.getWindowsSize());
+            return CaptureDepthParser.getCNVSample(cnvData.getGenome(), cnvData.getControlGroup(), cnvData.getWindowsSize());
         }
         return null;
     }

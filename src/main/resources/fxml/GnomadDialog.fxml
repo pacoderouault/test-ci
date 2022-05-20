@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<VBox fx:id="dialogContainer" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <Label text="%gnomaddialog.lb.variant" />
+            <TextField fx:id="variantTf" editable="false" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#openGnomad" text="%gnomaddialog.lb.gnomadlink">
+               <graphic>
+                  <FontIcon iconLiteral="mdmz-open_in_new" />
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <HBox spacing="10.0">
+         <children>
+            <VBox spacing="10.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox styleClass="module-box-header">
+                     <children>
+                        <Label text="%gnomaddialog.lb.exomes" />
+                     </children>
+                  </HBox>
+                  <VBox fx:id="exomesGridContainer" styleClass="module-box-container" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox spacing="10.0" styleClass="module-box" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox styleClass="module-box-header">
+                     <children>
+                        <Label text="%gnomaddialog.lb.genomes" />
+                     </children>
+                  </HBox>
+                  <VBox fx:id="genomesGridContainer" styleClass="module-box-container" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

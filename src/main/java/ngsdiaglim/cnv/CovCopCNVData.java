@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import ngsdiaglim.comparators.RegionComparator;
 import ngsdiaglim.enumerations.CNVControlType;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.enumerations.TargetEnrichment;
 import ngsdiaglim.modeles.analyse.Panel;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class CovCopCNVData {
 
+    private final Genome genome;
     private LinkedHashMap<String, CNVSample> samples;
     private final ObservableList<CNVSample> visibleSamples = FXCollections.observableArrayList();
     private ObservableMap<String, ObservableList<CovCopRegion>> covcopRegions;
@@ -24,9 +26,12 @@ public class CovCopCNVData {
     private ObservableList<CNVSample> controlSamples;
     private int windowsSize;
 
-    public CovCopCNVData(Panel panel) {
+    public CovCopCNVData(Genome genome, Panel panel) {
+        this.genome = genome;
         this.panel = panel;
     }
+
+    public Genome getGenome() {return genome;}
 
     public LinkedHashMap<String, CNVSample> getSamples() {return samples;}
 

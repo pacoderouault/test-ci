@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
@@ -17,16 +17,28 @@
             <TextField fx:id="genePanelNameTf" />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" spacing="5.0">
+      <HBox spacing="5.0">
          <children>
             <Label styleClass="font-medium" text="%addgenepaneldialog.lb.genesListlb" />
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#importGenesFromFile" text="%addgenepaneldialog.btn.fromfile" />
-            <Separator orientation="VERTICAL">
-               <HBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </HBox.margin>
-            </Separator>
-            <Label styleClass="font-mono" text="%help.format.genesPanel" />
+            <VBox spacing="5.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#importGenesFromFile" text="%addgenepaneldialog.btn.fromfile" />
+                        <Separator orientation="VERTICAL" />
+                        <Label styleClass="font-mono" text="%help.format.genesPanel" />
+                     </children>
+                  </HBox>
+                  <Label text="%help.format.or" />
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <ComboBox fx:id="genePanelCb" prefWidth="150.0" />
+                        <Separator orientation="VERTICAL" />
+                        <Label styleClass="font-mono" text="%help.format.copyPanel" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" spacing="5.0">

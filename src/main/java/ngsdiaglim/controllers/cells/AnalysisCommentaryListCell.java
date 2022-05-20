@@ -3,10 +3,7 @@ package ngsdiaglim.controllers.cells;
 import com.dlsc.gemsfx.DialogPane;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.AddAnalysisCommentaryDialog;
 import ngsdiaglim.controllers.dialogs.Message;
@@ -28,7 +25,7 @@ public class AnalysisCommentaryListCell  extends ListCell<AnalysisCommentary> {
 
     @FXML private Label usernameLb;
     @FXML private Label dateLb;
-    @FXML private Label commentLb;
+    @FXML private TextArea commentLb;
     @FXML private Button editBtn;
     @FXML private Button deleteBtn;
 

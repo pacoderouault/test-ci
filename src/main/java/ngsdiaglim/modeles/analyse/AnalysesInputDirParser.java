@@ -1,26 +1,38 @@
 package ngsdiaglim.modeles.analyse;
 
+import javafx.collections.ObservableList;
+import ngsdiaglim.database.DAOController;
 import ngsdiaglim.exceptions.DuplicateSampleInRun;
+import ngsdiaglim.modeles.ciq.CIQModel;
 import ngsdiaglim.utils.BamUtils;
 import ngsdiaglim.utils.VCFUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnalysesInputDirParser {
-
-
 
     private final File inputDir;
     private final Run run;
     private final List<RunFile> runFiles = new ArrayList<>();
     private final  HashMap<String, AnalysisInputData> analysesFiles = new HashMap<>();
-
+    private final Set<String> runFilesExtensions = new HashSet<>(){{
+        add("pdf");
+        add("html");
+        add("xls");
+        add("xlsx");
+        add("txt");
+        add("csv");
+        add("tsv");
+    }};
 
     public AnalysesInputDirParser(Run run, File inputDir) {
         this.inputDir = inputDir;
@@ -31,18 +43,19 @@ public class AnalysesInputDirParser {
 
     public HashMap<String, AnalysisInputData> getAnalysesFiles() {return analysesFiles;}
 
-    public void parseInputDir() throws IOException, DuplicateSampleInRun {
+    public void parseInputDir() throws IOException, DuplicateSampleInRun, SQLException {
         findInputFiles();
     }
 
-    private void findInputFiles() throws IOException, DuplicateSampleInRun {
+    private void findInputFiles() throws IOException, DuplicateSampleInRun, SQLException {
 
         List<File> vcfFiles = new ArrayList<>();
         List<File> bamFiles = new ArrayList<>();
         List<File> depthFiles = new ArrayList<>();
         runFiles.clear();
         analysesFiles.clear();
-        Files.find(inputDir.toPath(), 10, (path, basicFileAttributes) -> path.toFile().isFile()).forEach(p -> {
+        Path inputPath = inputDir.toPath();
+        Files.find(inputPath, 10, (path, basicFileAttributes) -> path.toFile().isFile()).forEach(p -> {
             if (p.toString().toLowerCase().endsWith(".vcf") || p.toString().toLowerCase().endsWith(".vcf.gz")) {
                 vcfFiles.add(p.toFile());
             }
@@ -52,7 +65,7 @@ public class AnalysesInputDirParser {
             else if (p.toString().toLowerCase().contains("_depth")) {
                 depthFiles.add(p.toFile());
             }
-            else if (p.toString().toLowerCase().endsWith(".pdf") || p.toString().toLowerCase().endsWith(".html")) {
+            else if (p.getParent().equals(inputPath) && isValidRunFile(p)) { // check for run files in the root
                 runFiles.add(new RunFile(p.toFile(), run));
             }
         });
@@ -68,11 +81,12 @@ public class AnalysesInputDirParser {
                 analysisInputData.setVcfFile(vcfFile);
                 analysisInputData.setBamFile(getBamFile(sampleName, bamFiles));
                 analysisInputData.setDepthFile(getDepthFile(sampleName, depthFiles));
+                Optional<CIQModel> ciq = getCIQModel(sampleName);
+                ciq.ifPresent(analysisInputData::setCiqModel);
+
                 analysesFiles.put(sampleName, analysisInputData);
             }
         }
-
-
     }
 
 
@@ -94,5 +108,28 @@ public class AnalysesInputDirParser {
             }
         }
         return null;
+    }
+
+
+    /**
+     * Check if the samplename correspond to a CIQ, based on regex pattern
+     */
+    private Optional<CIQModel> getCIQModel(String sampleName) throws SQLException {
+        Optional<CIQModel> optionalCiq = Optional.empty();
+        ObservableList<CIQModel> ciqModels = DAOController.getCiqModelDAO().getActiveCIQModels();
+        for (CIQModel ciq : ciqModels) {
+            String pattern = ciq.getBarcode();
+            Pattern p = Pattern.compile(pattern);
+            Matcher m = p.matcher(sampleName);
+            if(m.find()) {
+                optionalCiq = Optional.of(ciq);
+                break;
+            }
+        }
+        return optionalCiq;
+    }
+
+    private boolean isValidRunFile(Path path) {
+        return runFilesExtensions.contains(FilenameUtils.getExtension(path.getFileName().toString()));
     }
 }

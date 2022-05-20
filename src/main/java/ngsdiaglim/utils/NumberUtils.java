@@ -79,7 +79,6 @@ public class NumberUtils {
 
     public static double round(Number n, int decimalPlace) throws NullPointerException {
         if (n == null) throw new NullPointerException("Number is null");
-
         BigDecimal bd = BigDecimal.valueOf(n.doubleValue());
         bd = bd.setScale(decimalPlace, RoundingMode.HALF_UP);
         return bd.doubleValue();

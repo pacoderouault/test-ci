@@ -19,15 +19,15 @@ public class AltPopupFilter extends StringPopupFilter {
             getTableColumn().setPredicate(a -> {
                 switch (op) {
                     case EQUALS:
-                        return a.getVariant().getAlt().equalsIgnoreCase(value);
+                        return a.getGenomicVariant().getAlt().equalsIgnoreCase(value);
                     case NOT_EQUALS:
-                        return !a.getVariant().getAlt().equalsIgnoreCase(value);
+                        return !a.getGenomicVariant().getAlt().equalsIgnoreCase(value);
                     case STARTS_WITH:
-                        return a.getVariant().getAlt().startsWith(value);
+                        return a.getGenomicVariant().getAlt().startsWith(value);
                     case ENDS_WITH:
-                        return a.getVariant().getAlt().endsWith(value);
+                        return a.getGenomicVariant().getAlt().endsWith(value);
                     case CONTAINS:
-                        return a.getVariant().getAlt().contains(value);
+                        return a.getGenomicVariant().getAlt().contains(value);
                     default:
                         return false;
                 }

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HotspotsParser {
@@ -29,8 +30,10 @@ public class HotspotsParser {
                 ++i;
                 if (line.startsWith("#")) continue;
 
-                String[] tks = line.split(column_delimiter);
+                String[] tks = line.split(column_delimiter, -1);
                 if (tks.length < column_number) {
+                    System.out.println(line);
+                    System.out.println(Arrays.toString(tks));
                     throw new MalformedPanelFile("Bad columns number (< " + column_number + ")");
                 }
                 if (!NumberUtils.isInt(tks[2]) || !NumberUtils.isInt(tks[3])) {

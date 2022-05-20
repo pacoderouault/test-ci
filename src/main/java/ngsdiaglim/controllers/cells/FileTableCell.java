@@ -6,6 +6,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import ngsdiaglim.App;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
@@ -29,6 +30,12 @@ public class FileTableCell<T> extends TableCell<T, File> {
             setText(null);
             setGraphic(null);
             setTooltip(null);
+            if (!empty) {
+                Button b = new Button(App.getBundle().getString("importanalysesdialog.msg.help.loadFile"));
+                b.getStyleClass().add("button-action-cell");
+                b.setOnAction(e -> openFile());
+                setGraphic(b);
+            }
         } else {
             setText(item.getName());
             if (modifiable) {

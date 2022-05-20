@@ -6,22 +6,25 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.enumerations.ACMG;
+import ngsdiaglim.enumerations.Genome;
 import ngsdiaglim.modeles.Cytobands;
 import ngsdiaglim.modeles.biofeatures.Region;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Variant {
 
     private long id;
-    private final SimpleStringProperty contig = new SimpleStringProperty();
-    private final SimpleIntegerProperty start = new SimpleIntegerProperty();
-    private final SimpleIntegerProperty end = new SimpleIntegerProperty();
+    private final HashMap<Genome, GenomicVariant> genomeGenomicVariantMap = new HashMap<>();
+    private final SimpleObjectProperty<GenomicVariant> grch37PositionVariant;
+    private final SimpleObjectProperty<GenomicVariant> grch38PositionVariant;
     private final SimpleIntegerProperty occurrence = new SimpleIntegerProperty();
+    private List<Long> analysesInRun = new ArrayList<>();
     private final SimpleIntegerProperty occurrenceInRun = new SimpleIntegerProperty();
-    private final SimpleStringProperty ref = new SimpleStringProperty();
-    private final SimpleStringProperty alt = new SimpleStringProperty();
     private final SimpleObjectProperty<ACMG> acmg = new SimpleObjectProperty<>();
     private final SimpleBooleanProperty pathogenicityConfirmed = new SimpleBooleanProperty();
     private final SimpleBooleanProperty falsePositiveConfirmed = new SimpleBooleanProperty();
@@ -32,28 +35,24 @@ public class Variant {
     private final VariantPathogenicityHistory pathogenicityHistory;
     private final VariantFalsePositiveHistory falsePositiveHistory;
 
-    public Variant(String contig, int start, int end, String ref, String alt) {
-        this.contig.set(contig);
-        this.start.set(start);
-        this.end.set(end);
-        this.ref.set(ref);
-        this.alt.set(alt);
+    public Variant(GenomicVariant grch37Variant, GenomicVariant grch38Variant) {
+        this.grch37PositionVariant = new SimpleObjectProperty<>(grch37Variant);
+        this.grch38PositionVariant = new SimpleObjectProperty<>(grch38Variant);
+        genomeGenomicVariantMap.put(Genome.GRCh37, grch37PositionVariant.get());
+        genomeGenomicVariantMap.put(Genome.GRCh38, grch38PositionVariant.get());
         pathogenicityHistory = new VariantPathogenicityHistory(this);
         falsePositiveHistory = new VariantFalsePositiveHistory(this);
     }
 
-    public Variant(long id, String contig, int start, int end, String ref, String alt) {
-        this(contig, start, end, ref, alt);
+    public Variant(long id, GenomicVariant grch37Variant, GenomicVariant grch38Variant) {
+        this(grch37Variant, grch38Variant);
         this.id = id;
     }
 
     public Variant(Variant other) {
         this.id = other.id;
-        this.contig.set(other.getContig());
-        this.start.set(other.getStart());
-        this.end.set(other.getEnd());
-        this.ref.set(other.getRef());
-        this.alt.set(other.getAlt());
+        this.grch37PositionVariant = other.grch37PositionVariant;
+        this.grch38PositionVariant = other.grch38PositionVariant;
         this.cytoband = other.cytoband;
         this.pathogenicityHistory = other.pathogenicityHistory;
         this.falsePositiveHistory = other.falsePositiveHistory;
@@ -65,68 +64,22 @@ public class Variant {
         this.id = id;
     }
 
-    public String getContig() {
-        return contig.get();
+    public GenomicVariant getGrch37PositionVariant() {
+        return grch37PositionVariant.get();
     }
 
-    public SimpleStringProperty contigProperty() {
-        return contig;
+    public GenomicVariant getGenomicVariant(Genome genome) {return genomeGenomicVariantMap.getOrDefault(genome, getGrch37PositionVariant());}
+
+    public SimpleObjectProperty<GenomicVariant> grch37PositionVariantProperty() {
+        return grch37PositionVariant;
     }
 
-    public void setContig(String contig) {
-        this.contig.set(contig);
+    public GenomicVariant getGrch38PositionVariant() {
+        return grch38PositionVariant.get();
     }
 
-    public String getContigWithoutChr() {
-        return contig.get().replaceFirst("chr", "");
-    }
-
-    public int getStart() {
-        return start.get();
-    }
-
-    public SimpleIntegerProperty startProperty() {
-        return start;
-    }
-
-    public void setStart(int start) {
-        this.start.set(start);
-    }
-
-    public int getEnd() {
-        return end.get();
-    }
-
-    public SimpleIntegerProperty endProperty() {
-        return end;
-    }
-
-    public void setEnd(int end) {
-        this.end.set(end);
-    }
-
-    public String getRef() {
-        return ref.get();
-    }
-
-    public SimpleStringProperty refProperty() {
-        return ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref.set(ref);
-    }
-
-    public String getAlt() {
-        return alt.get();
-    }
-
-    public SimpleStringProperty altProperty() {
-        return alt;
-    }
-
-    public void setAlt(String alt) {
-        this.alt.set(alt);
+    public SimpleObjectProperty<GenomicVariant> grch38PositionVariantProperty() {
+        return grch38PositionVariant;
     }
 
     public ACMG getAcmg() {
@@ -205,6 +158,12 @@ public class Variant {
         this.occurrence.set(occurrence);
     }
 
+    public List<Long> getAnalysesInRun() {return analysesInRun;}
+
+    public void setAnalysesInRun(List<Long> analysesInRun) {
+        this.analysesInRun = analysesInRun;
+    }
+
     public int getOccurrenceInRun() {
         return occurrenceInRun.get();
     }
@@ -224,7 +183,7 @@ public class Variant {
     public SimpleObjectProperty<Region> cytobandProperty() throws IOException {
         if (cytoband == null) {
             cytoband = new SimpleObjectProperty<>();
-            cytoband.set(Cytobands.getCytoBand(new Region(contig.get(), start.get(), end.get(), null)));
+            cytoband.set(Cytobands.getCytoBand(new Region(grch37PositionVariant.get().getContig(), grch37PositionVariant.get().getStart(), grch37PositionVariant.get().getEnd(), null)));
         }
         return cytoband;
     }
@@ -252,9 +211,8 @@ public class Variant {
     }
 
 
-    @Override
     public String toString() {
-        return getContig() + ":" + getStart() + getRef() +">" + getAlt();
+        return grch37PositionVariant.get().getContig() + ":" + grch37PositionVariant.get().getStart() + grch37PositionVariant.get().getRef() +">" + grch37PositionVariant.get().getAlt();
     }
 
     @Override

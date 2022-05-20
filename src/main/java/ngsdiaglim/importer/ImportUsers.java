@@ -22,6 +22,7 @@ public class ImportUsers {
                 String[] tks = line.split("\t");
                 String name = tks[0];
                 boolean is_admin = Boolean.parseBoolean(tks[1]);
+                LocalDate creationDate = LocalDate.parse(tks[2]);
                 if (!DAOController.getUsersDAO().userExists(name)) {
                     Set<Role> roles = new HashSet<>();
                     if (is_admin) {
@@ -29,7 +30,7 @@ public class ImportUsers {
                     } else {
                         roles.add(DAOController.getRolesDAO().getRole(DefaultRolesEnum.GUEST.name()));
                     }
-                    DAOController.getUsersDAO().addUser(name, name, roles);
+                    DAOController.getUsersDAO().addUser(name, name, roles, creationDate,null);
                 }
             }
         }

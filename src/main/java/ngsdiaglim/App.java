@@ -12,15 +12,12 @@ import ngsdiaglim.controllers.AppController;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.database.DAOController;
 import ngsdiaglim.database.dao.DatabaseCreatorDAO;
-import ngsdiaglim.enumerations.CIQRecordState;
 import ngsdiaglim.enumerations.Service;
-import ngsdiaglim.importer.ImportVariants;
+import ngsdiaglim.importer.Importer;
 import ngsdiaglim.modeles.igv.IGVHandler;
-import ngsdiaglim.modeles.igv.IGVLinks;
 import ngsdiaglim.modeles.igv.IGVLinks2;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.modules.ModuleManager;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +45,8 @@ public class App extends Application {
     private final SimpleObjectProperty<User> loggedUser = new SimpleObjectProperty<>();
     private AppSettings appSettings;
     public final IGVHandler igvHandler = new IGVHandler();
+
+//    public IGVLinks igvLinks1;
     public IGVLinks2 igvLinks;
     private Service service;
 
@@ -58,6 +57,13 @@ public class App extends Application {
     public void init() {
 
         instance = this;
+
+        try {
+            appSettings = new AppSettings();
+        } catch (IOException e) {
+            logger.error("Error when reader application properties file");
+        }
+
         DatabaseCreatorDAO databaseCreatorDAO = new DatabaseCreatorDAO();
         if (!databaseCreatorDAO.exists()) {
             try {
@@ -72,43 +78,20 @@ public class App extends Application {
         } catch (SQLException e) {
             logger.error("Error when setup admin roles", e);
         }
-
-
-
-//        try {
-//
-//            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
-//
-//            File localRunDir = new File("/mnt/Data/CHU_services/biochimie_genetique_moleculaire/CMT/Runs_MiSeq/propres/allRuns");
-//            File dir = new File("/mnt/Data/tmp/BGMEXPORT/");
-//            File runDir = new File(dir, "runs");
-//
-//            CreateDefaultParams.createDefaultMiseq();
-//            CreateDefaultParams.createDefaultProton();
-//
-//            ImportUsers.importUsers(new File(dir, "users.txt"));
-//
-//            ImportsRuns runImporter = new ImportsRuns(runDir, localRunDir);
-//            runImporter.importRuns();
-//
-//            File variantsDir = new File(dir, "variants");
-//            ImportVariants.importVariants(variantsDir);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+//            Importer.importBGM();
+//            Importer.importHemato();
+//            Importer.importAnapath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void start(Stage stage) {
-        try {
-            appSettings = new AppSettings();
-        } catch (IOException e) {
-            logger.error("Error when reader application properties file");
-        }
+
         CSSFX.start();
         primaryStage = stage;
-
-
 
         try {
             service = Service.valueOf(appSettings.getProperty(AppSettings.DefaultAppSettings.SERVICE.name()));
@@ -153,6 +136,7 @@ public class App extends Application {
             appSettings.setValue(AppSettings.DefaultAppSettings.MAXIMIZED, newV);
         });
 
+        // Auto open admin account
         try {
             setLoggedUser(null);
             setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
@@ -160,13 +144,7 @@ public class App extends Application {
             e.printStackTrace();
         }
 
-
-//        try {
-//            DAOController.getRunsDAO().close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
+//        igvLinks1 = new IGVLinks();
         igvLinks = new IGVLinks2();
 
         primaryStage.setOnCloseRequest((event) -> {// <----------- this is what you need
@@ -176,7 +154,7 @@ public class App extends Application {
 
     public IGVHandler getIgvHandler() {return igvHandler;}
 
-//    public IGVLinks getIgvLinks() {return igvLinks;}
+//    public IGVLinks getIgvLinks() {return igvLinks1;}
     public IGVLinks2 getIgvLinks2() {return igvLinks;}
 
     private void loadLoggingScreen() throws IOException {

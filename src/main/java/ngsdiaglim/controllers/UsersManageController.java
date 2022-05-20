@@ -4,6 +4,7 @@ import com.dlsc.gemsfx.DialogPane;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,9 +16,11 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.dialogs.AddUserDialog;
+import ngsdiaglim.controllers.dialogs.ChangeUserExpirationDateDialog;
 import ngsdiaglim.controllers.dialogs.Message;
 import ngsdiaglim.controllers.dialogs.ResetPasswordDialog;
 import ngsdiaglim.database.DAOController;
+import ngsdiaglim.modeles.users.PasswordAuthentication;
 import ngsdiaglim.modeles.users.Roles.*;
 import ngsdiaglim.modeles.users.User;
 import ngsdiaglim.utils.BundleFormatter;
@@ -25,10 +28,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.textfield.CustomTextField;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -39,9 +44,13 @@ public class UsersManageController extends Module {
 
     @FXML private Button addNewUserBtn;
     @FXML private Button addNewGroupBtn;
+
+    @FXML private CustomTextField searchUsersCtf;
+    @FXML private Button closeSearchBtn;
     @FXML private TableView<User> userTable;
     @FXML private TableColumn<User, String> nameCol;
     @FXML private TableColumn<User, String> creationDateCol;
+    @FXML private TableColumn<User, LocalDate> expirationDateCol;
     @FXML private TableColumn<User, Set<Role>> groupsCol;
     @FXML private TableColumn<User, Boolean> activeCol;
     @FXML private TableColumn<User, Void> actionsCol;
@@ -52,6 +61,7 @@ public class UsersManageController extends Module {
 
 
     private final Tooltip resetPasswordTooltip = new Tooltip(App.getBundle().getString("usermanage.tp.resetPassword"));
+    private final Tooltip editExpirationDateTooltip = new Tooltip(App.getBundle().getString("usermanage.tp.editExpirationDate"));
     private final Tooltip deleteRoleTooltip = new Tooltip(App.getBundle().getString("usermanage.tp.deleteRole"));
 
     public UsersManageController() {
@@ -70,6 +80,8 @@ public class UsersManageController extends Module {
     @FXML
     private void initialize() {
         try {
+            initSearchRunTextField();
+
             initUserTable();
             fillUsersTable();
 
@@ -79,6 +91,7 @@ public class UsersManageController extends Module {
             initPermissionsTreeView();
 
             resetPasswordTooltip.setShowDelay(Duration.ZERO);
+            editExpirationDateTooltip.setShowDelay(Duration.ZERO);
             deleteRoleTooltip.setShowDelay(Duration.ZERO);
         } catch (SQLException e) {
             logger.error("Error when initializing use table", e);
@@ -87,6 +100,25 @@ public class UsersManageController extends Module {
 
         addNewGroupBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ROLES));
         addNewUserBtn.setDisable(!App.get().getLoggedUser().isPermitted(PermissionsEnum.USERS_MANAGEMENT));
+    }
+
+
+    private void initSearchRunTextField() {
+        closeSearchBtn.visibleProperty().bind(searchUsersCtf.textProperty().isNotEmpty());
+        searchUsersCtf.setLeft(new FontIcon("mdmz-search"));
+        searchUsersCtf.setOnAction(e -> {
+            try {
+                fillUsersTable();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    @FXML
+    private void clearUsersSearch() {
+        searchUsersCtf.setText(null);
+        searchUsersCtf.fireEvent(new ActionEvent());
     }
 
     private void initUserTable() throws SQLException {
@@ -125,49 +157,67 @@ public class UsersManageController extends Module {
         creationDateCol.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getCreationDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
 
+        expirationDateCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getExpirationDate()));
+        expirationDateCol.setCellFactory((tablecolumn) -> new TableCell<>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    if (item == null) {
+                        setText(App.getBundle().getString("usermanage.msg.indefiniteExpirationDate"));
+                    } else {
+                        setText(item.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    }
+                }
+            }
+        });
+
         groupsCol.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getRoles()));
         groupsCol.setCellFactory((tablecolumn) -> new TableCell<>() {
 
             private final CheckComboBox<Role> cb = new CheckComboBox<>();
 
             private final ListChangeListener<Role> listener = c -> {
-                User user = getTableView().getItems().get(getIndex());
-                while (c.next()) {
-                    for (Role remitem : c.getRemoved()) {
-                        if (remitem.getRoleName().equals(DefaultRolesEnum.ADMIN.name())) {
-                            try {
-                                if (DAOController.getUsersDAO().isLastAdmin(user.getUsername())) {
-                                    Message.error(App.getBundle().getString("usersmanage.msg.err.islastadmin"));
-                                    continue;
-                                }
-                            }catch (SQLException e) {
-                                logger.error("Error when checking last admin", e);
-                                Message.error(e.getMessage(), e);
-                            }
-                        }
-
-                        try {
-                            DAOController.getUserRolesDAO().removeUserRole(user.getId(), remitem);
-                            user.getRoles().remove(remitem);
-                        } catch (SQLException e) {
-                            logger.error("Error when editing user role", e);
-                            Message.error(e.getMessage(), e);
-                        }
-
-                    }
-                    for (Role additem : c.getAddedSubList()) {
-                        if (!user.hasRole(additem)) {
-                            try {
-                                DAOController.getUserRolesDAO().addUserRole(user.getId(), additem);
-                                user.getRoles().add(additem);
-                            } catch (SQLException e) {
-                                logger.error("Error when editing user role", e);
-                                Message.error(e.getMessage(), e);
-                            }
-                        }
-                    }
-
-                }
+//                User user = getTableView().getItems().get(getIndex());
+//                while (c.next()) {
+//                    for (Role remitem : c.getRemoved()) {
+//                        if (remitem.getRoleName().equals(DefaultRolesEnum.ADMIN.name())) {
+//                            try {
+//                                if (DAOController.getUsersDAO().isLastAdminWithoutExpirationDate(user.getUsername())) {
+//                                    Message.error(App.getBundle().getString("usersmanage.msg.err.islastadmin"));
+//                                    continue;
+//                                }
+//                            }catch (SQLException e) {
+//                                logger.error("Error when checking last admin", e);
+//                                Message.error(e.getMessage(), e);
+//                            }
+//                        }
+//
+//                        try {
+//                            DAOController.getUserRolesDAO().removeUserRole(user.getId(), remitem);
+//                            user.getRoles().remove(remitem);
+//                        } catch (SQLException e) {
+//                            logger.error("Error when editing user role", e);
+//                            Message.error(e.getMessage(), e);
+//                        }
+//
+//                    }
+//                    for (Role additem : c.getAddedSubList()) {
+//                        if (!user.hasRole(additem)) {
+//                            try {
+//                                DAOController.getUserRolesDAO().addUserRole(user.getId(), additem);
+//                                user.getRoles().add(additem);
+//                            } catch (SQLException e) {
+//                                logger.error("Error when editing user role", e);
+//                                Message.error(e.getMessage(), e);
+//                            }
+//                        }
+//                    }
+//
+//                }
             };
 
 
@@ -182,6 +232,7 @@ public class UsersManageController extends Module {
                     setGraphic(null);
                 } else {
 //                    User user = getTableView().getItems().get(getIndex());
+
                     try {
                         cb.getItems().setAll(DAOController.getRolesDAO().getRoles());
                         if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
@@ -192,8 +243,12 @@ public class UsersManageController extends Module {
                         logger.error("Error when gettings roles from db", e);
                     }
 
+                    // Select the user's roles
+                    cb.getCheckModel().getCheckedItems().removeListener(listener);
+                    User user = getTableView().getItems().get(getIndex());
+                    cb.getCheckModel().clearChecks();
                     for (Role r : item) {
-                        if (item.contains(r)) {
+                        if (user.getRoles().contains(r)) {
                             cb.getCheckModel().check(r);
                         }
                     }
@@ -229,6 +284,7 @@ public class UsersManageController extends Module {
         actionsCol.setCellFactory((tableColumn) -> new TableCell<>() {
             private final HBox box = new HBox();
             private final Button resetPassword = new Button("", new FontIcon("mdal-autorenew"));
+            private final Button editExpirationDate = new Button("", new FontIcon("mdal-date_range"));
 
             {
                 box.getStyleClass().add("box-action-cell");
@@ -252,11 +308,38 @@ public class UsersManageController extends Module {
                         });
                     }
                 });
+                editExpirationDate.getStyleClass().add("button-action-cell");
+                editExpirationDate.setTooltip(editExpirationDateTooltip);
+                editExpirationDate.setOnAction(e -> {
+                    if (App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
+                        User user = getTableRow().getItem();
+                        DialogPane.Dialog<ChangeUserExpirationDateDialog.ChangeExpirationDateData> dialog =
+                                new ChangeUserExpirationDateDialog(App.get().getAppController().getDialogPane(), user);
+                        Message.showDialog(dialog);
+                        dialog.getButton(ButtonType.OK).setOnAction(event -> {
+                            if (dialog.isValid() && dialog.getValue() != null) {
+                                try {
+                                    LocalDate newExpirationDate = null;
+                                    if (!dialog.getValue().isIsInfinite()) {
+                                        newExpirationDate = dialog.getValue().getNewDate();
+                                    }
+                                    DAOController.getUsersDAO().updateExpirationDate(user, newExpirationDate);
+                                    fillUsersTable();
+                                    userTable.refresh();
+                                    Message.hideDialog(dialog);
+                                } catch (SQLException ex) {
+                                    logger.error("Error when updating password", ex);
+                                    Message.error(ex.getMessage(), ex);
+                                }
+                            }
+                        });
+                    }
+                });
                 if (!App.get().getLoggedUser().isPermitted(PermissionsEnum.MANAGE_ACCOUNT)) {
                     resetPassword.setDisable(true);
                 }
 
-                box.getChildren().addAll(resetPassword);
+                box.getChildren().addAll(resetPassword, editExpirationDate);
             }
 
             @Override
@@ -286,7 +369,7 @@ public class UsersManageController extends Module {
         DialogPane.Dialog<ButtonType> d =  Message.confirm(message);
         d.getButton(ButtonType.YES).setOnAction(e -> {
             try {
-                if(DAOController.getUsersDAO().isLastAdmin(user.getUsername())) {
+                if(DAOController.getUsersDAO().isLastAdminWithoutExpirationDate(user.getUsername())) {
                     Message.error(App.getBundle().getString("usersmanage.msg.err.inactivelastadmin"));
                 }
                 else {
@@ -311,7 +394,8 @@ public class UsersManageController extends Module {
     }
 
     private void fillUsersTable() throws SQLException {
-        userTable.setItems(DAOController.getUsersDAO().getUsers());
+        String filter = searchUsersCtf.getText();
+        userTable.setItems(DAOController.getUsersDAO().getUsers(filter));
     }
 
     private String checkUsername(User user, String username) {
@@ -345,7 +429,11 @@ public class UsersManageController extends Module {
         b.setOnAction(e -> {
             if (dialog.isValid() && dialog.getValue() != null) {
                 try {
-                    DAOController.getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles());
+                    LocalDate expirationDate = null;
+                    if (dialog.getValue().isUseExpirationDate()) {
+                        expirationDate = dialog.getValue().getExpirationDate();
+                    }
+                    DAOController.getUsersDAO().addUser(dialog.getValue().getUsername(), dialog.getValue().getPassword(), dialog.getValue().getRoles(), expirationDate);
                     fillUsersTable();
                     Message.hideDialog(dialog);
                 } catch (SQLException ex) {
@@ -542,5 +630,8 @@ public class UsersManageController extends Module {
     }
 
 
+    @FXML
+    private void filterTable() {
 
+    }
 }

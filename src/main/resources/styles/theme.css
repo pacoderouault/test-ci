@@ -1059,26 +1059,27 @@ Text {
 
 .textarea-label {
     -fx-background-insets: 0;
-    -fx-background-color: transparent, white, transparent, white;
+    -fx-background-color: transparent, transparent, transparent, transparent;
 }
 
 .textarea-label .content {
-    -fx-background-color: transparent, white, transparent, white;
+    -fx-background-color: transparent, transparent, transparent, #f4f4f4;
+    -fx-padding: 3px;
 }
 
-.textarea-label:focused .content {
-    -fx-background-color: transparent, white, transparent, white;
+.textarea-label> .scroll-pane {
+    -fx-padding: 0;
 }
 
-.textarea-label:focused {
-    -fx-highlight-fill: #7ecfff;
+.textarea-label:focused .content, .textarea-label:hover .content {
+    -fx-background-color: transparent, transparent, transparent, #f4f4f4 ;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border: 0;
 }
 
-.textarea-label .content {
-    -fx-padding: 10px;
-    -fx-text-fill: gray;
-    -fx-highlight-fill: #7ecfff;
-}
+
+
 
 .toggle-switch .label {
     -fx-font-family: 'Ubuntu';
@@ -1131,6 +1132,10 @@ Text {
 }
 .transparent-list-cell:selected .text {
     -fx-fill: black;
+}
+
+.transparent-list-cell .textarea-label {
+    -fx-background-color: #f4f4f4 !important;
 }
 
 .commentary-box {

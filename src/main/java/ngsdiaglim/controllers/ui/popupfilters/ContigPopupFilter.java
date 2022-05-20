@@ -18,15 +18,15 @@ public class ContigPopupFilter extends StringPopupFilter {
             getTableColumn().setPredicate(a -> {
                 switch (op) {
                     case EQUALS:
-                        return a.getVariant().getContig().equalsIgnoreCase(value);
+                        return a.getGenomicVariant().getContig().equalsIgnoreCase(value);
                     case NOT_EQUALS:
-                        return !a.getVariant().getContig().equalsIgnoreCase(value);
+                        return !a.getGenomicVariant().getContig().equalsIgnoreCase(value);
                     case STARTS_WITH:
-                        return a.getVariant().getContig().startsWith(value);
+                        return a.getGenomicVariant().getContig().startsWith(value);
                     case ENDS_WITH:
-                        return a.getVariant().getContig().endsWith(value);
+                        return a.getGenomicVariant().getContig().endsWith(value);
                     case CONTAINS:
-                        return a.getVariant().getContig().contains(value);
+                        return a.getGenomicVariant().getContig().contains(value);
                     default:
                         return false;
                 }

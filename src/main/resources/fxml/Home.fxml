@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -17,21 +23,40 @@
                <children>
                   <VBox styleClass="module-box" HBox.hgrow="SOMETIMES">
                      <children>
-                        <HBox styleClass="module-box-header">
+                        <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="module-box-header">
                            <children>
                               <Label text="%home.module.runslist.title" />
                               <Region HBox.hgrow="ALWAYS" />
                               <Button fx:id="addRunBtn" defaultButton="true" mnemonicParsing="false" onAction="#addRunHandler" text="%home.module.runslist.btn.addrun" />
                            </children>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" styleClass="module-box-container">
+                           <children>
+                              <Pagination fx:id="runsPagination" maxWidth="350.0" minWidth="350.0">
+                                 <HBox.margin>
+                                    <Insets top="-7.0" />
+                                 </HBox.margin>
+                              </Pagination>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <CustomTextField fx:id="searchRunCtf" minWidth="50.0" prefWidth="200.0" />
+                                    <Button fx:id="closeSearchBtn" mnemonicParsing="false" onAction="#clearRunSearch" styleClass="button-action-cell">
+                                       <graphic>
+                                          <FontIcon iconLiteral="mdal-clear" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
                         <VBox styleClass="module-box-container" VBox.vgrow="ALWAYS">
                            <children>
                               <TableView fx:id="runsTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn fx:id="runNameCol" minWidth="150.0" prefWidth="-1.0" text="%home.module.runslist.table.runNameCol" />
-                                  <TableColumn fx:id="runDateCol" prefWidth="150.0" text="%home.module.runslist.table.runDateCol" />
-                                    <TableColumn fx:id="runStateCol" prefWidth="150.0" text="%home.module.runslist.table.runStateCol" />
-                                    <TableColumn fx:id="runActionsCol" prefWidth="100.0" sortable="false" />
+                                  <TableColumn fx:id="runNameCol" minWidth="200.0" prefWidth="-1.0" text="%home.module.runslist.table.runNameCol" />
+                                  <TableColumn fx:id="runDateCol" minWidth="100.0" prefWidth="150.0" text="%home.module.runslist.table.runDateCol" />
+                                    <TableColumn fx:id="runStateCol" minWidth="100.0" prefWidth="150.0" sortable="false" text="%home.module.runslist.table.runStateCol" />
+                                    <TableColumn fx:id="runActionsCol" minWidth="100.0" prefWidth="100.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children>
@@ -51,11 +76,11 @@
                            <children>
                               <TableView fx:id="analysesTable" VBox.vgrow="ALWAYS">
                                 <columns>
-                                  <TableColumn fx:id="analysisNameCol" minWidth="200.0" prefWidth="-1.0" text="%home.module.analyseslist.table.namecol" />
-                                    <TableColumn fx:id="analysisSampleNameCol" prefWidth="200.0" text="%home.module.analyseslist.table.sampleNamecol" />
-                                  <TableColumn fx:id="analysisParametersCol" prefWidth="170.0" text="%home.module.analyseslist.table.parametersCol" />
-                                    <TableColumn fx:id="analysisStateCol" prefWidth="140.0" text="%home.module.analyseslist.table.stateCol" />
-                                    <TableColumn fx:id="analysisActionsCol" prefWidth="100.0" sortable="false" />
+                                  <TableColumn fx:id="analysisNameCol" minWidth="100.0" prefWidth="-1.0" text="%home.module.analyseslist.table.namecol" />
+                                    <TableColumn fx:id="analysisSampleNameCol" minWidth="100.0" prefWidth="200.0" text="%home.module.analyseslist.table.sampleNamecol" />
+                                  <TableColumn fx:id="analysisParametersCol" minWidth="50.0" prefWidth="170.0" text="%home.module.analyseslist.table.parametersCol" />
+                                    <TableColumn fx:id="analysisStateCol" minWidth="50.0" prefWidth="140.0" text="%home.module.analyseslist.table.stateCol" />
+                                    <TableColumn fx:id="analysisActionsCol" minWidth="50.0" prefWidth="100.0" sortable="false" />
                                 </columns>
                               </TableView>
                            </children>
@@ -71,7 +96,18 @@
                         <Label text="%home.module.statistics.title" />
                      </children>
                   </HBox>
-                  <HBox fx:id="statisticsContainer" alignment="CENTER_LEFT" spacing="10.0" styleClass="module-box-container" VBox.vgrow="NEVER" />
+                  <HBox fx:id="statisticsContainer" alignment="CENTER_LEFT" spacing="10.0" styleClass="module-box-container" VBox.vgrow="NEVER">
+                     <children>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label styleClass="font-medium" text="%home.module.statistics.lb.total" />
+                              <Label fx:id="statsRunsLb" text="%home.module.statistics.lb.runNb" />
+                              <Label fx:id="statsAnalysesLb" text="%home.module.statistics.lb.analysesNb" />
+                           </children>
+                        </VBox>
+                        <Separator orientation="VERTICAL" />
+                        <FlowPane fx:id="statsPanelsFp" hgap="10.0" vgap="10.0" HBox.hgrow="ALWAYS" />
+                     </children></HBox>
                </children>
             </VBox>
          </children>

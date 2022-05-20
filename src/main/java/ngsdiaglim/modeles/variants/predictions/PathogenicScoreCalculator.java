@@ -1,6 +1,8 @@
 package ngsdiaglim.modeles.variants.predictions;
 
 import ngsdiaglim.modeles.variants.Annotation;
+import ngsdiaglim.modeles.variants.populations.GnomAD;
+import ngsdiaglim.modeles.variants.populations.GnomadPopulationFreq;
 
 public class PathogenicScoreCalculator {
 
@@ -110,10 +112,11 @@ public class PathogenicScoreCalculator {
 
         // gnomad
         double gnomad = 0d;
-        if (a.getGnomADFrequencies().maxProperty() == null || a.getGnomADFrequencies().maxProperty().get().getAf() <= 0.001) {
+        GnomadPopulationFreq maxPop = a.getGnomAD().getMaxFrequency(GnomAD.GnomadSource.EXOME);
+        if (maxPop == null || maxPop.getAf() <= 0.001) {
             gnomad -= 1;
         }
-        else if (a.getGnomADFrequencies().maxProperty().get().getAf() <= 0.01) {
+        else if (maxPop.getAf() <= 0.01) {
             gnomad -= 0.5;
         }
         else {

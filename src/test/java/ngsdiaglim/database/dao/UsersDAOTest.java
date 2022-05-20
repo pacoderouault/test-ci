@@ -24,9 +24,9 @@ class UsersDAOTest extends BaseSetup {
 
     @BeforeAll
     static void insertUsers() throws SQLException {
-        usersDAO.addUser("username1", "password", FXCollections.observableSet());
-        usersDAO.addUser("username2", "password", FXCollections.observableSet());
-        usersDAO.addUser("username3", "password", FXCollections.observableSet());
+        usersDAO.addUser("username1", "password", FXCollections.observableSet(), null);
+        usersDAO.addUser("username2", "password", FXCollections.observableSet(), null);
+        usersDAO.addUser("username3", "password", FXCollections.observableSet(), null);
         User user3 = usersDAO.getUser("username3");
         usersDAO.inactiveUser(user3.getId());
     }
@@ -53,7 +53,7 @@ class UsersDAOTest extends BaseSetup {
 
     @Test
     void addUser() throws SQLException {
-        assertThrows(JdbcSQLIntegrityConstraintViolationException.class, () -> usersDAO.addUser("username1", "password", null));
+        assertThrows(JdbcSQLIntegrityConstraintViolationException.class, () -> usersDAO.addUser("username1", "password", null, null));
         assertNotNull(usersDAO.getUser("   username1  "));
     }
 
@@ -82,7 +82,7 @@ class UsersDAOTest extends BaseSetup {
 
     @Test
     void getUsers() throws SQLException {
-        assertEquals(4, usersDAO.getUsers().size());
+        assertEquals(4, usersDAO.getUsers(null).size());
         User user = usersDAO.getUser("admin");
         assertEquals(1, user.getId());
         assertEquals("admin", user.getUsername());

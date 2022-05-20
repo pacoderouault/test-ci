@@ -52,6 +52,8 @@ public class AnalysisViewCoverageController extends HBox {
 
 
     @FXML private HBox coverageRegionsTableContainer;
+    @FXML private HBox noCovBox;
+    @FXML private HBox noSpecificCovBox;
     @FXML private VBox specificCoverageRegionsTableContainer;
     @FXML private Label noCoverageAnalysisLb;
     @FXML private Label noSpecificCoverageAnalysisLb;
@@ -168,33 +170,22 @@ public class AnalysisViewCoverageController extends HBox {
     private void updateView() {
 
         if (analysis.get().getCoverageFile() == null || !analysis.get().getCoverageFile().exists()) {
-            noCoverageAnalysisLb.setVisible(true);
-            noCoverageAnalysisLb.setManaged(true);
+            noCovBox.setVisible(true);
+            noCovBox.setManaged(true);
             coverageTable.setManaged(false);
             coverageTable.setVisible(false);
         } else {
-            noCoverageAnalysisLb.setVisible(false);
-            noCoverageAnalysisLb.setManaged(false);
+            noCovBox.setVisible(false);
+            noCovBox.setManaged(false);
             coverageTable.setManaged(true);
             coverageTable.setVisible(true);
         }
 
-        if (analysis.get().getSpecCoverageFile() == null || !analysis.get().getSpecCoverageFile().exists()) {
-            noSpecificCoverageAnalysisLb.setVisible(true);
-            noSpecificCoverageAnalysisLb.setManaged(true);
-            treeTableView.setManaged(false);
-            treeTableView.setVisible(false);
-        } else {
-            noSpecificCoverageAnalysisLb.setVisible(false);
-            noSpecificCoverageAnalysisLb.setManaged(false);
-            treeTableView.setManaged(true);
-            treeTableView.setVisible(true);
-        }
-
-
         coverageTable.setItems(analysis.get().getCoverageRegions());
         specificCoverageBox.setVisible(analysis.get().getAnalysisParameters().getSpecificCoverageSet() != null);
         specificCoverageBox.setManaged(analysis.get().getAnalysisParameters().getSpecificCoverageSet() != null);
+        noSpecificCovBox.setManaged(analysis.get().getAnalysisParameters().getSpecificCoverageSet() == null);
+        noSpecificCovBox.setManaged(analysis.get().getAnalysisParameters().getSpecificCoverageSet() == null);
 
         if (analysis.get().getAnalysisParameters().getSpecificCoverageSet() == null || analysis.get().getSpecificCoverageRegions() == null) {
             treeTableView.setRoot(null);
