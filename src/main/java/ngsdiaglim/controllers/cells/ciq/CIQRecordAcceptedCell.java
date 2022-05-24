@@ -111,20 +111,20 @@ public class CIQRecordAcceptedCell extends TableCell<CIQVariantRecord, CIQRecord
                             getTableView().refresh();
                             Message.hideDialog(dialog);
                         } catch (SQLException ex) {
-                            logger.error(e);
+                            logger.error(ex.getMessage(), ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                         }
                     });
                 }
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
             }
 
             try {
                 record.loadHistory();
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
             }
             getTableView().refresh();

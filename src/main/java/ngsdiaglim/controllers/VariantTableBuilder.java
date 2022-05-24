@@ -118,14 +118,14 @@ public class VariantTableBuilder {
 
 
     public TableColumn<Annotation, ?> getColumn(VariantsTableColumns variantsTableColumns) {
-        return columnsMap.get(variantsTableColumns);
+        return columnsMap.getOrDefault(variantsTableColumns, null);
     }
 
     public List<VariantsTableColumns> getDefaultColumnsOrder() {return defaultColumnsOrder;}
 
     public List<TableColumn<Annotation, ?>> getColumns() {return columns;}
 
-    private void initColumnsMap() {
+    public void initColumnsMap() {
 
         columnsMap.clear();
 

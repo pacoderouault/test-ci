@@ -64,7 +64,7 @@ public class AnalysisViewAdditionalData extends HBox {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -117,7 +117,7 @@ public class AnalysisViewAdditionalData extends HBox {
                         loadAnalysisCommentaries();
                         Message.hideDialog(addVariantCommentaryDialog);
                     } catch (SQLException ex) {
-                        logger.error(ex);
+                        logger.error(ex.getMessage(), ex);
                         Message.error(ex.getMessage(), ex);
                     }
 
@@ -164,7 +164,7 @@ public class AnalysisViewAdditionalData extends HBox {
                     AdditionalImage ai = new AdditionalImage(importedImage);
                     imagesFp.getChildren().add(buildImageContainer(ai));
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
 //            AdditionalImage ai = new AdditionalImage(image);
@@ -177,7 +177,7 @@ public class AnalysisViewAdditionalData extends HBox {
         try {
             commentariesLv.setItems(DAOController.getAnalysisCommentaryDAO().getVariantCommentaries(analysis.get().getId()));
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -191,7 +191,7 @@ public class AnalysisViewAdditionalData extends HBox {
                 imagesFp.getChildren().add(buildImageContainer(ai));
             }
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -206,7 +206,7 @@ public class AnalysisViewAdditionalData extends HBox {
                 AdditionalImage ai = new AdditionalImage(importedImage);
                 imagesFp.getChildren().add(buildImageContainer(ai));
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage());
             }
         }
@@ -285,7 +285,7 @@ public class AnalysisViewAdditionalData extends HBox {
                     loadAnalysisImages();
                     Message.hideDialog(dialog);
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                 }
             }

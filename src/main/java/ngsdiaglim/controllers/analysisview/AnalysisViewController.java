@@ -12,6 +12,7 @@ import javafx.util.StringConverter;
 import ngsdiaglim.App;
 import ngsdiaglim.controllers.Module;
 import ngsdiaglim.controllers.analysisview.cnv.AnalysisViewCNVController;
+import ngsdiaglim.controllers.analysisview.reports.anapath.AnalysisViewReportAnapathController;
 import ngsdiaglim.controllers.analysisview.reports.bgm.AnalysisViewReportBGMController;
 import ngsdiaglim.controllers.dialogs.ChangeAnalysisStateDialog;
 import ngsdiaglim.controllers.dialogs.Message;
@@ -55,6 +56,7 @@ public class AnalysisViewController extends Module {
     private AnalysisViewCoverageController coverageController;
     private AnalysisViewCNVController analysisViewCNVController;
     private AnalysisViewReportBGMController reportBGMController;
+    private AnalysisViewReportAnapathController reportAnapathController;
     private AnalysisViewRunInfoController runInfoController;
     private AnalysisViewCIQController ciqViewController;
 
@@ -71,7 +73,7 @@ public class AnalysisViewController extends Module {
             fxml.load();
         } catch (IOException e) {
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
 
         initView();
@@ -109,6 +111,8 @@ public class AnalysisViewController extends Module {
 
     public AnalysisViewReportBGMController getReportBGMController() {return reportBGMController;}
 
+    public AnalysisViewReportAnapathController getReportAnapathController() {return reportAnapathController;}
+
     public AnalysisViewCNVController getAnalysisViewCNVController() {return analysisViewCNVController;}
 
     public AnalysisViewCIQController getCiqViewController() {return ciqViewController;}
@@ -127,6 +131,8 @@ public class AnalysisViewController extends Module {
 
         if (App.get().getService().equals(Service.BGM)) {
             reportBGMController = new AnalysisViewReportBGMController();
+        } else if (App.get().getService().equals(Service.ANAPATH)) {
+            reportAnapathController = new AnalysisViewReportAnapathController();
         } else {
             reportViewToggleBtn.setVisible(false);
             reportViewToggleBtn.setManaged(false);
@@ -190,7 +196,7 @@ public class AnalysisViewController extends Module {
                             analysis.get().setStatus(dialog.getValue());
                             Message.hideDialog(dialog);
                         } catch (SQLException ex) {
-                            logger.error(ex);
+                            logger.error(ex.getMessage(), ex);
                             Message.error(ex.getMessage(), ex);
                         }
                     }
@@ -228,6 +234,9 @@ public class AnalysisViewController extends Module {
         if (reportBGMController != null) {
             reportBGMController.clear();
         }
+        if (reportAnapathController != null) {
+            reportAnapathController.clear();
+        }
 
 
 //        initAnalysisCb();
@@ -254,6 +263,8 @@ public class AnalysisViewController extends Module {
         ciqViewController.setAnalysis(analysis.get());
         if (App.get().getService().equals(Service.BGM)) {
             reportBGMController.setAnalysis(analysis.get());
+        } else if (App.get().getService().equals(Service.ANAPATH)) {
+            reportAnapathController.setAnalysis(analysis.get());
         }
 //        variantsViewController.getTableBuilder().setColumnsHeaderEvent();
         initAnalysisCb();
@@ -314,7 +325,8 @@ public class AnalysisViewController extends Module {
             analysisCb.getSelectionModel().select(analysis.get());
             analysisCb.valueProperty().addListener(analysisCbValueListener);
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
+            Message.error(e.getMessage(), e);
         }
 
 
@@ -369,6 +381,10 @@ public class AnalysisViewController extends Module {
             analysisModuleContainer.getChildren().clear();
             analysisModuleContainer.getChildren().add(reportBGMController);
             setModuleViewAnchors(reportBGMController);
+        } else if (App.get().getService().equals(Service.ANAPATH)) {
+            analysisModuleContainer.getChildren().clear();
+            analysisModuleContainer.getChildren().add(reportAnapathController);
+            setModuleViewAnchors(reportAnapathController);
         }
     }
 

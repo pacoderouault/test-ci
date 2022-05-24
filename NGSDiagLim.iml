@@ -22,11 +22,10 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:linux:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:linux:18.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:linux:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:18.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:linux:18.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-swing:linux:18.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-web:18.0.1" level="project" />
@@ -48,6 +47,7 @@
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.6.1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.12.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.15.0" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:18" level="project" />
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-core:12.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-materialdesign-pack:12.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.jfxtras:jmetro:11.6.15" level="project" />

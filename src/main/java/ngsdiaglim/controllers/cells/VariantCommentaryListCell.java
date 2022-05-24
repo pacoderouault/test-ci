@@ -85,10 +85,7 @@ public class VariantCommentaryListCell extends ListCell<VariantCommentary> {
             editBtn.setDisable(!isUsersComment(item) || isAdmin);
             deleteBtn.setDisable(!isUsersComment(item) || isAdmin);
             Platform.runLater(() -> {
-
                 commentLb.applyCss();
-                System.out.println(commentLb.getFont().getSize());
-
                 double textHeight = computeTextHeight(commentLb.getFont(), item.getComment().trim(), 0);
                 commentLb.setPrefHeight(textHeight + 20); // padding
             });

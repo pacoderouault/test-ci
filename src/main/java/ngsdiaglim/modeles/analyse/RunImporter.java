@@ -17,6 +17,8 @@ import ngsdiaglim.utils.BundleFormatter;
 import ngsdiaglim.utils.FilesUtils;
 import ngsdiaglim.utils.VCFUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 
 import java.io.File;
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class RunImporter {
 
+    private static final Logger logger = LogManager.getLogger(RunImporter.class);
     private final Run run;
     private final List<RunFile> runsFiles;
     private final ObservableList<AnalysisInputData> analysisInputData;
@@ -90,8 +93,11 @@ public class RunImporter {
             File targetDepthFile = null;
             AnalysisParameters analysisParameters = analysisInputData.getAnalysisParameters();
             CIQModel ciqModel = analysisInputData.getCiqModel();
+
             // create analysis directory in the analysis dir of the run
-            File analysisDirectory = Paths.get(targetDirectory.toString(), analysisName).toFile();
+            // Replace spaces with underscores
+            String analysisDirName = analysisName.replaceAll("\\s+", "_");
+            File analysisDirectory = Paths.get(targetDirectory.toString(), analysisDirName).toFile();
             if (analysisDirectory.exists()) {
                 throw new DuplicateAnalysisInRun("Duplicate analysis name in the run (" + analysisName + ")");
             }
@@ -214,8 +220,9 @@ public class RunImporter {
                 // force reloading analyses of the run
                 run.loadAnalysesFromDB();
             } catch (Exception e) {
-                FileUtils.deleteDirectory(analysisDirectory);
+
                 e.printStackTrace();
+                FileUtils.deleteDirectory(analysisDirectory);
                 throw new Exception(e);
             }
         }

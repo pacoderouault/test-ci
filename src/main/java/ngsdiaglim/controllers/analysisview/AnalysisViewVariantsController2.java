@@ -102,7 +102,7 @@ public class AnalysisViewVariantsController2 extends VBox {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -120,7 +120,7 @@ public class AnalysisViewVariantsController2 extends VBox {
         try {
             tableBuilder.buildTable();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
 
@@ -360,7 +360,7 @@ public class AnalysisViewVariantsController2 extends VBox {
                     try {
                         TableExporter.exportTableToExcel(analysisProperty.get(), dialog.getValue().getTable(), columnsToWrite, selectedFile);
                     } catch (IOException exception) {
-                        logger.error(exception);
+                        logger.error(exception.getMessage(), exception);
                         Platform.runLater(() -> Message.error(exception.getMessage(), exception));
                         return 1;
                     }

@@ -59,7 +59,7 @@ public class CNVNormalizedViewController extends VBox {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -237,7 +237,7 @@ public class CNVNormalizedViewController extends VBox {
                     cnvNormalizedMapsViewController.forceRedrawMaps();
                 });
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
                 return 1;
             }

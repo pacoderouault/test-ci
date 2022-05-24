@@ -239,7 +239,7 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
                 if (a.getVariant().getAcmg().getPathogenicityValue() < filterPathogenicityCbx.getValue().getPathogenicityValue()) return false;
             }
 
-            if (filterFalsePositiveCb.isSelected() && a.getVariant().isFalsePositive()) return false;
+            if (!filterFalsePositiveCb.isSelected() && a.getVariant().isFalsePositive()) return false;
 
             if (filterVAFCb.isSelected()) {
                 double minVaf;

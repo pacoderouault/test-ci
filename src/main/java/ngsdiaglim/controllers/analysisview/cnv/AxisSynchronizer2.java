@@ -65,7 +65,6 @@ public class AxisSynchronizer2 {
                 ChangeListener<Boolean> l = new ChangeListener<>() {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                        System.out.println("UPPER DRAW");
                         final double tickUnit = sender.getTickUnit();
                         for (final Axis axis : axes) {
                             if (axis != sender) {
@@ -122,7 +121,6 @@ public class AxisSynchronizer2 {
                 ChangeListener<Boolean> l = new ChangeListener<>() {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                        System.out.println("UPPDER DRAW");
                         final double tickUnit = sender.getTickUnit();
                         for (final Axis axis : axes) {
                             if (axis != sender) {

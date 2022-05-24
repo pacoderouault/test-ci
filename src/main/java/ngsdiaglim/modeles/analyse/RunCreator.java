@@ -38,10 +38,15 @@ public class RunCreator {
             Files.createDirectories(runsYearPath);
         }
 
-        runPath = Paths.get(runsYearPath.toString(), runCreationData.getRunName());
-        if (!Files.exists(runPath)) {
-            Files.createDirectories(runPath);
+        // replace all space characters to underscore for dirname
+        String formattedRunDirname = runCreationData.getRunName().replaceAll("\\s+", "_");
+        runPath = Paths.get(runsYearPath.toString(), formattedRunDirname);
+
+        if (Files.exists(runPath)) {
+            throw new IOException("A run with a same name already exists");
         }
+
+        Files.createDirectories(runPath);
 
         Path runFilesPath = Paths.get(runPath.toString(), RunConstants.RUN_FILES_DIRNAME);
         if (!Files.exists(runFilesPath)) {

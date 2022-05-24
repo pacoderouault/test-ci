@@ -46,7 +46,7 @@ public class ReportPersonalInformation extends ReportPane {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         fillPrescribersCb();
@@ -72,7 +72,7 @@ public class ReportPersonalInformation extends ReportPane {
         try {
             AutoCompleteComboboxBuilder.createAutoCompleteCombobox(prescribersCb, DAOController.getPrescriberDAO().getPrescribers());
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }

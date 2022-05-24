@@ -37,7 +37,7 @@ public class ReportSelectGenes extends ReportPane {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -78,7 +78,7 @@ public class ReportSelectGenes extends ReportPane {
             panelCb.getItems().setAll(DAOController.getGenesPanelDAO().getGenesPanels());
             panelCb.getItems().add(0, null);
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
 

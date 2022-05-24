@@ -59,7 +59,7 @@ public class ReportComments extends ReportPane {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -69,7 +69,7 @@ public class ReportComments extends ReportPane {
             try {
                 fillCommentsTables();
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         });
@@ -89,7 +89,7 @@ public class ReportComments extends ReportPane {
         try {
             fillCommentsTables();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -199,7 +199,7 @@ public class ReportComments extends ReportPane {
                     Message.hideDialog(dialog);
                     fillGeneCommentsTable();
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             });
@@ -226,7 +226,7 @@ public class ReportComments extends ReportPane {
                     Message.hideDialog(dialog);
                     fillMutationCommentsTable();
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             });
@@ -251,7 +251,7 @@ public class ReportComments extends ReportPane {
                     Message.hideDialog(dialog);
                     fillOtherCommentsTable();
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             });

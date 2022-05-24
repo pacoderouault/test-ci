@@ -20,9 +20,7 @@ public class FastaSequenceGetter {
 
     public FastaSequenceGetter(File fastaFile) throws Exception {
         this.fastaFile = fastaFile;
-        System.out.println(this.fastaFile);
         if (fastaFile.exists()) {
-            System.out.println("test");
             try {
                 FastaSequenceIndexCreator.create(fastaFile.toPath(), false);
             }

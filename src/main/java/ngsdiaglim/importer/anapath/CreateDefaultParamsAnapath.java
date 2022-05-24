@@ -15,6 +15,7 @@ import ngsdiaglim.modeles.parsers.GeneSetParser;
 import ngsdiaglim.modeles.parsers.HotspotsParser;
 import ngsdiaglim.modeles.parsers.PanelParser;
 import ngsdiaglim.modeles.variants.Hotspot;
+import ngsdiaglim.utils.FilesUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,8 +127,8 @@ public class CreateDefaultParamsAnapath {
         }
         File panelFile = Paths.get(panelDataPath.toString(), name + ".bed.gz").toFile();
         PanelParser.writePanel(regions, panelFile);
-
-        long panelId = DAOController.getPanelDAO().addPanel(name, panelFile.getPath());
+        Path panelPath = FilesUtils.convertAbsolutePathToRelative(panelFile.toPath());
+        long panelId = DAOController.getPanelDAO().addPanel(name, panelPath.toString());
         for (PanelRegion region : regions) {
             DAOController.getPanelRegionDAO().addRegion(region, panelId);
         }

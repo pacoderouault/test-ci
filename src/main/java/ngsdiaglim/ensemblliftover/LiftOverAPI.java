@@ -63,7 +63,6 @@ public class LiftOverAPI {
             }
         }
 
-        System.out.println(output);
     }
 
 

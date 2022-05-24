@@ -64,7 +64,7 @@ public class ExportColumnsDropDownMenu extends VBox {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
         lv.getItems().setAll(variantTableBuilder.getDefaultColumnsOrder());
     }
@@ -105,7 +105,7 @@ public class ExportColumnsDropDownMenu extends VBox {
             try {
                 DAOController.getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
 
@@ -119,7 +119,7 @@ public class ExportColumnsDropDownMenu extends VBox {
             try {
                 TableExporter.exportTableToExcel(analysis, tableview, columnsToWrite, selectedFile);
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         }

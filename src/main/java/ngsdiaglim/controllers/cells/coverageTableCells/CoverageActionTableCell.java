@@ -41,7 +41,7 @@ public class CoverageActionTableCell extends TableCell<CoverageRegion, Void> {
             try {
                 igv.goTo(ModuleManager.getAnalysisViewController().getAnalysis(), cr.getContig(), cr.getStart(), cr.getEnd());
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
         }

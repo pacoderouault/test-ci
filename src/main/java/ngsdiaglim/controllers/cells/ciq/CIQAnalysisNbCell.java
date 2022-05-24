@@ -28,7 +28,7 @@ public class CIQAnalysisNbCell extends TableCell<CIQModel, Integer> {
                     int count = DAOController.getCiqAnalysisDAO().countCIQ(m.getId());
                     setText(String.valueOf(count));
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     setText(null);
                 }
                 });

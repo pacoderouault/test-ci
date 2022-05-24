@@ -67,7 +67,7 @@ public class AnalysisViewMetaDataController  extends VBox {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 //        initView();
@@ -168,7 +168,7 @@ public class AnalysisViewMetaDataController  extends VBox {
                 encoder = new VCFEncoder(reader.getHeader(), true, true);
                 vcfHeaderTa.setText(vcfHeader);
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 vcfHeaderTa.setText(null);
                 Message.error(e.getMessage(), e);
             }
@@ -230,7 +230,7 @@ public class AnalysisViewMetaDataController  extends VBox {
                 vcfHeaderTa.setText(searchRslt.toString());
 
             } catch (MalformedSearchQuery e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         }

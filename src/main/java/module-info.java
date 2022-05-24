@@ -53,6 +53,7 @@ module NGSDiagLim {
     exports ngsdiaglim.controllers.analysisview;
     exports ngsdiaglim.controllers.analysisview.cnv;
     exports ngsdiaglim.controllers.analysisview.reports.bgm;
+    exports ngsdiaglim.controllers.analysisview.reports.anapath;
     exports ngsdiaglim.controllers.charts;
     exports ngsdiaglim.database;
     exports ngsdiaglim.database.dao;
@@ -74,6 +75,7 @@ module NGSDiagLim {
     opens ngsdiaglim.controllers.analysisview to javafx.fxml;
     opens ngsdiaglim.controllers.analysisview.cnv to javafx.fxml;
     opens ngsdiaglim.controllers.analysisview.reports.bgm to javafx.fxml;
+    opens ngsdiaglim.controllers.analysisview.reports.anapath to javafx.fxml;
     opens ngsdiaglim.controllers.ui.popupfilters to javafx.fxml;
     opens ngsdiaglim.skins to javafx.fxml;
     opens ngsdiaglim.modules to javafx.fxml;

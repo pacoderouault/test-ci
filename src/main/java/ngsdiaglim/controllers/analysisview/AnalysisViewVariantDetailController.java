@@ -180,7 +180,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Platform.runLater(() -> Message.error(e.getMessage(), e));
         }
 
@@ -336,7 +336,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                 try {
                     DAOController.getUsersDAO().updatePreferences(loggedUser);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
                 popover.hide();
                 popover.refresh();
@@ -366,7 +366,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
         try {
             cytobandTf.setText(a.getVariant().getCytoband() != null ? a.getVariant().getCytoband().getName() : null);
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
         positionTf.setText(VariantUtils.getHashVariant(a.getGenomicVariant()));
         depthTf.setText(String.valueOf(a.getDepth()));
@@ -746,7 +746,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                         annotation.get().getVariant().getId()));
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -762,7 +762,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                         ModuleManager.getAnalysisViewController().getAnalysis().getId()));
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -830,7 +830,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                         loadVariantCommentaries();
                         Message.hideDialog(addVariantCommentaryDialog);
                     } catch (SQLException ex) {
-                        logger.error(ex);
+                        logger.error(ex.getMessage(), ex);
                         Message.error(ex.getMessage(), ex);
                     }
 
@@ -858,7 +858,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                         loadAnnotationCommentaries();
                         Message.hideDialog(addVariantCommentaryDialog);
                     } catch (SQLException ex) {
-                        logger.error(ex);
+                        logger.error(ex.getMessage(), ex);
                         Message.error(ex.getMessage(), ex);
                     }
 
@@ -975,7 +975,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
 //                        annotation.get().getGenomicVariant().getContig(),
 //                        annotation.get().getGenomicVariant().getStart());
             } catch (Exception ex) {
-                logger.error(ex);
+                logger.error(ex.getMessage(), ex);
                 Message.error(ex.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
             }
         });
@@ -1034,7 +1034,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     con.setRequestMethod("GET");
                     con.getInputStream();
                 } catch (IOException ex) {
-                    logger.error(ex);
+                    logger.error(ex.getMessage(), ex);
                     Message.error(ex.getMessage());
                 }
             }
@@ -1066,7 +1066,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get());
                 }
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
                 return 1;
             }
@@ -1091,7 +1091,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get(), annotation.get().getVariant().getAnalysesInRun());
                 }
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
                 return 1;
             }
@@ -1119,7 +1119,7 @@ public class AnalysisViewVariantDetailController extends ScrollPane {
                     searchVariantResults = DAOController.getVariantAnalysisDAO().getVariants(annotation.get());
                 }
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Platform.runLater(() -> Message.error(e.getMessage(), e));
                 return 1;
             }

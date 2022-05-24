@@ -31,7 +31,7 @@ public class CNVVisibleSamplesDropMenuContent extends VBox {
             loader.setController(this);
             loader.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }

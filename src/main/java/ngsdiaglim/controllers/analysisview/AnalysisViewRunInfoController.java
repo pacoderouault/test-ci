@@ -38,7 +38,7 @@ public class AnalysisViewRunInfoController extends HBox {
             fxml.setController(this);
             fxml.load();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
         analysis.addListener((obs, oldV, newV) -> {
@@ -74,7 +74,7 @@ public class AnalysisViewRunInfoController extends HBox {
                 analysesNbTf.setText(String.valueOf(analysis.get().getRun().getAnalyses().size()));
             } catch (SQLException e) {
                 analysesNbTf.setText("NA");
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
             runFilesLv.getItems().setAll(analysis.get().getRun().getRunFiles());
         } else {

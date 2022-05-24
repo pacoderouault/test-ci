@@ -31,8 +31,8 @@ public class GFFParser {
         gffCodec.readHeader(lineIterator);
         Gff3Feature t = gffCodec.decode(lineIterator);
 
-        System.out.println(gffCodec.isDone(lineIterator));
-        System.out.println(t == null);
+//        System.out.println(gffCodec.isDone(lineIterator));
+//        System.out.println(t == null);
 
 //            String line;
 //            while((line = reader.readLine()) != null) {

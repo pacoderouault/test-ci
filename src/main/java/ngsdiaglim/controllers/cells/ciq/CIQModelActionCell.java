@@ -64,7 +64,7 @@ public class CIQModelActionCell extends TableCell<CIQModel, Void> {
                         }
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage());
                     }
                 });

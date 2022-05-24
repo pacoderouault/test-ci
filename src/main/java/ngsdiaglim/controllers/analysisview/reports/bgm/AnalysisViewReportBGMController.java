@@ -187,7 +187,6 @@ public class AnalysisViewReportBGMController extends VBox {
             FileChooser fc = FileChooserUtils.getFileChooser();
             fc.setInitialFileName(setReportInitialName());
             File reportFile = fc.showSaveDialog(App.getPrimaryStage());
-//            File reportFile = new File("/mnt/Data/dev/IdeaProjects/NGSDiagLim/test.docx");
             if (reportFile != null) {
                 User user = App.get().getLoggedUser();
                 user.setPreference(DefaultPreferencesEnum.INITIAL_DIR, FilesUtils.getContainerFile(reportFile));

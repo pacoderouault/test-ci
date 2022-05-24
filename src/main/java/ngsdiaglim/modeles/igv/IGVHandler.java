@@ -130,13 +130,9 @@ public class IGVHandler {
 //                Message.error(rslt);
 //            });
 //        } else {
-        System.out.println("checkAnalysisChange");
             checkAnalysisChange(analysis);
-        System.out.println("end checkAnalysisChange");
             System.out.println(cmd);
-        System.out.println("out cmd");
             out.println(cmd);
-        System.out.println("end out cmd");
 //            try {
 //        System.out.println("print in");
 //                System.out.println(in.readLine());
@@ -184,15 +180,9 @@ public class IGVHandler {
                 igv_port = Integer.parseInt(AppSettings.DefaultAppSettings.IGV_PORT.getValue());
             }
 
-            System.out.println("new socket");
             Socket socket = new Socket(igv_ip, igv_port);
-            System.out.println("new socket done");
-            System.out.println("out");
             out = new PrintWriter(socket.getOutputStream(), true);
-            System.out.println("end out");
-            System.out.println("in");
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("end in");
         }
     }
 }

@@ -63,7 +63,7 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
-<!--            <classifier>linux</classifier>-->
+            <classifier>linux</classifier>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.openjfx</groupId>-->
@@ -75,7 +75,7 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-<!--            <classifier>linux</classifier>-->
+            <classifier>linux</classifier>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.openjfx</groupId>-->
@@ -87,7 +87,7 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
-<!--            <classifier>linux</classifier>-->
+            <classifier>linux</classifier>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.openjfx</groupId>-->
@@ -340,6 +340,7 @@
                     <include>**/*.ttf</include>
                     <include>**/*.bed</include>
                     <include>**/*.html</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
             <resource>

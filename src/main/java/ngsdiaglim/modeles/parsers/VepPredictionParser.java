@@ -50,7 +50,7 @@ public class VepPredictionParser {
             if(StringUtil.isBlank(token)) continue;
 
             if(this.col2colidx.containsKey(token)) {
-                logger.warn("Column  "+token+" defined twice in "+description);
+                logger.warn("Column  "+token+" defined twice");
                 continue;
             }
             this.col2colidx.put(token, i);

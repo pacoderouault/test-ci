@@ -45,7 +45,7 @@ public class CoverageActionsTreeTableCell extends TreeTableCell<SpecificCoverage
                             item.getSpecificCoverage().getStart(),
                             item.getSpecificCoverage().getEnd());
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
                 }
             } else {
@@ -55,7 +55,7 @@ public class CoverageActionsTreeTableCell extends TreeTableCell<SpecificCoverage
                             item.getCoverageRegion().getStart(),
                             item.getCoverageRegion().getEnd());
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), App.getBundle().getString("app.msg.err.igvnotreponding"));
                 }
 

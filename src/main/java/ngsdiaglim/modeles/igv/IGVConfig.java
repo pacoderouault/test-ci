@@ -39,13 +39,13 @@ public class IGVConfig {
     }
 
     private boolean igvIsRunningOnWindows() {
-        ProcessHandle.allProcesses().forEach(p -> {
-            if (p.info().commandLine().isPresent()) {
-                System.out.println(p);
-                System.out.println(p.info());
-                System.out.println(p.info().commandLine());
-            }
-        });
+//        ProcessHandle.allProcesses().forEach(p -> {
+//            if (p.info().commandLine().isPresent()) {
+//                System.out.println(p);
+//                System.out.println(p.info());
+//                System.out.println(p.info().commandLine());
+//            }
+//        });
         Optional<ProcessHandle> process = ProcessHandle.allProcesses()
                 .filter(p -> p.info().commandLine().isPresent() && p.info().commandLine().get().endsWith("IGV_Xen.exe")).findAny();
         return process.isPresent();
@@ -69,7 +69,7 @@ public class IGVConfig {
 
     private void launchIgvLinux() throws IOException {
         String igvpath = App.get().getLoggedUser().getPreferences().getPreference(DefaultPreferencesEnum.IGV_PATH);
-        System.out.println(igvpath);
+//        System.out.println(igvpath);
         Process p = Runtime.getRuntime().exec(igvpath);
         try {
             System.out.println(p.waitFor());

@@ -1,10 +1,10 @@
 <?xml version= "1.0" encoding= "UTF-8"?>
-<configuration status= "warn">
+<configuration status= "WARN">
     <properties>
         <property name="basePath">logs</property>
         <property name="filename">NGSDiag.log</property>
         <property name="rollingFilename">NGSDiag-%d{yyyy-MM-dd}-%i.log.gz</property>
-        <property name="pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} – %msg%n</property>
+        <property name="pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} – %msg%n%ex%n</property>
     </properties>
 
     <appenders>

@@ -44,7 +44,7 @@ public class App extends Application {
     private static Stage primaryStage;
     private final SimpleObjectProperty<User> loggedUser = new SimpleObjectProperty<>();
     private AppSettings appSettings;
-    public final IGVHandler igvHandler = new IGVHandler();
+//    public final IGVHandler igvHandler = new IGVHandler();
 
 //    public IGVLinks igvLinks1;
     public IGVLinks2 igvLinks;
@@ -81,7 +81,7 @@ public class App extends Application {
         try {
 //            Importer.importBGM();
 //            Importer.importHemato();
-//            Importer.importAnapath();
+            Importer.importAnapath();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +152,7 @@ public class App extends Application {
         });
     }
 
-    public IGVHandler getIgvHandler() {return igvHandler;}
+//    public IGVHandler getIgvHandler() {return igvHandler;}
 
 //    public IGVLinks getIgvLinks() {return igvLinks1;}
     public IGVLinks2 getIgvLinks2() {return igvLinks;}

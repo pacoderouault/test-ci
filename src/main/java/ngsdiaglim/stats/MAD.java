@@ -14,7 +14,6 @@ public class MAD {
 
     public static Double getMAD(List<Double> values) {
         values.sort(Double::compareTo);
-        values.forEach(v -> System.out.println(v));
         Double median = MathUtils.median(values);
         List<Double> correctedValues = new ArrayList<>();
         for (Double d : values) {

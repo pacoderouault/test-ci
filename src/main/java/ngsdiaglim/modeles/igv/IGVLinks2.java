@@ -119,7 +119,6 @@ public class IGVLinks2 {
 
     private void execute(String link) throws Exception {
 //        try {
-        System.out.println(link);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(link))
                 .GET()
@@ -132,7 +131,7 @@ public class IGVLinks2 {
         } catch (IOException ignored) { // IGV doesn't send a response
         }
 
-        if (response != null ) {
+//        if (response != null ) {
 //            // print response headers
 //            HttpHeaders headers = response.headers();
 //            headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
@@ -140,7 +139,7 @@ public class IGVLinks2 {
 //            System.out.println(response.statusCode());
 //            // print response body
 //            System.out.println(response.body());
-        }
+//        }
     }
 
     private String getAnalysisFiles(Analysis analysis) {
