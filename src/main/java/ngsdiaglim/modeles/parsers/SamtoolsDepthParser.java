@@ -90,7 +90,7 @@ public class SamtoolsDepthParser {
                 }
             }
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             throw e;
         }
 
@@ -106,7 +106,7 @@ public class SamtoolsDepthParser {
             }
             gos.flush();
         } catch (IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Files.deleteIfExists(outFile.toPath());
             throw e;
         }
@@ -121,7 +121,7 @@ public class SamtoolsDepthParser {
                 }
                 gos.flush();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Files.deleteIfExists(outSpecFile.toPath());
                 throw e;
             }

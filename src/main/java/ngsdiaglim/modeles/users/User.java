@@ -126,7 +126,7 @@ public class User {
         try {
             DAOController.getUsersDAO().updatePreferences(this);
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 }

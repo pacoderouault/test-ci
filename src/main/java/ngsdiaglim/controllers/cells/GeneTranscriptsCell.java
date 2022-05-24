@@ -54,7 +54,7 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
                         try {
                             DAOController.getGeneDAO().setPreferredTranscript(g.getId(), -1);
                         } catch (SQLException e) {
-                            logger.error(e);
+                            logger.error(e.getMessage(), e);
                             Message.error(e.getMessage(), e);
                         }
                     }
@@ -63,7 +63,7 @@ public class GeneTranscriptsCell extends TableCell<Gene, HashMap<String, Transcr
                         try {
                             DAOController.getGeneDAO().setPreferredTranscript(g.getId(), t.getId());
                         } catch (SQLException e) {
-                            logger.error(e);
+                            logger.error(e.getMessage(), e);
                             Message.error(e.getMessage(), e);
                         }
                     }

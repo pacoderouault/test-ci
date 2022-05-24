@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 public class RunStateTableCell extends TableCell<Run, Void> {
 
-    Logger logger = LogManager.getLogger(RunStateTableCell.class);
+    private static final Logger logger = LogManager.getLogger(RunStateTableCell.class);
 
     private final SegmentedBar<AnalysisStatusSegment> statusbar = new SegmentedBar<>();
     private final Tooltip segmentTooltip = new Tooltip();

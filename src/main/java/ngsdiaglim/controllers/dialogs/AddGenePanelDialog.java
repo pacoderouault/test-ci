@@ -69,7 +69,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
             genes = DAOController.getGeneDAO().getGenes();
         } catch (SQLException e) {
             genes = new HashSet<>();
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
 
@@ -103,7 +103,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
         try {
             genePanelCb.setItems(DAOController.getGenesPanelDAO().getGenesPanels());
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
         genePanelCb.getSelectionModel().selectedItemProperty().addListener((obs, oldv, newV) -> {
             if (newV != null) {
@@ -209,7 +209,7 @@ public class AddGenePanelDialog extends DialogPane.Dialog<AddGenePanelDialog.Gen
                 Set<Gene> genes = GenesPanelParser.parseGenes(selectedFile);
                 listSelectionView.getTargetItems().addAll(genes);
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         }

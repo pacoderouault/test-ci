@@ -140,7 +140,7 @@ public class EditSangerStateDialog extends DialogPane.Dialog<Annotation> {
                             ModuleManager.getAnalysisViewController().getAnalysis().getId()));
                     fillHistoryTable();
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             }

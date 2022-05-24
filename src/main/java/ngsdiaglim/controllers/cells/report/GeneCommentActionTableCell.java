@@ -111,7 +111,7 @@ public class GeneCommentActionTableCell extends TableCell<ReportGeneCommentary, 
                         getTableView().refresh();
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });
@@ -132,7 +132,7 @@ public class GeneCommentActionTableCell extends TableCell<ReportGeneCommentary, 
                         getTableView().getItems().remove(commentary);
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });

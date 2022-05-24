@@ -92,7 +92,7 @@ public class ChangeUserExpirationDateDialog extends DialogPane.Dialog<ChangeUser
         try {
             error = checkError();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage());
             setValid(false);
         }

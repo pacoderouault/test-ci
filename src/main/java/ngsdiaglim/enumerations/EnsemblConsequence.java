@@ -86,7 +86,7 @@ public enum EnsemblConsequence {
         try {
             return EnsemblConsequence.valueOf(s);
         } catch (IllegalArgumentException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }

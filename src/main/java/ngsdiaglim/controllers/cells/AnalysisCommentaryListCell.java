@@ -80,7 +80,7 @@ public class AnalysisCommentaryListCell  extends ListCell<AnalysisCommentary> {
                     ModuleManager.getAnalysisViewController().getAdditionalDataController().loadAnalysisCommentaries();
                     Message.hideDialog(addVariantCommentaryDialog);
                 } catch (SQLException ex) {
-                    logger.error(ex);
+                    logger.error(ex.getMessage(), ex);
                     Message.error(ex.getMessage(), ex);
                 }
 
@@ -97,7 +97,7 @@ public class AnalysisCommentaryListCell  extends ListCell<AnalysisCommentary> {
                 ModuleManager.getAnalysisViewController().getAdditionalDataController().loadAnalysisCommentaries();
                 Message.hideDialog(d);
             } catch (SQLException ex) {
-                logger.error(ex);
+                logger.error(ex.getMessage(), ex);
                 Message.error(ex.getMessage(), ex);
             }
         });

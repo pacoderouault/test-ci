@@ -60,7 +60,7 @@ public class AnalysisParametersCIQController extends HBox {
         try {
             loadCIQs();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -175,7 +175,7 @@ public class AnalysisParametersCIQController extends HBox {
                             DAOController.getCiqHotspotDAO().addCIQHotspot(h, ciqModelId);
                         }
                     } catch (SQLException ex) {
-                        logger.error(ex);
+                        logger.error(ex.getMessage(), ex);
                         Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                         if (ciqModelId >= 0) {
                             try {

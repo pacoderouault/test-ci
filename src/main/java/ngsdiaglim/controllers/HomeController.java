@@ -368,7 +368,7 @@ public class HomeController extends Module {
                         analysesTable.setPlaceholder(analysesTablePlaceholderLb);
                     });
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                 }
                 Platform.runLater(() -> {

@@ -101,7 +101,7 @@ public class VCFUtils {
             new VCFFileReader(file, false);
             return true;
         } catch (TribbleException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             return false;
         }
     }

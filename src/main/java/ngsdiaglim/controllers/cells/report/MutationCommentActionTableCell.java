@@ -112,7 +112,7 @@ public class MutationCommentActionTableCell  extends TableCell<ReportMutationCom
                         getTableView().refresh();
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });
@@ -132,7 +132,7 @@ public class MutationCommentActionTableCell  extends TableCell<ReportMutationCom
                         DAOController.getReportMutationCommentaryDAO().deleteReportMutationCommentary(commentary.getId());
                         getTableView().getItems().remove(commentary);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });

@@ -107,7 +107,7 @@ public class IGVLinks2 {
 //            }
 //            System.out.println(con.getResponseCode());
 //        } catch (Exception e) {
-//            logger.error(e);
+//            logger.error(e.getMessage(), e);
 //            throw e;
 //        } finally {
 //            if (con != null) {

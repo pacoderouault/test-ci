@@ -266,7 +266,7 @@ public class AnalysisViewVariantsController2 extends VBox {
                 setAnnotationsFilters();
             });
 //        } catch (SQLException e) {
-//            logger.error(e);
+//            logger.error(e.getMessage(), e);
 //        }
     }
 

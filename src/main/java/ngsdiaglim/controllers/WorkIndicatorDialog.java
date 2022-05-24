@@ -188,7 +188,7 @@ public class WorkIndicatorDialog<P> {
                 resultValue = taskWorker.get();
                 resultNotificationList.add(resultValue);
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         };

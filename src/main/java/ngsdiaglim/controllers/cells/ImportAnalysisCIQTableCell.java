@@ -27,7 +27,7 @@ public class ImportAnalysisCIQTableCell extends TableCell<AnalysisInputData, CIQ
             ciqModels.add(0, null);
             ciqModelCb.setItems(ciqModels);
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             ciqModels = FXCollections.observableArrayList();
         }
 

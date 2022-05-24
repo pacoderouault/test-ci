@@ -77,7 +77,7 @@ public class ChangeUsernameDialog extends DialogPane.Dialog<ChangeUsernameDialog
                 setValid(true);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }

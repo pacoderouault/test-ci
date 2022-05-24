@@ -94,7 +94,7 @@ public class SearchAnalysesDialog extends DialogPane.Dialog<Void> {
                     ObservableList<Analysis> analyses = DAOController.getAnalysisDAO().searchAnalysis(query);
                     Platform.runLater(() -> analysesTable.setItems(analyses));
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                 }
             }

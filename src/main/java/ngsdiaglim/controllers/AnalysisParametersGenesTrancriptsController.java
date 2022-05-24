@@ -223,7 +223,7 @@ public class AnalysisParametersGenesTrancriptsController extends HBox {
                 checkBox.setSelected(!checkBox.isSelected());
                 loadGeneSets();
             } catch (SQLException ex) {
-                logger.error(ex);
+                logger.error(ex.getMessage(), ex);
                 Message.error(ex.getMessage(), ex);
             }
             finally {

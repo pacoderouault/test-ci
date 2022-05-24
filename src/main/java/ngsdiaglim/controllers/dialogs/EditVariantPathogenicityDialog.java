@@ -134,7 +134,7 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
                 historyTable.setItems(null);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -183,7 +183,7 @@ public class EditVariantPathogenicityDialog extends DialogPane.Dialog<Variant> {
                 ModuleManager.getAnalysisViewController().getVariantsViewController().refreshTable();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         }

@@ -102,7 +102,7 @@ public class ManageCNVsController  extends Module {
         try {
             controlGroupTable.setItems(DAOController.getCnvControlGroupsDAO().getCNVControlGroups());
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -147,7 +147,7 @@ public class ManageCNVsController  extends Module {
                     Message.hideDialog(dialog);
 
                 } catch (FileFormatException | SQLException | IOException ex) {
-                    logger.error(ex);
+                    logger.error(ex.getMessage(), ex);
                     Message.error(ex.getMessage(), ex);
                 }
             } else if (dialog.getValue().getAlgorithm().equals(TargetEnrichment.CAPTURE)) {
@@ -192,7 +192,7 @@ public class ManageCNVsController  extends Module {
                     fillControlGroupsTable();
                     Message.hideDialog(dialog);
                 } catch (IOException | FileFormatException | SQLException ex) {
-                    logger.error(ex);
+                    logger.error(ex.getMessage(), ex);
                     Message.error(ex.getMessage(), ex);
                 }
             }
@@ -233,7 +233,7 @@ public class ManageCNVsController  extends Module {
                         getTableView().refresh();
                         Message.hideDialog(dialog);
                     } catch (SQLException | IOException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });
@@ -273,7 +273,7 @@ public class ManageCNVsController  extends Module {
                         getTableView().refresh();
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });
@@ -320,7 +320,7 @@ public class ManageCNVsController  extends Module {
                 try {
                     DAOController.getCnvControlsDAO().updateControl(control);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             }

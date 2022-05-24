@@ -174,7 +174,7 @@ public class AppController {
                     analysis.setAnnotations(vcfParser.getAnnotations());
                     analysis.loadCoverage();
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                     return 1;
                 }

@@ -143,7 +143,7 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
                                 prescribersList.remove(prescriber);
                                 Message.hideDialog(dialog);
                             } catch (SQLException ex) {
-                                logger.error(ex);
+                                logger.error(ex.getMessage(), ex);
                                 Message.error(ex.getMessage(), ex);
                             }
                         }
@@ -168,7 +168,7 @@ public class ManagePrescribersDialogController extends DialogPane.Dialog<Void> {
             prescribersTable.setItems(viewvablePrescribers);
             prescribersList.setAll(DAOController.getPrescriberDAO().getPrescribers());
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }

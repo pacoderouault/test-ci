@@ -176,7 +176,7 @@ public class AddCIQDialog extends DialogPane.Dialog<AddCIQDialog.CIQModelData> {
                 setValid(true);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
             setValid(false);
         }

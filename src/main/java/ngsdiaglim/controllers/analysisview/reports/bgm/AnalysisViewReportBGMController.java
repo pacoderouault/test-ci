@@ -59,7 +59,7 @@ public class AnalysisViewReportBGMController extends VBox {
             fxml.load();
         } catch (
                 IOException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(App.getBundle().getString("app.msg.failloadfxml"), e.getMessage(), e);
         }
 
@@ -201,7 +201,7 @@ public class AnalysisViewReportBGMController extends VBox {
                         ReportCreator reportCreator = new ReportCreator(reportData, reportFile);
                         reportCreator.createReport();
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Platform.runLater(() -> Message.error(e.getMessage(), e));
                         return 1;
                     }

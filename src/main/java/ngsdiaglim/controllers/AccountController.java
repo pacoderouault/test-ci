@@ -92,7 +92,7 @@ public class AccountController extends Module {
                     Message.hideDialog(dialog);
                 }
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
                 e.printStackTrace();
             }
@@ -112,7 +112,7 @@ public class AccountController extends Module {
                     Message.hideDialog(dialog);
                 }
             } catch (SQLException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
                 e.printStackTrace();
             }

@@ -91,7 +91,7 @@ public class ChangePasswordDialog extends DialogPane.Dialog<ChangePasswordDialog
                 setValid(true);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }

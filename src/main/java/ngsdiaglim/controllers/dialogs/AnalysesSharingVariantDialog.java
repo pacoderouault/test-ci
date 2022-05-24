@@ -131,7 +131,7 @@ public class AnalysesSharingVariantDialog extends DialogPane.Dialog<Void> {
                     });
 
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Platform.runLater(() -> Message.error(e.getMessage(), e));
                 }
 //                Object[] messageArguments = {r.getAnalysisName()};
@@ -163,7 +163,7 @@ public class AnalysesSharingVariantDialog extends DialogPane.Dialog<Void> {
 ////                            Platform.runLater(() -> App.get().getAppController().showAnalysisView(toLoad.get()));
 //                        }
 //                    } catch (Exception e) {
-//                        logger.error(e);
+//                        logger.error(e.getMessage(), e);
 //                        Platform.runLater(() -> Message.error(e.getMessage(), e));
 //                        return 1;
 //                    }

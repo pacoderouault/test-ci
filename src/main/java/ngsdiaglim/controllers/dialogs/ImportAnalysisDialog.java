@@ -215,7 +215,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                         Platform.runLater(() -> runFilesFp.getChildren().add(new RunFileNode(runFile)));
                     }
                 } catch (IOException | DuplicateSampleInRun | SQLException ex) {
-                    logger.error(ex);
+                    logger.error(ex.getMessage(), ex);
                     Platform.runLater(() ->Message.error(ex.getMessage(), ex));
                     return 1;
                 }
@@ -241,7 +241,7 @@ public class ImportAnalysisDialog extends DialogPane.Dialog<AnalysisInputData> {
                 try {
                     sampleName = VCFUtils.getSamplesName(selectedFile).get(0);
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     Message.error(e.getMessage(), e);
                 }
             }

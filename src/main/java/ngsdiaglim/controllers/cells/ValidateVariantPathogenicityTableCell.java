@@ -45,7 +45,7 @@ public class ValidateVariantPathogenicityTableCell extends TableCell<VariantPath
                                         DAOController.getVariantsDAO().updateVariant(v);
                                         getTableView().refresh();
                                     } catch (SQLException ex) {
-                                        logger.error(ex);
+                                        logger.error(ex.getMessage(), ex);
                                         Message.error(ex.getMessage(), ex);
                                     }
                                 });
@@ -53,7 +53,7 @@ public class ValidateVariantPathogenicityTableCell extends TableCell<VariantPath
                             }
                         }
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }

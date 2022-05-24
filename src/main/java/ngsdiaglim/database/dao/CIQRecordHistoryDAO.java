@@ -64,7 +64,7 @@ public class CIQRecordHistoryDAO extends DAO {
                         beforeState = CIQRecordState.valueOf(beforeStr);
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
                 try {
                     String afterStr = rs.getString("accepted_after");
@@ -72,7 +72,7 @@ public class CIQRecordHistoryDAO extends DAO {
                         afterState = CIQRecordState.valueOf(afterStr);
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
 
                 ciqRecordHistories.add(new CIQRecordHistory(

@@ -105,7 +105,7 @@ public class OtherCommentActionTableCell extends TableCell<ReportCommentary, Voi
                         getTableView().refresh();
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });
@@ -126,7 +126,7 @@ public class OtherCommentActionTableCell extends TableCell<ReportCommentary, Voi
                         getTableView().getItems().remove(commentary);
                         Message.hideDialog(dialog);
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                         Message.error(e.getMessage(), e);
                     }
                 });

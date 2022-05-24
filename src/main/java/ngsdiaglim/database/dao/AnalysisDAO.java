@@ -101,7 +101,7 @@ public class AnalysisDAO extends DAO {
                 try {
                     status = AnalysisStatus.valueOf(rs.getString("status"));
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     status = AnalysisStatus.INPROGRESS;
                 }
                 boolean importComplete = rs.getBoolean("import_complete");
@@ -159,7 +159,7 @@ public class AnalysisDAO extends DAO {
                 try {
                     status = AnalysisStatus.valueOf(rs.getString("status"));
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     status = AnalysisStatus.INPROGRESS;
                 }
                 boolean importComplete = rs.getBoolean("import_complete");
@@ -216,7 +216,7 @@ public class AnalysisDAO extends DAO {
                 try {
                     status = AnalysisStatus.valueOf(rs.getString("status"));
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     status = AnalysisStatus.INPROGRESS;
                 }
                 boolean importComplete = rs.getBoolean("import_complete");
@@ -262,7 +262,7 @@ public class AnalysisDAO extends DAO {
                 try {
                     status = AnalysisStatus.valueOf(rs.getString("status"));
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     status = AnalysisStatus.INPROGRESS;
                 }
                 if (status.equals(AnalysisStatus.DONE)) {
@@ -364,7 +364,7 @@ public class AnalysisDAO extends DAO {
                 try {
                     status = AnalysisStatus.valueOf(rs.getString("aStatus"));
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                     status = AnalysisStatus.INPROGRESS;
                 }
                 boolean importComplete = rs.getBoolean("aImport_complete");

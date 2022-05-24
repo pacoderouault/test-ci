@@ -72,7 +72,7 @@ public class AnalysisParametersHotspotsController extends HBox {
         try {
             loadHotspotsSets();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -154,7 +154,7 @@ public class AnalysisParametersHotspotsController extends HBox {
                 checkBox.setSelected(!checkBox.isSelected());
                 loadHotspotsSets();
             } catch (SQLException ex) {
-                logger.error(ex);
+                logger.error(ex.getMessage(), ex);
                 Message.error(ex.getMessage(), ex);
             }
             finally {
@@ -181,7 +181,7 @@ public class AnalysisParametersHotspotsController extends HBox {
                             try {
                                 loadHotspotsSets();
                             } catch (SQLException ex) {
-                                logger.error(ex);
+                                logger.error(ex.getMessage(), ex);
                                 Message.error(ex.getMessage(), ex);
                             }
                             Message.hideDialog(addHotspotsSetDialog);
@@ -198,7 +198,7 @@ public class AnalysisParametersHotspotsController extends HBox {
                                 DAOController.getHotspotDAO().addHotspot(id, hotspot);
                             }
                         } catch (Exception  ex) {
-                            logger.error(ex);
+                            logger.error(ex.getMessage(), ex);
                             Platform.runLater(() -> Message.error(ex.getMessage(), ex));
                             if (id >= 0) {
                                 try {

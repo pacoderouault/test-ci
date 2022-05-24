@@ -52,7 +52,7 @@ public class TranscriptTableCell extends TableCell<Annotation, Transcript> {
                 try {
                     DAOController.getUsersDAO().updatePreferences(loggedUser);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         });

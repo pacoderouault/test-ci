@@ -118,7 +118,7 @@ public class AnalysisViewMetaDataController  extends VBox {
 //                encoder = new VCFEncoder(reader.getHeader(), true, true);
 //                vcfHeaderTa.setText(vcfHeader);
 //            } catch (IOException e) {
-//                logger.error(e);
+//                logger.error(e.getMessage(), e);
 //                vcfHeaderTa.setText(null);
 //                Message.error(e.getMessage(), e);
 //            }

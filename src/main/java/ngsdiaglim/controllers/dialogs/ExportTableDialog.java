@@ -176,12 +176,12 @@ public class ExportTableDialog extends DialogPane.Dialog<ExportTableDialog.Expor
                 try {
                     DAOController.getColumnsExportDAO().setColumnsExport(App.get().getLoggedUser().getId(), columnsExport);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    logger.error(e.getMessage(), e);
                 }
             });
 
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
         previewTable.setItems(filteredAnnotations);

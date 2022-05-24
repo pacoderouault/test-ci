@@ -77,7 +77,7 @@ public class GenePanelsManageController extends Module {
 //        try {
             genePanelTable.getItems().setAll(DAOController.getGenesPanelDAO().getGenesPanels());
 //        } catch (SQLException e) {
-//            logger.error(e);
+//            logger.error(e.getMessage(), e);
 //            Message.error(e.getMessage(), e);
 //        }
     }

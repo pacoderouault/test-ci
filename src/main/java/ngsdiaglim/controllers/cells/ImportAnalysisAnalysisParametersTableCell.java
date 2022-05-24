@@ -28,7 +28,7 @@ public class ImportAnalysisAnalysisParametersTableCell extends TableCell<Analysi
         try {
             analysisParametersList = DAOController.getAnalysisParametersDAO().getActiveAnalysisParameters();
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
         expendTp.setShowDelay(Duration.ZERO);
     }

@@ -147,7 +147,7 @@ public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> 
                 historyTable.setItems(null);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Message.error(e.getMessage(), e);
         }
     }
@@ -199,7 +199,7 @@ public class EditVariantFalsePositiveDialog  extends DialogPane.Dialog<Variant> 
                 historyTable.refresh();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 Message.error(e.getMessage(), e);
             }
         }

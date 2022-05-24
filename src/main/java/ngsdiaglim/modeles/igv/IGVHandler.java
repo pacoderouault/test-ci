@@ -38,7 +38,7 @@ public class IGVHandler {
 //                    loadBam();
 //                    loadCoverage();
 //                } catch (IOException e) {
-//                    logger.error(e);
+//                    logger.error(e.getMessage(), e);
 //                }
 //            }
 //        });

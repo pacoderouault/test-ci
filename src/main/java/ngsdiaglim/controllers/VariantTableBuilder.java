@@ -87,7 +87,7 @@ public class VariantTableBuilder {
                     try {
                         saveColumnsOrder();
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                     }
                 });
 
@@ -95,7 +95,7 @@ public class VariantTableBuilder {
                     try {
                         saveColumnsVisible();
                     } catch (SQLException e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(), e);
                     }
                 });
 
@@ -544,7 +544,7 @@ public class VariantTableBuilder {
                             try {
                                 saveColumnsSize();
                             } catch (SQLException e) {
-                                logger.error(e);
+                                logger.error(e.getMessage(), e);
                             }
                         }
                     };
@@ -624,7 +624,7 @@ public class VariantTableBuilder {
 //                    }
                 }
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 table.setRowFactory(row -> new Theme2());
             }
         } else {

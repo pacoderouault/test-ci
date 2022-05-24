@@ -115,7 +115,7 @@ public class Run {
         try {
             setRunFiles(DAOController.getRunFilesDAO().getRunFiles(this));
         } catch (SQLException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             Platform.runLater(() -> Message.error(e.getMessage(), e));
         }
     }
