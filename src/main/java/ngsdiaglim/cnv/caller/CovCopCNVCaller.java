@@ -60,8 +60,13 @@ public class CovCopCNVCaller {
             int sampleIdx = cnvData.getSampleIndex(barcode);
             CNVSample sample = cnvData.getSamples().get(barcode);
             Pair<Double, Double> pair = computeNormalValuesStats(sampleIdx);
-            sample.setMeanOfNormalValues(pair.getFirst());
-            sample.setStdOfNormalValues(pair.getSecond());
+            if (pair != null) {
+                sample.setMeanOfNormalValues(pair.getFirst());
+                sample.setStdOfNormalValues(pair.getSecond());
+            } else {
+                sample.setMeanOfNormalValues(-1d);
+                sample.setStdOfNormalValues(-1d);
+            }
         }
     }
 
@@ -75,6 +80,7 @@ public class CovCopCNVCaller {
 
 
     private void initData(CovCopCNVData cnvData) {
+        excludedValuesIndex = new HashMap<>();
         cnvData.getCovcopRegions().values().forEach(amplicons -> amplicons.forEach(a -> {
             a.getNormalized_values().clear();
             a.getzScores().clear();

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
@@ -81,7 +82,7 @@ public class App extends Application {
         try {
 //            Importer.importBGM();
 //            Importer.importHemato();
-            Importer.importAnapath();
+//            Importer.importAnapath();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,13 +137,13 @@ public class App extends Application {
             appSettings.setValue(AppSettings.DefaultAppSettings.MAXIMIZED, newV);
         });
 
-        // Auto open admin account
-        try {
-            setLoggedUser(null);
-            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        // Auto open admin account
+//        try {
+//            setLoggedUser(null);
+//            setLoggedUser(DAOController.getUsersDAO().getUser("admin"));
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
 //        igvLinks1 = new IGVLinks();
         igvLinks = new IGVLinks2();
@@ -150,6 +151,13 @@ public class App extends Application {
         primaryStage.setOnCloseRequest((event) -> {// <----------- this is what you need
             Platform.exit();
         });
+
+        System.out.println(getJarPath());
+        logger.warn(App::getJarPath);
+        System.out.println(getRunsDataPath());
+        logger.warn(App::getRunsDataPath);
+        System.out.println(getPanelsDataPath());
+        logger.warn(App::getPanelsDataPath);
     }
 
 //    public IGVHandler getIgvHandler() {return igvHandler;}
@@ -215,12 +223,15 @@ public class App extends Application {
     public static String getJarPath() {
         CodeSource codeSource = App.class.getProtectionDomain().getCodeSource();
         File jarFile = new File(codeSource.getLocation().getPath());
+        String url;
         if (jarFile.isDirectory()) {  // Ugly hack to return the project folder when using IDE
-            return jarFile.getParentFile().getParentFile().getPath();
+            url = jarFile.getParentFile().getParentFile().getPath();
         }
         else {
-            return jarFile.getParentFile().getPath();
+            url = jarFile.getParentFile().getPath();
         }
+
+        return java.net.URLDecoder.decode(url, StandardCharsets.UTF_8);
     }
 
 

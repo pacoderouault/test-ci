@@ -39,7 +39,7 @@ public class CIQChart extends XYChart {
     private final List<String> categories = new ArrayList<>();
     private final ErrorDataSetRenderer recordRenderer = new ErrorDataSetRenderer();
     private DefaultErrorDataSet recordDataSet;
-    private final Zoomer2 zoomer = new Zoomer2();
+    private final Zoomer zoomer = new Zoomer();
     private TargetVAFIndicator targetVafIndicator;
     private MeanIndicator meanTargetIndicator;
     private SDLowIndicator lowSDIndicatorMin;

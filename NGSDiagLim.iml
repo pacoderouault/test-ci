@@ -55,10 +55,10 @@
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-material2-pack:12.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-fontawesome-pack:12.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.kordamp.ikonli:ikonli-fontawesome5-pack:12.3.1" level="project" />
-    <orderEntry type="library" name="Maven: de.gsi.chart:chartfx-chart:11.2.6" level="project" />
-    <orderEntry type="library" name="Maven: de.gsi.dataset:chartfx-dataset:11.2.6" level="project" />
+    <orderEntry type="library" name="Maven: de.gsi.chart:chartfx-chart:11.2.7" level="project" />
+    <orderEntry type="library" name="Maven: de.gsi.dataset:chartfx-dataset:11.2.7" level="project" />
     <orderEntry type="library" name="Maven: it.unimi.dsi:fastutil:8.3.1" level="project" />
-    <orderEntry type="library" name="Maven: de.gsi.math:chartfx-math:11.2.6" level="project" />
+    <orderEntry type="library" name="Maven: de.gsi.math:chartfx-math:11.2.7" level="project" />
     <orderEntry type="library" name="Maven: com.github.wendykierp:JTransforms:3.1" level="project" />
     <orderEntry type="library" name="Maven: pl.edu.icm:JLargeArrays:1.5" level="project" />
     <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:65.1" level="project" />

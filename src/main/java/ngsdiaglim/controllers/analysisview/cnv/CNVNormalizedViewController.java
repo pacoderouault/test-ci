@@ -94,6 +94,7 @@ public class CNVNormalizedViewController extends VBox {
     private void updateView() {
         cnvNormalizedTableViewController.setCovcopCnvData(covcopCnvData.get());
 //        cnvNormalizedMapsViewController = null;
+//        cnvNormalizedMapsViewController.forceRedrawMaps();
         cnvNormalizedMapsViewController.setCovcopCnvData(covcopCnvData.get());
     }
 

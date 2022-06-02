@@ -54,6 +54,13 @@ public class CNVDefineControls extends DialogPane.Dialog<CNVDefineControls.CNVCo
         getValue().controlType.bind(controlTypeCb.valueProperty());
         getValue().setSamplesControls(samplesListSelection.getTargetItems());
         getValue().groupControl.bind(cnvControlGroupListView.getSelectionModel().selectedItemProperty());
+
+//        if (cnvData.getControlType().equals(CNVControlType.NONE)) {
+        controlTypeCb.getSelectionModel().select(cnvData.getControlType());
+        if (cnvData.getControlType().equals(CNVControlType.EXTERNAL)) {
+            cnvControlGroupListView.getSelectionModel().select(cnvData.getControlGroup());
+        }
+//        }
     }
 
     private void initView() {
@@ -85,7 +92,14 @@ public class CNVDefineControls extends DialogPane.Dialog<CNVDefineControls.CNVCo
     }
 
     private void initSamplesSelectionListView() {
-        samplesListSelection.getSourceItems().setAll(cnvData.getSamples().values());
+        cnvData.getSamples().values().forEach(s -> {
+            if (s.isControl()) {
+                samplesListSelection.getTargetItems().add(s);
+            } else {
+                samplesListSelection.getSourceItems().add(s);
+            }
+        });
+//        samplesListSelection.getSourceItems().setAll(cnvData.getSamples().values());
     }
 
     private void initCNVControlGroupListView() {

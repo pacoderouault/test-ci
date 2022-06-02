@@ -31,7 +31,7 @@ public class Importer {
             ImportUsers.importUsers(new File(dir, "users.txt"));
 
             ImportsRunsBGM runImporter = new ImportsRunsBGM(runDir, localRunDir);
-            runImporter.importRuns();
+//            runImporter.importRuns();
 
             File variantsDir = new File(dir, "variants");
             ImportVariants.importVariants(variantsDir);

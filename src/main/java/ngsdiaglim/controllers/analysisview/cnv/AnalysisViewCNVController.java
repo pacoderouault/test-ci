@@ -176,9 +176,13 @@ public class AnalysisViewCNVController extends VBox {
                 for (CNVSample sample : covcopCNVData.get().getSamples().values()) {
                     sample.setControl(dialog.getValue().getSamplesControls().contains(sample));
                 }
+                covcopCNVData.get().setControlGroup(null);
 //                covcopCNVData.get().setControlSamples(dialog.getValue().getSamplesControls());
             } else if (controlType.equals(CNVControlType.EXTERNAL)) {
                 covcopCNVData.get().setControlGroup(dialog.getValue().getGroupControl());
+            } else {
+                covcopCNVData.get().getSamples().values().forEach(s -> s.setControl(false));
+                covcopCNVData.get().setControlGroup(null);
             }
             Message.hideDialog(dialog);
         });
@@ -189,6 +193,7 @@ public class AnalysisViewCNVController extends VBox {
         WorkIndicatorDialog<String> wid = new WorkIndicatorDialog<>(App.getPrimaryStage(), App.getBundle().getString("cnvnormalizedview.lb.normalizeData"));
         wid.addTaskEndNotification(r -> {
             if (r == 0) {
+                cnvNormalizedViewController.setCovcopCnvData(null);
                 cnvNormalizedViewController.setCovcopCnvData(covcopCNVData.get());
                 normalizedDataTb.setDisable(false);
                 mapsTb.setDisable(false);

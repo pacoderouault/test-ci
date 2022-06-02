@@ -78,6 +78,7 @@ public class CNVNormalizedMapsViewController extends VBox {
     }
 
     public void setCovcopCnvData(CovCopCNVData covcopCnvData) {
+        this.covcopCnvData.set(null);
         this.covcopCnvData.set(covcopCnvData);
     }
 
